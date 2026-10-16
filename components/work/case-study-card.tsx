@@ -44,24 +44,25 @@ export function CaseStudyCard({ study, href, variant = "grid", as: Heading = "h3
 
   return (
     <article
+      data-reveal="card"
       className={cn(
-        "surface depth-in group relative overflow-hidden rounded-xl border border-line bg-surface-1 shadow-e1 transition-colors duration-150 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-volt-500/35",
+        "surface group relative overflow-hidden rounded-xl border border-line bg-surface-1 shadow-e1 transition-colors duration-150 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-volt-500/35",
         featured ? "grid lg:grid-cols-2" : "flex flex-col",
       )}
     >
       {mini ? null : (
         <div
           aria-hidden
-          className={cn(
-            "relative overflow-hidden bg-ink-900",
-            featured ? "min-h-56 lg:min-h-full" : "aspect-[16/10]",
-          )}
+          className={cn("media-hover bg-ink-900", featured ? "min-h-56 lg:min-h-full" : "aspect-[16/10]")}
         >
-          <div className="absolute inset-0 bg-(image:--glow-volt) transition-transform duration-600 ease-out-expo group-hover:scale-[1.03]" />
-          <div className="grid-overlay absolute inset-0" />
-          <span className="tabular absolute bottom-5 left-6 font-display text-display-lg font-semibold text-fg/90">
-            {study.stats[0]?.value}
-          </span>
+          <div className="media-inner absolute inset-0">
+            <div className="absolute inset-0 bg-(image:--glow-volt)" />
+            <div className="grid-overlay absolute inset-0" />
+            <span className="tabular absolute bottom-5 left-6 font-display text-display-lg font-semibold text-fg/90">
+              {study.stats[0]?.value}
+            </span>
+          </div>
+          <span className="media-label">Read the case study</span>
         </div>
       )}
       <div

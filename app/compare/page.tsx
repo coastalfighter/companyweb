@@ -30,8 +30,9 @@ export default function CompareIndexPage() {
             {comparisons.map((c) => (
               <li key={c.slug}>
                 <Link
+                  data-reveal="card"
                   href={`/compare/${c.slug}`}
-                  className="surface depth-in group flex items-center justify-between gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-colors hover:border-volt-500/35"
+                  className="surface group flex items-center justify-between gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-colors hover:border-volt-500/35"
                 >
                   <span className="flex flex-col gap-1">
                     <span className="font-display text-h5 font-semibold text-fg">{c.eyebrow}</span>

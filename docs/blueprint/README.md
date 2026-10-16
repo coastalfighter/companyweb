@@ -33,6 +33,7 @@ The visual language (black canvas, a single electric-lime accent, dense typograp
 | G | Component Library Spec | [`07-component-library.md`](./07-component-library.md) |
 | H | Responsive & Accessibility | [`08-responsive-accessibility.md`](./08-responsive-accessibility.md) |
 | I | Tech Stack Recommendation | [`09-tech-stack.md`](./09-tech-stack.md) |
+| K | Motion System (M5: GSAP engine, preloader, transitions, heroes) | [`11-motion-system.md`](./11-motion-system.md) |
 | J | Starter Code (Hero) | [`10-starter-code.md`](./10-starter-code.md) · live file: [`/starter/hero.html`](../../starter/hero.html) |
 | — | Design tokens (CSS) | [`styles/tokens.css`](../../styles/tokens.css) |
 

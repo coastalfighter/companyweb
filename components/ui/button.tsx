@@ -5,7 +5,8 @@ import { ArrowRightIcon, CircleNotchIcon } from "@phosphor-icons/react/ssr";
 import { cn } from "@/lib/utils";
 
 /**
- * Button: spec in docs/blueprint/07-component-library.md (G1).
+ * Button: spec in docs/blueprint/07-component-library.md (G1); hover states in
+ * styles/motion.css (`.btn-primary` ink sweep + shine + 1.03, `.btn-ghost` lime edge).
  * Radius is always md (8px). Never pill-shaped.
  */
 export const buttonVariants = cva(
@@ -20,7 +21,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary: [
-          "btn-shine bg-accent text-on-accent hover:bg-accent-hover hover:shadow-glow active:bg-accent-active",
+          "btn-primary bg-accent text-on-accent active:bg-accent-active",
           "focus-visible:outline-fg",
           "disabled:bg-ink-700 disabled:text-ink-400 aria-disabled:bg-ink-700 aria-disabled:text-ink-400",
         ],
@@ -34,7 +35,7 @@ export const buttonVariants = cva(
           "disabled:text-fg-disabled",
         ],
         ghost: [
-          "border border-line-strong bg-transparent text-fg hover:border-fg-subtle hover:bg-white/[0.04]",
+          "btn-ghost border border-line-strong bg-transparent text-fg",
           "disabled:border-line disabled:text-fg-disabled",
         ],
         link: [
@@ -99,7 +100,7 @@ export function Button({
       <ArrowRightIcon
         aria-hidden
         weight="regular"
-        className="transition-transform duration-150 ease-out-expo group-hover/button:translate-x-[3px]"
+        className="btn-arrow transition-[translate] duration-200 ease-out-expo group-hover/button:translate-x-[3px]"
       />
     ) : (
       iconRight

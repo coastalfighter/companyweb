@@ -31,7 +31,7 @@ export function SecurityBand({
       <div className="mx-auto grid max-w-(--container-content) gap-12 px-(--gutter) lg:grid-cols-12 lg:gap-8">
         <div data-reveal className="flex flex-col gap-5 lg:col-span-5">
           <Eyebrow>Security</Eyebrow>
-          <h2 id="security-title" className="heading-depth font-display text-h2 font-semibold text-fg">
+          <h2 id="security-title" className="font-display text-h2 font-semibold text-fg">
             Your data is safer with us than in most inboxes.
           </h2>
           <p className="text-body-lg text-fg-muted">

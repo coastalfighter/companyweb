@@ -1,4 +1,5 @@
 import { CalculatorTeaser } from "@/components/home/calculator-teaser";
+import { EngineHero } from "@/components/home/engine-hero";
 import { ComparisonSection } from "@/components/home/comparison-section";
 import { FaqSection } from "@/components/home/faq-section";
 import { HowItWorksSummary } from "@/components/home/how-it-works-summary";
@@ -7,10 +8,10 @@ import { LogoBar, ProofSection, StatsBand } from "@/components/home/proof-sectio
 import { SecurityBand } from "@/components/home/security-band";
 import { ServicesBento } from "@/components/home/services-bento";
 import { VisibilitySection } from "@/components/home/visibility-section";
-import { Hero } from "@/components/marketing/hero/hero";
 import { VoltSlab } from "@/components/marketing/volt-slab";
 import { ScrollRail, type RailSection } from "@/components/motion/scroll-rail";
-import { ScrollTicker } from "@/components/motion/scroll-ticker";
+import { Marquee } from "@/components/motion/marquee";
+import { SectionDivider } from "@/components/motion/section-divider";
 import { services } from "@/lib/services";
 import { ctas } from "@/lib/site";
 
@@ -28,14 +29,6 @@ const railSections: readonly RailSection[] = [
   { id: "volt-slab-title", label: "Book a call" },
 ];
 
-/** Commitments the hero already states; the ticker only repeats them. */
-const tickerCommitments = [
-  "Live in 10 business days",
-  "No long-term lock-in",
-  "NDA before the first call",
-  "A report every Friday",
-] as const;
-
 /**
  * Homepage (docs/blueprint/03-page-blueprints.md, section 1).
  * LogoBar, StatsBand and ProofSection render only once content/proof.ts holds real,
@@ -44,16 +37,18 @@ const tickerCommitments = [
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      <EngineHero />
       <LogoBar />
       <ProblemSection />
-      <ScrollTicker items={services.map((s) => s.name)} secondary={tickerCommitments} />
+      <Marquee items={services.map((s) => s.shortName.toUpperCase())} />
       <ServicesBento />
       <HowItWorksSummary />
+      <SectionDivider />
       <VisibilitySection />
       <StatsBand />
       <ProofSection />
       <ComparisonSection />
+      <SectionDivider className="pb-(--section-y)" />
       <SecurityBand />
       <CalculatorTeaser />
       <FaqSection />

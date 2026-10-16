@@ -114,6 +114,7 @@ describe("browser storage disclosure", () => {
       "lib/calculator/saved.ts",
       "components/contact/contact-form.tsx",
       "components/layout/attribution-tracker.tsx",
+      "lib/motion/boot.ts",
     ]
       .map((f) => readFileSync(f, "utf8"))
       .join("\n");

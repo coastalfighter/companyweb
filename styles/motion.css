@@ -1,0 +1,864 @@
+/* ==========================================================================
+   Motion system styles (docs/blueprint/11-motion-system.md)
+
+   GSAP drives every timeline, scroll trigger and pointer follower
+   (components/motion/*). This file holds what CSS does better:
+   - the first frame before GSAP loads, and failsafes if it never does;
+   - hover and press states, as CSS transitions, because they're interruptible and
+     run off the main thread (emil-design-eng: "use transitions, not keyframes, for
+     dynamic UI"; "CSS animations beat JS under load");
+   - layout of the global layers.
+
+   State hooks on <html>: data-motion="on" (motion allowed, set before paint),
+   data-boot="pending|done", data-motion-ready (GSAP loaded), data-custom-cursor.
+   Unlayered on purpose: these rules override Tailwind utilities on the same element.
+   ========================================================================== */
+
+/* The atmosphere sits at z-index -1; the canvas colour comes from <html>. */
+body {
+  background-color: transparent;
+}
+
+/* ---------- 2.1 Boot preloader (components/motion/preloader.tsx) ---------- */
+.preloader {
+  display: none;
+}
+html[data-motion="on"][data-boot="pending"] .preloader {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  /* Failsafe: if GSAP never takes over, the boot screen lifts itself at 2.6s. */
+  animation: preloader-failsafe 400ms var(--ease-out-expo) 2.6s forwards;
+}
+@keyframes preloader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.preloader-shutter {
+  position: absolute;
+  inset-inline: 0;
+  height: 50.5%;
+  background: var(--ink-950);
+  will-change: transform;
+}
+.preloader-shutter-top {
+  top: 0;
+}
+.preloader-shutter-bottom {
+  bottom: 0;
+}
+.preloader-seam {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--volt-500);
+  box-shadow: 0 0 18px 1px rgb(163 230 53 / 0.55);
+  transform: scaleX(0);
+  opacity: 0;
+}
+.preloader-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: var(--gutter);
+}
+.preloader-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(163 230 53 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(163 230 53 / 0.07) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 55% 45% at 50% 50%, #000 15%, transparent 75%);
+  opacity: 0;
+}
+.preloader-log {
+  position: absolute;
+  top: 1.5rem;
+  left: var(--gutter);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--fg-subtle);
+}
+.preloader-mark {
+  position: relative;
+  display: flex;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 1.6rem + 7vw, 7.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.preloader-letter {
+  position: relative;
+  display: inline-block;
+  opacity: 0;
+}
+/* While a letter scrambles, its real glyph holds the width and the stand-in draws on top,
+   so the word never jitters sideways. */
+.preloader-letter.is-scrambling {
+  color: transparent;
+}
+.preloader-letter.is-scrambling::after {
+  content: attr(data-glyph);
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  color: var(--fg);
+}
+.text-volt-500 > .preloader-letter.is-scrambling::after {
+  color: var(--volt-500);
+}
+.preloader-tagline {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--fg-muted);
+}
+.preloader-caret {
+  width: 0.55em;
+  height: 1.05em;
+  background: var(--volt-500);
+  animation: caret-blink 1s steps(1) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.preloader-meter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(320px, 70vw);
+}
+.preloader-track {
+  flex: 1;
+  height: 2px;
+  overflow: hidden;
+  background: var(--ink-700);
+}
+.preloader-bar {
+  display: block;
+  height: 100%;
+  background: var(--volt-500);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.preloader-pct {
+  width: 3ch;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--volt-500);
+}
+/* Without GSAP, the letters still appear before the failsafe lifts the screen. */
+html[data-boot="pending"]:not([data-motion-ready]) .preloader-letter {
+  animation: fade-in 400ms var(--ease-out-expo) 500ms forwards;
+}
+
+/* ---------- 2.2 Route curtain (components/motion/route-transition.tsx) ---------- */
+.route-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  align-items: end;
+  padding: 1.5rem var(--gutter);
+  background: var(--volt-500);
+  /* Hidden until a navigation; GSAP owns its position (a CSS transform here would be
+     folded into GSAP's y and leave the panel half-way). */
+  visibility: hidden;
+  will-change: transform;
+}
+.route-curtain-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-950);
+}
+.route-curtain-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--ink-950);
+  animation: caret-blink 0.6s steps(1) infinite;
+}
+
+/* ---------- 5e Custom cursor (components/motion/custom-cursor.tsx) ---------- */
+.cursor {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cursor {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  .cursor[data-active] {
+    opacity: 1;
+  }
+  .cursor[data-hidden] {
+    opacity: 0;
+  }
+  html[data-custom-cursor],
+  html[data-custom-cursor] * {
+    cursor: none !important;
+  }
+  /* Where you type, the real caret stays. */
+  html[data-custom-cursor]
+    :is(
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      textarea,
+      select,
+      [contenteditable="true"]
+    ) {
+    cursor: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  .cursor {
+    display: none !important;
+  }
+  html[data-custom-cursor],
+  html[data-custom-cursor] * {
+    cursor: auto !important;
+  }
+}
+.cursor-dot,
+.cursor-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--volt-500);
+}
+.cursor-ring {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--volt-500);
+}
+.cursor-label {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink-950);
+}
+
+/* ---------- 6 Atmosphere (components/motion/atmosphere.tsx) ---------- */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.atmo-mesh {
+  position: absolute;
+  inset: -10% -10% -45%;
+  will-change: transform;
+}
+.atmo-field {
+  position: absolute;
+  width: 72vmax;
+  height: 72vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(163 230 53 / 0.055), transparent 70%);
+  will-change: transform;
+}
+.atmo-field-a {
+  top: -18%;
+  left: -18%;
+}
+.atmo-field-b {
+  top: 22%;
+  right: -26%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.03), transparent 70%);
+}
+.atmo-field-c {
+  bottom: 0;
+  left: 18%;
+  background: radial-gradient(closest-side, rgb(163 230 53 / 0.035), transparent 70%);
+}
+.atmo-grid {
+  position: absolute;
+  inset: -80px 0 0;
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 30%, rgb(0 0 0 / 0.35) 100%);
+  will-change: transform;
+}
+.atmo-pointer {
+  position: absolute;
+  inset: -40px;
+  will-change: transform;
+}
+.atmo-points {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 200vh;
+  will-change: transform;
+}
+.atmo-point {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--volt-500);
+  opacity: 0.4;
+  box-shadow: 0 0 8px rgb(163 230 53 / 0.45);
+}
+
+/* ---------- 7e Reading progress (components/motion/scroll-progress.tsx) ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: 60;
+  height: 2px;
+  background: var(--volt-500);
+  box-shadow: 0 0 10px rgb(163 230 53 / 0.45);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ---------- 5b + 7d Cards: lift, glare, drawn border (components/motion/pointer-surfaces.tsx) ---------- */
+.surface {
+  --gx: 0px;
+  --gy: 0px;
+  position: relative;
+  isolation: isolate;
+}
+.surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(360px circle at var(--gx) var(--gy), rgb(163 230 53 / 0.1), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out-expo);
+}
+.surface-border {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.surface-border rect {
+  fill: none;
+  stroke: var(--volt-500);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .surface[data-surface-active]::before {
+    opacity: 1;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* GSAP owns `transform` (the tilt); CSS owns `translate` (the lift). They compose. */
+  html .surface {
+    transition:
+      translate 360ms var(--ease-out-expo),
+      box-shadow 360ms var(--ease-out-expo),
+      border-color 220ms var(--ease-out-expo),
+      background-color 220ms var(--ease-out-expo);
+  }
+  html .surface > :not(.surface-border) {
+    transition: translate 360ms var(--ease-out-expo);
+  }
+  .surface[data-surface-active] {
+    translate: 0 -8px;
+    box-shadow:
+      var(--shadow-e3),
+      0 28px 56px -28px rgb(0 0 0 / 0.8);
+  }
+  .surface[data-surface-active] > :not(.surface-border) {
+    translate: 0 -4px;
+  }
+}
+
+/* ---------- 5a Buttons ---------- */
+/* Primary: an Ink fill sweeps in from the left and the label turns lime (inverting the
+   button), with a light reflection crossing it and a 1.03 lift. Clip-path reveal per
+   emil-design-eng; 320ms ease-out-expo, exit just as fast. */
+.btn-primary {
+  isolation: isolate;
+  overflow: hidden;
+}
+.btn-primary::before,
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.btn-primary::before {
+  z-index: -1;
+  background: var(--ink-950);
+  box-shadow: inset 0 0 0 1px var(--volt-500);
+  border-radius: inherit;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 320ms var(--ease-out-expo);
+}
+.btn-primary::after {
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.35) 50%, transparent 65%);
+  translate: -120% 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  html .btn-primary {
+    transition:
+      color 220ms var(--ease-out-expo),
+      scale 220ms var(--ease-out-expo),
+      box-shadow 220ms var(--ease-out-expo);
+  }
+  .btn-primary:hover {
+    color: var(--volt-500);
+    scale: 1.03;
+  }
+  .btn-primary:hover::before {
+    clip-path: inset(0 0 0 0);
+  }
+  .btn-primary:hover::after {
+    translate: 120% 0;
+    transition: translate 750ms var(--ease-out-expo);
+  }
+  /* Press beats hover: the button must answer the click (emil-design-eng). */
+  .btn-primary:active {
+    scale: 0.98;
+    transition-duration: 80ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary:hover {
+    scale: none;
+  }
+  .btn-primary::after {
+    display: none;
+  }
+}
+
+/* Ghost: lime border, a 5% lime wash, and the arrow steps 4px right. */
+@media (hover: hover) and (pointer: fine) {
+  html .btn-ghost {
+    transition:
+      border-color 220ms var(--ease-out-expo),
+      background-color 220ms var(--ease-out-expo),
+      color 220ms var(--ease-out-expo);
+  }
+  .btn-ghost:hover {
+    border-color: var(--volt-500);
+    background-color: rgb(163 230 53 / 0.05);
+  }
+  .btn-ghost:hover .btn-arrow {
+    translate: 4px 0;
+  }
+}
+
+/* ---------- 5c Navigation links: lime underline draws left → right ---------- */
+.nav-link {
+  position: relative;
+  transition: color 300ms cubic-bezier(0.33, 1, 0.68, 1); /* power2.out */
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--volt-500);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+.nav-link[aria-current="page"]::after,
+.nav-link[data-active]::after,
+.nav-link[aria-expanded="true"]::after {
+  transform: scaleX(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    color: var(--volt-500);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Text links with an arrow: the same underline language, drawn under the words. */
+.link-sweep {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition: background-size 300ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+.link-sweep:hover,
+.link-sweep:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* ---------- 5d Media: zoom, lime wash, label rises ---------- */
+.media-hover {
+  position: relative;
+  overflow: hidden;
+}
+.media-hover > .media-inner {
+  transition: scale 400ms ease;
+}
+.media-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(163 230 53 / 0.1);
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+.media-label {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 6px;
+  background: var(--ink-950);
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--volt-500);
+  opacity: 0;
+  translate: 0 12px;
+  transition:
+    opacity 300ms var(--ease-out-expo),
+    translate 400ms var(--ease-out-expo);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(a, article, li):hover > .media-hover > .media-inner,
+  .media-hover:hover > .media-inner {
+    scale: 1.05;
+  }
+  :is(a, article, li):hover > .media-hover::after,
+  .media-hover:hover::after {
+    opacity: 1;
+  }
+  :is(a, article, li):hover > .media-hover .media-label,
+  .media-hover:hover .media-label {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+:is(a, article, li):focus-within > .media-hover .media-label {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ---------- 5f Headline flicker on hover (H2/H3) ----------
+   Two frames of lime/white channel split and a 1px jog, like a CRT catching a frame.
+   300ms, steps(1): discrete frames read as signal, an eased blur reads as a bug. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  main :is(h2, h3):hover {
+    animation: heading-flicker 300ms steps(1) both;
+  }
+}
+@keyframes heading-flicker {
+  0%,
+  100% {
+    text-shadow: none;
+    translate: 0 0;
+  }
+  15% {
+    text-shadow:
+      -2px 0 rgb(163 230 53 / 0.85),
+      2px 0 rgb(255 255 255 / 0.35);
+    translate: 1px 0;
+  }
+  35% {
+    text-shadow: none;
+    translate: 0 0;
+  }
+  55% {
+    text-shadow:
+      2px 0 rgb(163 230 53 / 0.85),
+      -1px 0 rgb(255 255 255 / 0.3);
+    translate: -1px 0;
+  }
+  70% {
+    text-shadow: none;
+    translate: 0 0;
+  }
+}
+
+/* ---------- 7c Glitch text (components/motion/glitch-text.tsx) ----------
+   RGB-split slices: two copies of the text (data-text) clipped to horizontal bands that
+   jump for 3 frames. Triggered by a class, so it never runs on a loop by itself. */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.glitch::before {
+  color: var(--volt-500);
+}
+.glitch::after {
+  color: rgb(255 255 255 / 0.7);
+}
+.glitch.is-glitching::before {
+  animation: glitch-a 360ms steps(1) both;
+}
+.glitch.is-glitching::after {
+  animation: glitch-b 360ms steps(1) both;
+}
+.glitch.is-glitching {
+  animation: glitch-jog 360ms steps(1) both;
+}
+@keyframes glitch-a {
+  0% {
+    opacity: 1;
+    clip-path: inset(12% 0 64% 0);
+    translate: -3px 0;
+  }
+  33% {
+    clip-path: inset(58% 0 18% 0);
+    translate: 4px 0;
+  }
+  66% {
+    clip-path: inset(34% 0 44% 0);
+    translate: -2px 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes glitch-b {
+  0% {
+    opacity: 1;
+    clip-path: inset(70% 0 8% 0);
+    translate: 3px 0;
+  }
+  33% {
+    clip-path: inset(20% 0 62% 0);
+    translate: -4px 0;
+  }
+  66% {
+    clip-path: inset(46% 0 30% 0);
+    translate: 2px 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes glitch-jog {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  33% {
+    translate: 1px 0;
+  }
+  66% {
+    translate: -1px 0;
+  }
+}
+
+/* ---------- 7b Marquee (components/motion/marquee.tsx) ---------- */
+.marquee-band {
+  display: flex;
+  overflow: clip;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-band-track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  will-change: transform;
+}
+
+/* ---------- 7f Section divider (components/motion/section-divider.tsx) ---------- */
+.section-divider line {
+  stroke: var(--volt-500);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+html[data-motion-ready] .section-divider line {
+  stroke-dashoffset: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-motion-ready] .section-divider line {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- 3a Homepage hero (components/home/engine-hero.tsx) ----------
+   Words paint blurred and offset at first paint (not hidden: the H1 stays an LCP
+   candidate), and GSAP sharpens them. If GSAP never loads, CSS does it at 1.2s. */
+html[data-motion="on"] .hero-word {
+  display: inline-block;
+  filter: blur(8px);
+  transform: translateY(0.35em);
+}
+html[data-motion="on"] [data-entered] .hero-word {
+  filter: none;
+  transform: none;
+}
+html[data-motion="on"]:not([data-motion-ready]) .hero-word {
+  animation: hero-word-failsafe 700ms var(--ease-out-expo) 1.2s forwards;
+}
+@keyframes hero-word-failsafe {
+  to {
+    filter: blur(0);
+    transform: none;
+  }
+}
+html[data-motion="on"] .hero-enter {
+  opacity: 0;
+}
+html[data-motion="on"]:not([data-motion-ready]) .hero-enter {
+  animation: fade-in 600ms var(--ease-out-expo) 1.4s forwards;
+}
+.engine-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.engine-grid {
+  background-image:
+    linear-gradient(to right, rgb(163 230 53 / 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(163 230 53 / 0.09) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 60% 45%, #000 10%, transparent 72%);
+}
+
+/* ---------- Mobile menu (components/layout/mobile-nav.tsx) ---------- */
+.mobile-sheet-grid {
+  background-image:
+    linear-gradient(to right, rgb(163 230 53 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(163 230 53 / 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, #000, transparent 85%);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .menu-close svg {
+    transition: rotate 220ms var(--ease-out-expo);
+  }
+  .menu-close:hover svg {
+    rotate: 90deg;
+  }
+}
+
+/* ---------- 9 Footer (components/layout/site-footer.tsx) ---------- */
+.footer-wordmark {
+  font-family: var(--font-display);
+  font-size: 50vw;
+  font-weight: 700;
+  line-height: 0.75;
+  letter-spacing: -0.06em;
+  color: rgb(163 230 53 / 0.05);
+  white-space: nowrap;
+  user-select: none;
+}
+.footer-wordmark::before {
+  content: "AKROS";
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .social-icon {
+    transition:
+      color 200ms var(--ease-out-expo),
+      background-color 200ms var(--ease-out-expo);
+  }
+  .social-icon:hover {
+    color: var(--ink-950);
+    background-color: var(--volt-500);
+  }
+  .social-icon:hover svg {
+    animation: social-hop 420ms var(--ease-out-expo);
+  }
+}
+@keyframes social-hop {
+  30% {
+    translate: 0 -3px;
+  }
+  60% {
+    translate: 0 1px;
+  }
+}
+.newsletter-submit svg {
+  opacity: 0;
+  translate: -6px 0;
+  transition:
+    opacity 220ms var(--ease-out-expo),
+    translate 220ms var(--ease-out-expo);
+}
+.newsletter:focus-within .newsletter-submit svg,
+.newsletter-submit:hover svg {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ---------- Reduced motion: no travel anywhere in this file ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .preloader,
+  .route-curtain,
+  .scroll-progress {
+    display: none !important;
+  }
+  .surface > :not(.surface-border),
+  .surface {
+    translate: none !important;
+  }
+  .glitch.is-glitching,
+  .glitch.is-glitching::before,
+  .glitch.is-glitching::after {
+    animation: none;
+  }
+  .media-hover > .media-inner {
+    scale: none !important;
+  }
+}

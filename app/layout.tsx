@@ -3,11 +3,18 @@ import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { AttributionTracker } from "@/components/layout/attribution-tracker";
 import { MobileCtaBar } from "@/components/layout/mobile-cta-bar";
-import { RevealObserver } from "@/components/layout/reveal-observer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SkipLink } from "@/components/layout/skip-link";
+import { Atmosphere } from "@/components/motion/atmosphere";
+import { CustomCursor } from "@/components/motion/custom-cursor";
+import { MagneticField } from "@/components/motion/magnetic-field";
 import { PointerSurfaces } from "@/components/motion/pointer-surfaces";
+import { Preloader } from "@/components/motion/preloader";
+import { RouteTransition } from "@/components/motion/route-transition";
+import { ScrollProgress } from "@/components/motion/scroll-progress";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
+import { bootScript } from "@/lib/motion/boot";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -53,7 +60,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${bricolage.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Decides the first frame before paint: motion on/off, preloader or not (lib/motion/boot.ts). */}
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+      </head>
       <body>
+        <Preloader />
+        <Atmosphere />
+        <ScrollProgress />
         <SkipLink />
         <SiteHeader />
         <main id="main" tabIndex={-1} className="outline-none">
@@ -61,8 +75,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <SiteFooter />
         <MobileCtaBar />
-        <RevealObserver />
+        <ScrollReveal />
         <PointerSurfaces />
+        <MagneticField />
+        <CustomCursor />
+        <RouteTransition />
         <AttributionTracker />
         <AnalyticsProvider />
       </body>

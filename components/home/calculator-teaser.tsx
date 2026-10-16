@@ -35,8 +35,8 @@ export function CalculatorTeaser() {
     <section aria-labelledby="teaser-title" className="px-(--gutter) py-(--section-y)">
       <div
         data-reveal
-        style={{ "--depth-end": "cover 35%" } as React.CSSProperties}
-        className="depth-in mx-auto grid max-w-[1120px] grid-cols-1 gap-10 rounded-2xl border border-line bg-surface-1 p-6 shadow-e1 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-14"
+
+        className="mx-auto grid max-w-[1120px] grid-cols-1 gap-10 rounded-2xl border border-line bg-surface-1 p-6 shadow-e1 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-14"
       >
         <div className="flex flex-col gap-5">
           <h2 id="teaser-title" className="font-display text-h3 font-semibold text-fg">

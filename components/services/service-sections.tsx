@@ -41,9 +41,9 @@ export function ServiceScope({ content, name }: { content: ServiceContent; name:
           {content.scope.map((item, i) => (
             <li
               key={item.title}
-              data-reveal
+              data-reveal="card"
               style={{ "--reveal-i": i % 3 } as React.CSSProperties}
-              className="surface depth-in group flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-colors duration-150 hover:border-volt-500/35 md:p-8"
+              className="surface group flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-colors duration-150 hover:border-volt-500/35 md:p-8"
             >
               <span className="font-mono text-caption text-accent-text">
                 {String(i + 1).padStart(2, "0")}
@@ -171,9 +171,9 @@ export function ServiceTeamAndSlas({ content }: { content: ServiceContent }) {
           {content.roles.map((role, i) => (
             <li
               key={role.title}
-              data-reveal
+              data-reveal="card"
               style={{ "--reveal-i": i } as React.CSSProperties}
-              className="surface depth-in flex flex-col gap-3 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
+              className="surface flex flex-col gap-3 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
             >
               <p className="font-mono text-micro text-fg-subtle">Role {String(i + 1).padStart(2, "0")}</p>
               <h3 className="font-display text-h4 font-semibold text-fg">{role.title}</h3>
@@ -262,8 +262,8 @@ export function RelatedServices({ content }: { content: ServiceContent }) {
           {related.map((service) => (
             <li
               key={service.slug}
-              data-reveal
-              className="surface depth-in group relative flex items-start gap-5 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-[transform,border-color] duration-150 ease-out-expo focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:-translate-y-0.5 hover:border-volt-500/35 md:p-8"
+              data-reveal="card"
+              className="surface group relative flex items-start gap-5 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-[transform,border-color] duration-150 ease-out-expo focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:-translate-y-0.5 hover:border-volt-500/35 md:p-8"
             >
               <ServiceGlyph slug={service.slug} />
               <div className="flex flex-col gap-2">

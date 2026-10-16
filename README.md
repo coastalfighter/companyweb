@@ -6,7 +6,7 @@ Marketing site for Akrostech. The design and content spec lives in [`docs/bluepr
 
 ## Stack
 
-Next.js 16 (App Router, Cache Components, Turbopack) · React 19 · TypeScript (strict) · Tailwind CSS v4 · Radix primitives (shadcn-style, owned in `components/ui`) · Phosphor icons · Vitest + Testing Library · Playwright + axe-core · Lighthouse CI.
+Next.js 16 (App Router, Cache Components, Turbopack) · React 19 · TypeScript (strict) · Tailwind CSS v4 · Radix primitives (shadcn-style, owned in `components/ui`) · Phosphor icons · GSAP 3 (core + ScrollTrigger, loaded asynchronously) · Vitest + Testing Library · Playwright + axe-core · Lighthouse CI.
 
 ## Getting started
 
@@ -101,6 +101,19 @@ Every integration switches on when its keys are present (`.env.example`). A subm
 Always on: a honeypot field (bots get a fake success and nothing is delivered), server-side validation with the same schema as the browser, and CR/LF stripping on anything that reaches an email header.
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
+
+## Decisions made in M5a (motion system, homepage Engine Room)
+
+Spec: [`docs/blueprint/11-motion-system.md`](docs/blueprint/11-motion-system.md). It supersedes the Phase 2b CSS depth layer (the scroll rail stays).
+
+- **GSAP is loaded asynchronously** by `lib/motion/gsap.ts` (`import()` during hydration), so it isn't render-critical: the homepage was already 175 KB of the 200 KB budget. Core + ScrollTrigger is ~38 KB gzip, more than the brief's 30 KB. No plugins are used, so it can't shrink without dropping ScrollTrigger. Lighthouse's script cap (`lighthouserc.json`) went from 240 to 300 KB (calculator 255 → 315 KB) to cover it; the homepage still scores 96/100/100/100 with LCP 0.7s. `useGsap` (in `lib/motion/use-gsap.ts`) is the gsap-react skill's `gsap.context()` + `revert()` pattern, adapted for the async engine.
+- **Nothing is hidden by CSS.** Reveal from-states are applied by GSAP at runtime, only below the fold. Every first frame that must exist before GSAP (the preloader, the blurred hero words) has a CSS failsafe that finishes on its own if the chunk never arrives.
+- **The preloader plays once per session** (sessionStorage `akros:booted`, disclosed on /legal/cookies); route changes get the 0.6s curtain instead. The brief asked for the boot on every navigation; that would add ~2s of waiting to every click.
+- **No looping glitch or Ken Burns.** Anything that moves or flashes by itself for more than 5s needs a pause control (WCAG 2.2.2). The glitch plays once on arrival and on hover; ambient loops are background-only and stop off-screen.
+- **The stats the brief listed (500+ projects, 98% retention, 12 countries, 24hr) are not shown.** The animated counter renders only figures in `content/proof.ts` (honesty gate).
+- **Footer newsletter** exists only when `HUBSPOT_NEWSLETTER_FORM_ID` is set (`POST /api/newsletter`: same-origin, JSON, 2 KB cap, honeypot, 5/hour/IP). Social icons still render only for real profiles.
+- **The decorative footer wordmark is drawn with `::before`**: axe scans `aria-hidden` text for contrast, and a 5% lime word would fail by design.
+- **Removed:** `components/marketing/hero/hero.tsx` (replaced by `components/home/engine-hero.tsx`), `components/motion/scroll-ticker.tsx` (replaced by the GSAP `Marquee`), `components/layout/reveal-observer.tsx` (replaced by the GSAP reveal engine) and the case study's CSS reading-progress bar (now the global `ScrollProgress`). `OpsFeed` stays for the M5b service heroes but is no longer on the homepage.
 
 ## Decisions made in Phase 2b (depth layer: 3D scroll, hover, scroll rail)
 
@@ -226,6 +239,8 @@ These are business commitments in the live copy. They aren't gated (they're offe
 | Offboarding: 30 days' notice, handover pack, access revoked within 1 business day | How it works ("Leaving well"), FAQ   |
 | SOPs belong to the client                                                         | How it works, guarantees             |
 | Senior hiring; month-to-month after 90 days                                       | About (operating rules)              |
+| Newsletter: one email a month (only shown once the newsletter is configured)      | Footer                               |
+| "From zero to production in weeks" and the other M5b hero subs, when built        | Service heroes (blueprint 11 §3)     |
 
 ## Launch checklist
 

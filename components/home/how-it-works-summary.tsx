@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
 import { SectionHeader } from "@/components/marketing/section-header";
 import { prefetchFor } from "@/lib/site";
+import { ProcessPin } from "./process-pin";
 
 const steps = [
   {
@@ -27,9 +28,9 @@ const steps = [
 ] as const;
 
 /**
- * Homepage 1.5. When the steps scroll into view the connector line draws across and
- * each number lights up as the line reaches it (CSS transitions keyed off the reveal
- * observer). Without JS or with reduced motion, the end state is shown.
+ * Homepage 1.5, the page's pinned section: the section holds while the connector
+ * draws across, scrubbed, and each number lights as the line reaches it (ProcessPin,
+ * GSAP ScrollTrigger). Without JS or with reduced motion, the end state is shown.
  */
 export function HowItWorksSummary() {
   return (
@@ -41,13 +42,13 @@ export function HowItWorksSummary() {
           align="center"
           title="From first call to first delivery in 10 business days."
         />
-        <div data-reveal className="process-steps relative">
+        <ProcessPin>
           <span aria-hidden className="absolute top-8 right-0 left-0 hidden h-px bg-line lg:block">
             <span className="process-line absolute inset-0 origin-left bg-volt-500" />
           </span>
           <ol className="relative grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             {steps.map((step, i) => (
-              <li key={step.name} className="relative flex flex-col gap-4">
+              <li key={step.name} className="process-item relative flex flex-col gap-4">
                 <span
                   aria-hidden
                   className="process-number tabular relative w-fit bg-bg pr-4 font-display text-[4rem] leading-none font-semibold text-ink-500"
@@ -64,7 +65,7 @@ export function HowItWorksSummary() {
               </li>
             ))}
           </ol>
-        </div>
+        </ProcessPin>
         <Link
           href="/how-it-works"
           prefetch={prefetchFor("/how-it-works")}

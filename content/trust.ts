@@ -8,6 +8,7 @@
  *   timelines, retention periods, the legal entity). Those ship null/empty and
  *   the sections built on them are not rendered until they're filled in.
  */
+import { STORAGE_KEY as BOOT_STORAGE_KEY } from "@/lib/motion/boot";
 import { CONSENT_STORAGE_KEY } from "@/lib/analytics/consent";
 import { CALCULATOR_STORAGE_KEY } from "@/lib/calculator/saved";
 
@@ -93,11 +94,24 @@ export function websiteProcessors(
       purpose: "Hosting this website",
       data: "Request data (IP address, browser, pages requested)",
     });
-  if (has("HUBSPOT_PRIVATE_APP_TOKEN", "HUBSPOT_PORTAL_ID", "HUBSPOT_FORM_ID"))
+  const hubspotLeads = has("HUBSPOT_PRIVATE_APP_TOKEN", "HUBSPOT_PORTAL_ID", "HUBSPOT_FORM_ID");
+  const hubspotNewsletter = has(
+    "HUBSPOT_PRIVATE_APP_TOKEN",
+    "HUBSPOT_PORTAL_ID",
+    "HUBSPOT_NEWSLETTER_FORM_ID",
+  );
+  if (hubspotLeads || hubspotNewsletter)
     list.push({
       name: "HubSpot",
-      purpose: "Our CRM: records enquiries and report requests",
-      data: "What you enter in our forms, and where you came from",
+      purpose: [
+        hubspotLeads ? "Our CRM: records enquiries and report requests" : null,
+        hubspotNewsletter ? "Sends our newsletter to people who subscribe" : null,
+      ]
+        .filter(Boolean)
+        .join("; "),
+      data: hubspotLeads
+        ? "What you enter in our forms, and where you came from"
+        : "Your email address and the page you subscribed from",
     });
   if (has("SLACK_LEADS_WEBHOOK_URL"))
     list.push({
@@ -189,6 +203,12 @@ export const browserStorage: readonly StoredItem[] = [
     key: "akros:attribution",
     where: "sessionStorage",
     purpose: "Which page or campaign brought you here, sent with your enquiry",
+    lasts: "Until you close the tab",
+  },
+  {
+    key: BOOT_STORAGE_KEY,
+    where: "sessionStorage",
+    purpose: "That the opening animation has played, so it doesn't play again on every page",
     lasts: "Until you close the tab",
   },
 ];

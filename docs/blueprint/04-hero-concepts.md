@@ -9,6 +9,8 @@ Shared constraints for all three:
 
 ---
 
+> **M5 (built):** the homepage now uses "The Engine Room" (H1 "Your Back Office. Rebuilt."), specified in [`11-motion-system.md`](./11-motion-system.md) §3a at the owner's direction. The Ops Feed below remains the reference for the operations visual and the starter file.
+
 ## D1. Concept 1: "The Ops Feed" ⭐ Recommended
 
 **Headline:** We run the parts of your business nobody sees.

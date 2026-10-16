@@ -58,8 +58,7 @@ export function StatsBand({ proof = verifiedProof }: { proof?: Proof }) {
             >
               <dt className="order-2 text-body-sm text-fg-muted">{stat.label}</dt>
               <dd className="tabular order-1 font-display text-stat font-medium text-fg">
-                <CountUp value={stat.value} />
-                {stat.unit ? <span className="text-volt-500">{stat.unit}</span> : null}
+                <CountUp value={stat.value} suffix={stat.unit} suffixClassName="inline-block text-volt-500" />
               </dd>
             </div>
           ))}
@@ -136,9 +135,9 @@ export function ProofSection({ proof = verifiedProof }: { proof?: Proof }) {
             {proof.testimonials.map((t, i) => (
               <figure
                 key={t.name}
-                data-reveal
+                data-reveal="card"
                 style={{ "--reveal-i": i } as React.CSSProperties}
-                className="surface depth-in flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
+                className="surface flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
               >
                 <span aria-hidden className="font-display text-h2 leading-none text-volt-500">
                   &ldquo;

@@ -90,10 +90,12 @@ test.describe("case study template (sample preview)", () => {
     });
     await expect(nav.locator('[aria-current="location"]')).toHaveText("What's next");
 
-    const scale = await page
-      .locator(".reading-progress")
-      .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
-    expect(scale).toBeGreaterThan(0.3);
+    // The GSAP reading-progress bar (scrubbed, so it settles a beat after the scroll).
+    await expect
+      .poll(() =>
+        page.locator(".scroll-progress").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a),
+      )
+      .toBeGreaterThan(0.3);
   });
 
   test("mobile: the snapshot is a collapsible box", async ({ page }, info) => {

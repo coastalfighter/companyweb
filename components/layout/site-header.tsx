@@ -12,12 +12,13 @@ import { Logo } from "./logo";
 import { ServicesMegaMenu } from "./mega-menu";
 import { MobileNav } from "./mobile-nav";
 
-const SCROLLED_AT = 24;
+const SCROLLED_AT = 100;
 const HIDE_AFTER = 400;
 
 /**
  * Sticky header (docs/blueprint/02-sitemap.md, B2.1 + B2.3).
- * Transparent at top → blurred Ink after 24px; hides on scroll-down past 400px and
+ * Transparent over the hero → 95% Ink, blurred, with a lime hairline after 100px, and it
+ * shrinks from 80px to 64px (docs/blueprint/11-motion-system.md §8); hides on scroll-down past 400px and
  * returns on any scroll-up. It never hides while focus is inside it or while the
  * Services mega-menu is open.
  */
@@ -74,7 +75,7 @@ export function SiteHeader() {
         menuOpen
           ? "border-line bg-ink-950"
           : scrolled
-            ? "border-line bg-ink-950/72 backdrop-blur-md backdrop-saturate-[1.4]"
+            ? "border-volt-500/25 bg-ink-950/95 backdrop-blur-md backdrop-saturate-[1.4]"
             : "border-transparent bg-transparent",
         hidden && "-translate-y-full",
       )}
@@ -100,18 +101,9 @@ export function SiteHeader() {
                     href={item.href}
                     prefetch={prefetchFor(item.href)}
                     aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative py-2 transition-colors duration-150 hover:text-fg",
-                      active ? "text-fg" : "text-fg-muted",
-                    )}
+                    className={cn("nav-link py-2", active ? "text-fg" : "text-fg-muted")}
                   >
                     {item.label}
-                    {active ? (
-                      <span
-                        aria-hidden
-                        className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-volt-500"
-                      />
-                    ) : null}
                   </Link>
                 </li>
               );

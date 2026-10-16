@@ -109,8 +109,9 @@ export function ServicesMegaMenu({ onOpenChange }: ServicesMegaMenuProps) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen(!open)}
+        data-active={active || undefined}
         className={cn(
-          "group relative inline-flex items-center gap-1 py-2 transition-colors duration-150 hover:text-fg",
+          "nav-link group inline-flex items-center gap-1 py-2",
           open || active ? "text-fg" : "text-fg-muted",
         )}
       >
@@ -120,12 +121,6 @@ export function ServicesMegaMenu({ onOpenChange }: ServicesMegaMenuProps) {
           weight="bold"
           className={cn("size-3 transition-transform duration-200 ease-out-expo", open && "rotate-180")}
         />
-        {active ? (
-          <span
-            aria-hidden
-            className="absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-volt-500"
-          />
-        ) : null}
       </button>
 
       {/* Hit-area bridge so the pointer can travel from trigger to panel without closing it. */}

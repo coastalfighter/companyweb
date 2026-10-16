@@ -7,6 +7,8 @@ import { ArrowRightIcon, ListIcon, PlusIcon, XIcon } from "@phosphor-icons/react
 import { Button } from "@/components/ui/button";
 import { services, servicesHubHref } from "@/lib/services";
 import { ctas, prefetchFor, primaryNav, siteConfig } from "@/lib/site";
+import { loadMotion, prefersReducedMotion } from "@/lib/motion/gsap";
+import { duration, ease, stagger as staggerToken } from "@/lib/motion/tokens";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
@@ -16,7 +18,8 @@ import { Logo } from "./logo";
  * Built on the native modal <dialog>: the browser provides the focus trap, makes the
  * rest of the page inert, closes on Esc and restores focus to the trigger. Body
  * scroll is locked in globals.css while it is open. The Services group is a native
- * <details> accordion, so the whole menu adds no JS dependency.
+ * <details> accordion. Open: items stagger in with GSAP over a faint lime grid; the
+ * close button's X turns 90° on hover.
  */
 export function MobileNav() {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -31,6 +34,28 @@ export function MobileNav() {
     if (!dialog || dialog.open) return;
     dialog.showModal();
     setOpen(true);
+    // Items stagger in, 20px → 0, 0.05s apart (docs/blueprint/11-motion-system.md §8).
+    // Without GSAP (or with reduced motion) they're simply there when the sheet fades in.
+    if (prefersReducedMotion()) return;
+    void loadMotion()
+      .then(({ gsap }) => {
+        const items = dialog.querySelectorAll(".mobile-sheet-item");
+        gsap.fromTo(
+          items,
+          { y: 20, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: duration.reveal * 0.6,
+            ease: ease.focal,
+            stagger: staggerToken.tight,
+            delay: 0.08,
+            clearProps: "transform,opacity",
+            overwrite: true,
+          },
+        );
+      })
+      .catch(() => {});
   };
 
   // Close when the route changes (e.g. browser back while the menu is open).
@@ -75,10 +100,18 @@ export function MobileNav() {
         aria-label="Menu"
         className="mobile-sheet m-0 h-dvh max-h-none w-full max-w-none bg-ink-950 p-0 text-fg backdrop:bg-ink-950/80 lg:hidden"
       >
-        <div className="flex h-full flex-col pb-[env(safe-area-inset-bottom)]">
+        <div aria-hidden className="mobile-sheet-grid pointer-events-none absolute inset-0" />
+        <div className="relative flex h-full flex-col pb-[env(safe-area-inset-bottom)]">
           <div className="flex h-16 shrink-0 items-center justify-between px-(--gutter)">
             <Logo onNavigate={close} />
-            <Button variant="ghost" size="icon" aria-label="Close menu" onClick={close} autoFocus>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Close menu"
+              onClick={close}
+              autoFocus
+              className="menu-close"
+            >
               <XIcon aria-hidden />
             </Button>
           </div>

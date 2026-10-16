@@ -13,7 +13,11 @@ export interface SectionHeaderProps {
   className?: string;
 }
 
-/** Eyebrow + H2 + intro (component spec G11). `id` labels the parent section. */
+/**
+ * Eyebrow + H2 + intro (component spec G11). `id` labels the parent section.
+ * Each part reveals on its own, batched and staggered 0.09s: label, then the heading
+ * materializing (blur 8px → 0), then the intro (docs/blueprint/11-motion-system.md §4).
+ */
 export function SectionHeader({
   id,
   eyebrow,
@@ -25,7 +29,6 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div
-      data-reveal
       className={cn(
         "flex flex-col gap-6",
         align === "center" ? "items-center text-center" : "lg:flex-row lg:items-end lg:justify-between",
@@ -33,13 +36,21 @@ export function SectionHeader({
       )}
     >
       <div className={cn("flex flex-col gap-5", align === "center" ? "items-center" : "max-w-3xl")}>
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 id={id} className="heading-depth font-display text-h2 font-semibold text-fg">
+        <Eyebrow data-reveal>{eyebrow}</Eyebrow>
+        <h2 id={id} data-reveal="text" className="font-display text-h2 font-semibold text-fg">
           {title}
         </h2>
-        {intro ? <p className="max-w-[60ch] text-body-lg text-fg-muted">{intro}</p> : null}
+        {intro ? (
+          <p data-reveal className="max-w-[60ch] text-body-lg text-fg-muted">
+            {intro}
+          </p>
+        ) : null}
       </div>
-      {aside ? <div className="shrink-0">{aside}</div> : null}
+      {aside ? (
+        <div data-reveal className="shrink-0">
+          {aside}
+        </div>
+      ) : null}
     </div>
   );
 }

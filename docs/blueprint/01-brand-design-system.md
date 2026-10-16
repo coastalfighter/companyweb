@@ -276,6 +276,8 @@ On dark backgrounds, traditional drop shadows are invisible. Elevation is commun
 
 **What does NOT animate:** body paragraphs (beyond the single section reveal), navigation links on load, form fields, footer, legal text, anything on repeat scroll (reveals fire once). No parallax on text. No scroll-jacking. No cursor followers.
 
+> **Superseded (M5):** the motion system is now specified in [`11-motion-system.md`](./11-motion-system.md), at the owner's request for a more immersive site: GSAP engine, boot preloader, route curtain, custom cursor, magnetic CTAs, card tilt, atmosphere layers. Where A6.3 and A6.3a below disagree with it, 11 wins. The scroll rail from A6.3a stays.
+
 ### A6.3a Depth layer (Phase 2b, amends A6.3)
 
 The owner asked for a more immersive, interactive site: 3D scroll effects, hover motion on cards and text, and elements that travel with the scroll. These are allowed **within the rules below**, which replace the "No parallax on text… No cursor followers" sentence above where they conflict.

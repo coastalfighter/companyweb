@@ -20,10 +20,10 @@ const placement: Record<Service["slug"], string> = {
 function ServiceCard({ service, index }: { service: Service; index: number }) {
   return (
     <article
-      data-reveal
+      data-reveal="card"
       style={{ "--reveal-i": index % 3 } as React.CSSProperties}
       className={cn(
-        "surface depth-in vig-card group relative flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8",
+        "surface vig-card group relative flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8",
         "transition-[transform,border-color,box-shadow] duration-150 ease-out-expo",
         "hover:-translate-y-0.5 hover:border-volt-500/35 hover:shadow-e2",
         "focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus",

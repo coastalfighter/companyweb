@@ -109,9 +109,9 @@ export function PrinciplesSection() {
           {principles.map((principle, i) => (
             <li
               key={principle.title}
-              data-reveal
+              data-reveal="card"
               style={{ "--reveal-i": i % 2 } as React.CSSProperties}
-              className="surface depth-in relative isolate overflow-hidden rounded-lg border border-line bg-surface-1 p-8 shadow-e1 md:p-10"
+              className="surface relative isolate overflow-hidden rounded-lg border border-line bg-surface-1 p-8 shadow-e1 md:p-10"
             >
               <span
                 aria-hidden
@@ -308,8 +308,8 @@ export function AboutTeasers() {
         {cards.map((card) => (
           <li
             key={card.href}
-            data-reveal
-            className="surface depth-in group relative flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-8 shadow-e1 transition-[border-color,transform] duration-150 ease-out-expo focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:-translate-y-0.5 hover:border-volt-500/35"
+            data-reveal="card"
+            className="surface group relative flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-8 shadow-e1 transition-[border-color,transform] duration-150 ease-out-expo focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:-translate-y-0.5 hover:border-volt-500/35"
           >
             <card.icon aria-hidden weight="light" className="size-8 text-volt-500" />
             <h2 className="font-display text-h4 font-semibold text-fg">

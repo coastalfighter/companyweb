@@ -106,9 +106,9 @@ export function Bundles() {
           {bundles.map((bundle, i) => (
             <li
               key={bundle.id}
-              data-reveal
+              data-reveal="card"
               style={{ "--reveal-i": i } as React.CSSProperties}
-              className="surface depth-in group flex flex-col gap-5 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-[transform,border-color] duration-150 ease-out-expo hover:-translate-y-0.5 hover:border-volt-500/35 md:p-8"
+              className="surface group flex flex-col gap-5 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 transition-[transform,border-color] duration-150 ease-out-expo hover:-translate-y-0.5 hover:border-volt-500/35 md:p-8"
             >
               <div aria-hidden className="flex">
                 {bundle.services.map((slug, j) => (

@@ -23,11 +23,6 @@ export const caseStudySections = [
   { id: "whats-next", label: "What's next" },
 ] as const;
 
-/** 2px lime reading-progress bar (10B). Pure CSS scroll-driven animation; absent where unsupported. */
-export function ReadingProgress() {
-  return <div aria-hidden className="reading-progress" />;
-}
-
 function Snapshot({ study }: { study: CaseStudy }) {
   const rows = [
     ["Client", study.client],
@@ -57,8 +52,6 @@ function Snapshot({ study }: { study: CaseStudy }) {
 export function CaseStudyArticle({ study, related, basePath }: CaseStudyArticleProps) {
   return (
     <article aria-labelledby="case-study-title">
-      <ReadingProgress />
-
       {/* T1 Hero */}
       <header className="grain isolate overflow-hidden pt-32 pb-16 md:pt-40 md:pb-20">
         <div aria-hidden className="grid-overlay pointer-events-none absolute inset-0 -z-10 opacity-60" />

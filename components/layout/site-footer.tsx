@@ -13,7 +13,10 @@ import {
   type NavItem,
 } from "@/lib/site";
 import { AnalyticsSettingsButton } from "@/components/analytics/analytics-settings";
+import { readNewsletterConfig } from "@/lib/newsletter";
+import { BackToTop } from "./back-to-top";
 import { Logo } from "./logo";
+import { NewsletterForm } from "./newsletter-form";
 
 /** Cached so the static shell can prerender; refreshes whenever the site is rebuilt. */
 async function CopyrightYear() {
@@ -41,10 +44,22 @@ function FooterLink({ item }: { item: NavItem }) {
  * Five columns at ≥1024px, brand + two columns at md, accordions below 640px
  * (native <details>, works without JS). The disclaimer line is intentional:
  * legal protection, and a trust signal for CFOs.
+ *
+ * Motion system §9: the name returns at 50vw in 5% lime behind everything (a designed
+ * close, not a sitemap), social icons fill lime with a small hop, a magnetic back-to-top
+ * "whooshes" the page home, and the newsletter field (only when its HubSpot form is
+ * configured) slides its arrow in on focus.
  */
 export function SiteFooter() {
+  const newsletter = readNewsletterConfig() !== null;
   return (
-    <footer data-cta-zone className="border-t border-line bg-bg">
+    <footer data-cta-zone className="relative isolate overflow-hidden border-t border-line bg-bg">
+      {/* Decoration, drawn by CSS (::before) so it is never read or scanned as text. */}
+      <div
+        aria-hidden
+        data-parallax="0.4"
+        className="footer-wordmark pointer-events-none absolute -bottom-[0.12em] left-1/2 -z-10 -translate-x-1/2"
+      />
       <div className="mx-auto max-w-(--container-content) px-(--gutter) pt-16 pb-10 lg:pt-20">
         <div className="grid gap-12 md:grid-cols-12 md:gap-8">
           <div className="flex flex-col items-start gap-5 md:col-span-12 lg:col-span-4">
@@ -55,6 +70,11 @@ export function SiteFooter() {
                 {ctas.primary.short}
               </Link>
             </Button>
+            {newsletter ? (
+              <div className="mt-4 w-full">
+                <NewsletterForm />
+              </div>
+            ) : null}
           </div>
 
           {/* ≥640px: columns */}
@@ -157,7 +177,7 @@ export function SiteFooter() {
                         aria-label={`Akrostech on ${social.label}`}
                         rel="noopener noreferrer"
                         target="_blank"
-                        className="grid size-9 place-items-center rounded-md text-fg-subtle transition-colors hover:bg-white/[0.06] hover:text-fg"
+                        className="social-icon grid size-9 place-items-center rounded-md text-fg-subtle"
                       >
                         <Icon aria-hidden className="size-5" />
                       </a>
@@ -166,9 +186,12 @@ export function SiteFooter() {
                 })}
               </ul>
             ) : null}
+            <BackToTop />
           </div>
         </div>
       </div>
+      {/* Room for the wordmark to rise into. */}
+      <div aria-hidden className="h-[18vw] min-h-24" />
     </footer>
   );
 }

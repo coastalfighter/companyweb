@@ -311,7 +311,7 @@ export function ArtifactsGallery() {
               key={artifact.id}
               data-reveal
               style={{ "--reveal-i": i } as React.CSSProperties}
-              className="depth-in flex w-[78vw] max-w-[320px] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-line bg-surface-1 shadow-e1 md:w-auto md:max-w-none"
+              className="flex w-[78vw] max-w-[320px] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-line bg-surface-1 shadow-e1 md:w-auto md:max-w-none"
             >
               <div aria-hidden className="relative h-40 overflow-hidden border-b border-line bg-ink-900 p-5">
                 <div className="flex h-full flex-col gap-2 rounded-sm bg-surface-2 p-4 shadow-e2">

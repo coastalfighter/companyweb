@@ -4,24 +4,17 @@ test.describe("homepage hero", () => {
   test("renders the headline, sub and both CTAs", async ({ page }) => {
     await page.goto("/");
     const hero = page.locator('section[aria-labelledby="hero-title"]');
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      /We run the parts\s*of your business\s*nobody sees\./,
-    );
-    await expect(hero.getByRole("link", { name: "Book a 20-minute call" })).toHaveAttribute(
-      "href",
-      "/contact",
-    );
-    await expect(hero.getByRole("link", { name: "See what it would cost" })).toHaveAttribute(
-      "href",
-      "/resources/back-office-calculator",
-    );
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Your\s+Back\s+Office\.\s+Rebuilt\./);
+    await expect(hero.getByText("We handle the operations so your team handles the vision.")).toBeVisible();
+    await expect(hero.getByRole("link", { name: "Start a Project" })).toHaveAttribute("href", "/contact");
+    await expect(hero.getByRole("link", { name: "See Our Work" })).toHaveAttribute("href", "/work");
   });
 
   test("keeps the primary CTA above the fold", async ({ page }) => {
     await page.goto("/");
-    const cta = page.locator('section[aria-labelledby="hero-title"]').getByRole("link", {
-      name: "Book a 20-minute call",
-    });
+    const cta = page
+      .locator('section[aria-labelledby="hero-title"]')
+      .getByRole("link", { name: "Start a Project" });
     await expect(cta).toBeVisible();
     const box = await cta.boundingBox();
     const viewport = page.viewportSize();
@@ -37,24 +30,21 @@ test.describe("homepage hero", () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
-  test("ops feed ticks, and the pause control stops it", async ({ page }) => {
+  test("the headline materializes sharp, and the wireframe draws", async ({ page }) => {
     await page.goto("/");
-    const count = page.getByTestId("ops-feed-count");
-    await expect(count).toHaveText("38");
-    await expect(count).not.toHaveText("38", { timeout: 15_000 });
-
-    await page.getByRole("button", { name: "Pause live feed" }).click();
-    const paused = await count.textContent();
-    await page.waitForTimeout(6000);
-    await expect(count).toHaveText(paused!);
-  });
-
-  test("feed filter tabs work with the keyboard", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("tab", { name: "All" }).focus();
-    await page.keyboard.press("ArrowRight");
-    await expect(page.getByRole("tab", { name: "Web" })).toHaveAttribute("aria-selected", "true");
-    await expect(page.getByRole("tab", { name: "Web" })).toBeFocused();
+    const words = page.locator("#hero-title .hero-word");
+    await expect(words).toHaveCount(4);
+    await expect
+      .poll(() => words.evaluateAll((els) => els.map((el) => getComputedStyle(el).filter)), { timeout: 6000 })
+      .toEqual(["none", "none", "none", "none"]);
+    const lit = await page.locator(".engine-canvas").evaluate((canvas: HTMLCanvasElement) => {
+      const ctx = canvas.getContext("2d")!;
+      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let count = 0;
+      for (let i = 3; i < data.length; i += 4) if (data[i]! > 0) count++;
+      return count;
+    });
+    expect(lit).toBeGreaterThan(500);
   });
 });
 
@@ -63,11 +53,17 @@ test.describe("reduced motion", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
   });
 
-  test("starts the feed paused", async ({ page }) => {
+  test("shows the hero as a still, fully readable frame", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("button", { name: "Resume live feed" })).toBeVisible();
-    await page.waitForTimeout(4000);
-    await expect(page.getByTestId("ops-feed-count")).toHaveText("38");
+    await expect(page.locator(".preloader")).toBeHidden();
+    const styles = await page
+      .locator("#hero-title .hero-word")
+      .evaluateAll((els) => els.map((el) => [getComputedStyle(el).filter, getComputedStyle(el).transform]));
+    for (const [filter, transform] of styles) {
+      expect(filter).toBe("none");
+      expect(transform).toBe("none");
+    }
+    await expect(page.getByRole("link", { name: "Start a Project" })).toBeVisible();
   });
 });
 

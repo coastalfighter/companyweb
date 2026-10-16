@@ -110,8 +110,9 @@ export function BenefitsSection({ facts = verifiedFacts }: { facts?: CareersFact
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {facts.benefits.map((benefit) => (
             <li
+              data-reveal="card"
               key={benefit.title}
-              className="surface depth-in flex items-start gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1"
+              className="surface flex items-start gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1"
             >
               <SealCheckIcon aria-hidden weight="light" className="mt-0.5 size-6 shrink-0 text-volt-500" />
               <div className="flex flex-col gap-1">
