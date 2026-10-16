@@ -28,5 +28,7 @@ export default defineConfig({
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
+        // No integration keys in tests: log leads to the server console instead.
+        env: { LEADS_LOG_ONLY: "true" },
       },
 });

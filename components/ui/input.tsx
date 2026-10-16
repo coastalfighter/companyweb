@@ -19,7 +19,8 @@ export const controlVariants = cva(
     "light:focus-visible:border-volt-800 light:focus-visible:ring-volt-800/20",
     "aria-invalid:border-error aria-invalid:focus-visible:ring-error/20",
     "disabled:cursor-not-allowed disabled:border-ink-700 disabled:bg-ink-900 disabled:text-fg-disabled",
-    "read-only:border-dashed read-only:border-line-strong read-only:bg-transparent",
+    // <select> also matches :read-only, so scope the read-only look to text controls.
+    "[&:is(input,textarea):read-only]:border-dashed [&:is(input,textarea):read-only]:border-line-strong [&:is(input,textarea):read-only]:bg-transparent",
   ],
   {
     variants: {

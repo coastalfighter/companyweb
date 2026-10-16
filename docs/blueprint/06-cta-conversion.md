@@ -67,6 +67,8 @@
 
 **Consent line** (caption, below the button): *"We'll use this to reply to you, and nothing else. No newsletters unless you ask. [Privacy policy]"*
 
+> **As built (M1d):** fields, validation and micro-copy as specified, with these changes: the submit label is "Send. We'll reply within 4 business hours" (matches the SLA wording elsewhere); network/server errors show an inline alert in the form rather than a toast (announced and focused, with the email address as a link); the DocuSign NDA and the follow-up sequence are not automated yet. See README "Integrations".
+
 ### F3.3 Submit button
 **`Send — we'll reply within 4 hours →`**
 - Loading: `Sending…` with a 16px spinner; button keeps its width (no layout shift); fields disabled.

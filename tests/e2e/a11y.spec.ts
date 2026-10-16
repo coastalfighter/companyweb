@@ -22,3 +22,27 @@ for (const route of routes) {
     expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
   });
 }
+
+const layoutRoutes = [
+  "/",
+  "/services",
+  "/services/web-development",
+  "/services/recruitment",
+  "/services/virtual-assistance",
+  "/services/accounting",
+  "/services/legal",
+  "/contact",
+  "/contact/thank-you",
+  "/design-system",
+] as const;
+
+for (const route of layoutRoutes) {
+  test(`no horizontal overflow on ${route}`, async ({ page }) => {
+    await page.goto(route);
+    await page.waitForTimeout(500);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+}

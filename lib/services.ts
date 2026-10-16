@@ -81,3 +81,25 @@ export const services: readonly Service[] = [
 ];
 
 export const servicesHubHref = "/services";
+
+/** Common service combinations (hub 2.3); `?bundle=<id>` prefills the contact form. */
+export const bundles = [
+  {
+    id: "scale-up",
+    name: "The Scale-Up Stack",
+    services: ["recruitment", "virtual-assistance"],
+    body: "For teams hiring 10+ people a year. We source the hires, then onboard them: equipment, accounts, day-one schedules.",
+  },
+  {
+    id: "finance-backbone",
+    name: "The Finance Backbone",
+    services: ["accounting", "legal"],
+    body: "Contracts and the money they generate, tracked in one place. Renewals never surprise your forecast.",
+  },
+  {
+    id: "launch-crew",
+    name: "The Launch Crew",
+    services: ["web-development", "virtual-assistance"],
+    body: "A new site, plus someone to run the content calendar, form leads and CMS updates once it's live.",
+  },
+] as const satisfies readonly { id: string; name: string; services: readonly ServiceSlug[]; body: string }[];

@@ -9,8 +9,8 @@ describe("live route registry", () => {
   });
 
   it("disables prefetch for routes that don't exist yet", () => {
-    expect(isLiveRoute("/contact")).toBe(false);
-    expect(prefetchFor("/contact")).toBe(false);
+    expect(isLiveRoute("/careers")).toBe(false);
+    expect(prefetchFor("/careers")).toBe(false);
     expect(prefetchFor("/")).toBeUndefined();
   });
 });

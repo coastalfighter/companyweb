@@ -2,7 +2,7 @@
 
 Marketing site for Akrostech. The design and content spec lives in [`docs/blueprint/`](docs/blueprint/README.md).
 
-**Status:** M0, M1a, M1b and M1c complete. Live: the homepage, the services hub and the five service pages, with the header, mobile menu, footer and mobile CTA bar; the remaining pages follow the milestones in [`docs/blueprint/10-starter-code.md`](docs/blueprint/10-starter-code.md#j3-next-steps-build-milestones).
+**Status:** M0 and M1a–M1d complete. Live: the homepage, the services hub, the five service pages and the contact flow, with the header, mobile menu, footer and mobile CTA bar; the remaining pages follow the milestones in [`docs/blueprint/10-starter-code.md`](docs/blueprint/10-starter-code.md#j3-next-steps-build-milestones).
 
 ## Stack
 
@@ -46,10 +46,13 @@ components/
   home/                  Homepage sections (problem, services bento + vignettes, process, visibility,
                          proof, comparison, security, calculator teaser, FAQ)
   services/              Service page template (S1–S11) and services hub sections
+  contact/               Contact form, Turnstile widget, thank-you content
   marketing/             VoltSlab (closing CTA), ServiceGlyph, SectionHeader
   marketing/hero/        Homepage hero + Ops Feed (pure state logic in ops-feed-data.ts)
 content/proof.ts         VERIFIED proof only (logos, stats, testimonials, case study, certifications)
 content/samples.ts       Sample proof for /design-system/home-preview only
+lib/contact/             Contact pipeline: shared schema, server-side submission flow, integrations
+                         (HubSpot, Slack, Resend, Turnstile), rate limiting, reply-time estimate
 content/services/        Service page content, one typed file per service (Sanity-shaped)
 hooks/                   usePrefersReducedMotion
 lib/                     cn(), site config + navigation, services, live-route registry, calculator teaser model
@@ -81,6 +84,31 @@ starter/hero.html        Standalone HTML prototype of the hero
 - **System monospace font.** Dropped JetBrains Mono (32 KB per page); mobile Lighthouse went from 90–91 to 93–94.
 - **Calculator teaser shows cost, not savings,** with its math on screen (blueprint F4 rules).
 - **Two more contrast fixes from axe:** the mono badge on raised surfaces, and the scrollable dialog body is now keyboard-focusable.
+
+## Integrations (contact form)
+
+Every integration switches on when its keys are present (`.env.example`). A submission counts as sent only when **at least one** of HubSpot, Slack or the team notification email accepts it. With none configured, development logs the lead to the console; **production refuses and tells the visitor to email instead**, so a missing key can never hide lost leads behind a success screen.
+
+| Integration          | Keys                                                                | What it does                                                                                                                                                                                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HubSpot (Forms API)  | `HUBSPOT_PRIVATE_APP_TOKEN`, `HUBSPOT_PORTAL_ID`, `HUBSPOT_FORM_ID` | Creates/updates the contact with attribution. The HubSpot form must include these contact properties: `firstname`, `lastname`, `email`, `company`, `phone`, `message`, plus custom properties `akros_company_size`, `akros_services`, `akros_timeline`, `akros_nda_requested`, `akros_utm_source`, `akros_utm_medium`, `akros_utm_campaign`. |
+| Slack                | `SLACK_LEADS_WEBHOOK_URL`                                           | Posts the lead to `#new-leads` (user input escaped, so it can't ping channels).                                                                                                                                                                                                                                                              |
+| Resend               | `RESEND_API_KEY`, `LEADS_FROM_EMAIL`, `LEADS_NOTIFY_EMAIL`          | Team notification (reply-to = the lead), then a plain-text confirmation to the visitor from a named sender (best-effort; never fails the submission).                                                                                                                                                                                        |
+| Cloudflare Turnstile | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`            | Bot check, loaded only when the visitor first focuses the form.                                                                                                                                                                                                                                                                              |
+| Upstash Redis        | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`                | Rate limit (5 per IP per hour) shared across serverless instances; fails open if Upstash is down.                                                                                                                                                                                                                                            |
+| Cal.com              | `NEXT_PUBLIC_CAL_LINK`                                              | Shows "Book directly" on `/contact`. The inline embed comes later.                                                                                                                                                                                                                                                                           |
+
+Always on: a honeypot field (bots get a fake success and nothing is delivered), server-side validation with the same schema as the browser, and CR/LF stripping on anything that reaches an email header.
+
+**Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
+
+## Decisions made in M1d
+
+- **One schema, two places.** `lib/contact/schema.ts` (zod/mini) validates on blur in the browser and again in the server action, which is reachable by direct POST, so every check lives server-side.
+- **Answers are never lost.** Inputs are controlled, the submit is intercepted (so React's automatic form reset never runs), and drafts persist in sessionStorage until a successful send. Only keystrokes in the first ~200 ms before hydration can be lost.
+- **Static page, client prefill.** `/contact` and `/contact/thank-you` prerender; `?service=`, `?bundle=` and `?topic=security` prefill on the client. The thank-you page reads the first name from sessionStorage, so no personal data goes in a URL.
+- **JS budget measured precisely.** Lighthouse also counts the idle-time prefetch of `/contact` behind "Book a call", so its script cap is 240 KB; a new E2E test holds the 200 KB line on render-critical scripts (homepage 172 KB, contact 187 KB).
+- **Bugs caught by tests:** a draft overriding an explicit `?topic=security` prefill; a hydration mismatch when restoring drafts (fixed with a one-time post-hydration remount); the long submit label widening the mobile layout (the overflow test now covers every route); `<select>` matching `:read-only` and getting the dashed read-only style.
 
 ## Decisions made in M1c
 

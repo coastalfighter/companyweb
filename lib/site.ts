@@ -29,6 +29,7 @@ export const liveRoutes = [
   "/services/virtual-assistance",
   "/services/accounting",
   "/services/legal",
+  "/contact",
 ] as const;
 
 const liveRouteSet: ReadonlySet<string> = new Set(liveRoutes);
