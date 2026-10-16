@@ -45,7 +45,7 @@ export function CaseStudyCard({ study, href, variant = "grid", as: Heading = "h3
   return (
     <article
       className={cn(
-        "group relative overflow-hidden rounded-xl border border-line bg-surface-1 shadow-e1 transition-colors duration-150 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-volt-500/35",
+        "surface depth-in group relative overflow-hidden rounded-xl border border-line bg-surface-1 shadow-e1 transition-colors duration-150 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:border-volt-500/35",
         featured ? "grid lg:grid-cols-2" : "flex flex-col",
       )}
     >

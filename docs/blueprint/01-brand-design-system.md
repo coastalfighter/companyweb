@@ -276,6 +276,23 @@ On dark backgrounds, traditional drop shadows are invisible. Elevation is commun
 
 **What does NOT animate:** body paragraphs (beyond the single section reveal), navigation links on load, form fields, footer, legal text, anything on repeat scroll (reveals fire once). No parallax on text. No scroll-jacking. No cursor followers.
 
+### A6.3a Depth layer (Phase 2b, amends A6.3)
+
+The owner asked for a more immersive, interactive site: 3D scroll effects, hover motion on cards and text, and elements that travel with the scroll. These are allowed **within the rules below**, which replace the "No parallax on text… No cursor followers" sentence above where they conflict.
+
+| Element | Animation | Rule |
+|---|---|---|
+| Scroll rail (`components/motion/scroll-rail.tsx`) | Fixed rail at the right edge (≥1280px). One segment per section fills as you read it, and a lime "task packet" travels down it. The ticks are an "On this page" nav. | The packet is a task moving through the pipeline: it shows the system working. Hidden below 1280px and in browsers without scroll timelines. |
+| Cards (`.depth-in`) | Scroll-scrubbed 3D entrance: tipped back 18° and 94% scale → flat, as the card enters the viewport | `rotate` + `scale` only, never opacity, so text contrast is never reduced mid-animation |
+| Panels (`.depth-panel`, `.hero-depth`) | The visibility dashboard turns to face you as it enters; the hero Ops Feed reclines as the hero scrolls away | Decorative transforms only; the panel is readable at rest |
+| Hero floor | A perspective grid under the hero that moves forward with the scroll | Scroll-driven, so it never moves on its own (WCAG 2.2.2) |
+| Section headings (`.heading-depth`) | Hinge up from 3D as they enter | Transform only; the reveal stays once-only |
+| Scroll ticker (`components/motion/scroll-ticker.tsx`) | Two bands of service names slide in opposite directions with the scroll | `aria-hidden` decoration of real content; never auto-plays |
+| Card hover (`.surface`) | A lime spotlight and border glow follow the pointer inside the card; the card tilts ≤3° toward it | Pointer-fine devices only. One delegated listener (`components/motion/pointer-surfaces.tsx`), no per-card JS. The glow stays inside the card: this is not a cursor follower. |
+| Text links and primary buttons | Underline draws from the left on hover; a light sweep crosses the primary button | Hover and focus only |
+
+Constraints that still hold: everything is CSS scroll-driven animation (`animation-timeline`), with no animation library and no scroll-jacking. Scroll position is never hijacked, and content is fully readable in every intermediate state. Browsers without scroll timelines get the static end state. Reduced motion turns all of it off.
+
 ### A6.4 Reduced motion
 
 `@media (prefers-reduced-motion: reduce)`: all reveals become opacity-only at 150ms; counters display final values; marquee becomes a static wrapped grid; ops-feed shows a static snapshot of 6 completed rows; scrubbed animations are replaced by their end state.

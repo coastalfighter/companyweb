@@ -20,7 +20,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary: [
-          "bg-accent text-on-accent hover:bg-accent-hover hover:shadow-glow active:bg-accent-active",
+          "btn-shine bg-accent text-on-accent hover:bg-accent-hover hover:shadow-glow active:bg-accent-active",
           "focus-visible:outline-fg",
           "disabled:bg-ink-700 disabled:text-ink-400 aria-disabled:bg-ink-700 aria-disabled:text-ink-400",
         ],

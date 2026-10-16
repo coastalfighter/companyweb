@@ -44,7 +44,7 @@ export function VisibilitySection() {
         <div data-reveal className="flex flex-col gap-8 lg:col-span-5">
           <div className="flex flex-col gap-5">
             <Eyebrow>Visibility</Eyebrow>
-            <h2 id="visibility-title" className="font-display text-h2 font-semibold text-fg">
+            <h2 id="visibility-title" className="heading-depth font-display text-h2 font-semibold text-fg">
               You&apos;ll never have to ask &ldquo;what&apos;s the status?&rdquo;
             </h2>
             <p className="text-body-lg text-fg-muted">
@@ -72,7 +72,10 @@ export function VisibilitySection() {
         </div>
 
         <figure data-reveal className="lg:col-span-7">
-          <div aria-hidden className="rounded-xl border border-line bg-surface-1 p-5 shadow-e4 sm:p-6">
+          <div
+            aria-hidden
+            className="depth-panel rounded-xl border border-line bg-surface-1 p-5 shadow-e4 sm:p-6"
+          >
             <div data-area="report" className="vis-area rounded-lg p-2">
               <div className="flex items-center justify-between">
                 <p className="font-mono text-caption text-fg-subtle">Weekly Ops Report · Week 41</p>

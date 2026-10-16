@@ -34,7 +34,7 @@ export function SectionHeader({
     >
       <div className={cn("flex flex-col gap-5", align === "center" ? "items-center" : "max-w-3xl")}>
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 id={id} className="font-display text-h2 font-semibold text-fg">
+        <h2 id={id} className="heading-depth font-display text-h2 font-semibold text-fg">
           {title}
         </h2>
         {intro ? <p className="max-w-[60ch] text-body-lg text-fg-muted">{intro}</p> : null}

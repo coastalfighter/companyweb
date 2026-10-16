@@ -111,7 +111,7 @@ export function BenefitsSection({ facts = verifiedFacts }: { facts?: CareersFact
           {facts.benefits.map((benefit) => (
             <li
               key={benefit.title}
-              className="flex items-start gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1"
+              className="surface depth-in flex items-start gap-4 rounded-lg border border-line bg-surface-1 p-6 shadow-e1"
             >
               <SealCheckIcon aria-hidden weight="light" className="mt-0.5 size-6 shrink-0 text-volt-500" />
               <div className="flex flex-col gap-1">
@@ -179,7 +179,7 @@ export function OpenRoles({ result, basePath }: { result: JobsResult; basePath: 
             </p>
             <a
               href={talentPoolHref()}
-              className="group inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-text"
+              className="link-sweep group inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-text"
             >
               Join the talent pool
               <ArrowRightIcon

@@ -9,6 +9,7 @@ import {
   WhereWeWork,
 } from "@/components/about/about-sections";
 import { VoltSlab } from "@/components/marketing/volt-slab";
+import { ScrollRail } from "@/components/motion/scroll-rail";
 import { JsonLd } from "@/lib/json-ld";
 import { ctas, siteConfig } from "@/lib/site";
 
@@ -41,6 +42,14 @@ export default function AboutPage() {
       <VoltSlab
         heading="Let's see if we're a fit. 20 minutes, no slides."
         primary={{ label: ctas.primary.label, href: ctas.primary.href }}
+      />
+      <ScrollRail
+        sections={[
+          { id: "about-title", label: "Intro" },
+          { id: "origin-title", label: "Why we exist" },
+          { id: "principles-title", label: "Principles" },
+          { id: "volt-slab-title", label: "Book a call" },
+        ]}
       />
     </>
   );

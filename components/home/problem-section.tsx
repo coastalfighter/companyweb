@@ -51,7 +51,7 @@ export function ProblemSection() {
         <div className="lg:col-span-5">
           <div data-reveal className="flex flex-col gap-5 lg:sticky lg:top-32">
             <Eyebrow>The problem</Eyebrow>
-            <h2 id="problem-title" className="font-display text-h2 font-semibold text-fg">
+            <h2 id="problem-title" className="heading-depth font-display text-h2 font-semibold text-fg">
               Your best people are doing their worst work.
             </h2>
             <p className="max-w-[48ch] text-body-lg text-fg-muted">
@@ -65,7 +65,7 @@ export function ProblemSection() {
           {pains.map((pain) => (
             <article
               key={pain.persona}
-              className="reading-focus flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 sm:flex-row sm:items-start sm:justify-between md:p-8"
+              className="surface depth-in reading-focus flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 sm:flex-row sm:items-start sm:justify-between md:p-8"
             >
               <div className="flex max-w-md flex-col gap-3">
                 <Badge className="self-start">{pain.persona}</Badge>

@@ -7,6 +7,7 @@ import { RevealObserver } from "@/components/layout/reveal-observer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SkipLink } from "@/components/layout/skip-link";
+import { PointerSurfaces } from "@/components/motion/pointer-surfaces";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteFooter />
         <MobileCtaBar />
         <RevealObserver />
+        <PointerSurfaces />
         <AttributionTracker />
         <AnalyticsProvider />
       </body>

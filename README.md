@@ -102,6 +102,15 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in Phase 2b (depth layer: 3D scroll, hover, scroll rail)
+
+- **CSS scroll-driven animation, no library.** Every scrubbed effect uses `animation-timeline: view()` / `scroll()` in `app/globals.css` ("Depth layer"). The only new JS is `components/motion/pointer-surfaces.tsx`: one delegated, rAF-throttled `pointermove` listener for every card. The homepage JS budget is unchanged. Firefox (no scroll timelines yet) shows the resting state.
+- **Transforms only, never opacity.** Scrubbed effects use `rotate`, `scale` and `translate`, so text keeps full contrast mid-animation and the axe and Lighthouse runs stay clean. The perspective comes from the parent (`:has(> .depth-in)`), so a card's own `transform` stays free for the hover tilt.
+- **Opt-in classes.** `.depth-in` (cards stand up from 3D as they enter), `.depth-panel` (dashboards turn to face you), `.heading-depth` (H2s hinge up), `.surface` (pointer spotlight, border glow, ≤3° tilt), `.link-sweep` (underline draws on hover). Primary buttons get a light sweep. `Card interactive` includes `.surface`.
+- **Scroll rail** (`components/motion/scroll-rail.tsx`). This is a page-level "On this page" nav, fixed at the right edge from 1280px. Each segment is driven by its section's named view timeline (`timeline-scope` on `:root`), and the lime "task packet" rides the tip of the current segment. It's used on `/`, `/about` and `/services`. List only sections that always render; gated ones join when their content does.
+- **Scroll ticker** (`components/motion/scroll-ticker.tsx`). Two `aria-hidden` bands of words already on the page, sliding in opposite directions with the scroll. They never move on their own.
+- **Reduced motion** turns all of it off. This is E2E-tested in `tests/e2e/motion.spec.ts`. The blueprint amendment is A6.3a in `docs/blueprint/01-brand-design-system.md`.
+
 ## Decisions made in Phase 2a (compare, pricing)
 
 - **`/compare/in-house-vs-akrostech` and `/compare/freelancers-vs-akrostech`** expand the homepage table (1.9) from one shared data module (`content/compare.ts`), so the three can't disagree (tested). Each page states the case for the alternative first ("Hire in-house when…"), in the same spirit as the calculator's candid verdicts. `/compare` lists both above the full table.

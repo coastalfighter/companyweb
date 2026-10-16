@@ -138,7 +138,7 @@ export function ProofSection({ proof = verifiedProof }: { proof?: Proof }) {
                 key={t.name}
                 data-reveal
                 style={{ "--reveal-i": i } as React.CSSProperties}
-                className="flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
+                className="surface depth-in flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
               >
                 <span aria-hidden className="font-display text-h2 leading-none text-volt-500">
                   &ldquo;

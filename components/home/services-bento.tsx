@@ -23,7 +23,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       data-reveal
       style={{ "--reveal-i": index % 3 } as React.CSSProperties}
       className={cn(
-        "vig-card group relative flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8",
+        "surface depth-in vig-card group relative flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8",
         "transition-[transform,border-color,box-shadow] duration-150 ease-out-expo",
         "hover:-translate-y-0.5 hover:border-volt-500/35 hover:shadow-e2",
         "focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus",
@@ -81,7 +81,7 @@ export function ServicesBento() {
             <Link
               href={servicesHubHref}
               prefetch={prefetchFor(servicesHubHref)}
-              className="group inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-text"
+              className="link-sweep group inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-text"
             >
               Compare all services
               <ArrowRightIcon

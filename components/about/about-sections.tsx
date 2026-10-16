@@ -111,7 +111,7 @@ export function PrinciplesSection() {
               key={principle.title}
               data-reveal
               style={{ "--reveal-i": i % 2 } as React.CSSProperties}
-              className="relative isolate overflow-hidden rounded-lg border border-line bg-surface-1 p-8 shadow-e1 md:p-10"
+              className="surface depth-in relative isolate overflow-hidden rounded-lg border border-line bg-surface-1 p-8 shadow-e1 md:p-10"
             >
               <span
                 aria-hidden
@@ -309,7 +309,7 @@ export function AboutTeasers() {
           <li
             key={card.href}
             data-reveal
-            className="group relative flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-8 shadow-e1 transition-[border-color,transform] duration-150 ease-out-expo focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:-translate-y-0.5 hover:border-volt-500/35"
+            className="surface depth-in group relative flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-8 shadow-e1 transition-[border-color,transform] duration-150 ease-out-expo focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus hover:-translate-y-0.5 hover:border-volt-500/35"
           >
             <card.icon aria-hidden weight="light" className="size-8 text-volt-500" />
             <h2 className="font-display text-h4 font-semibold text-fg">

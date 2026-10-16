@@ -15,7 +15,7 @@ export const cardVariants = cva("relative rounded-lg border", {
     },
     interactive: {
       true: [
-        "transition-[transform,border-color,box-shadow] duration-150 ease-out-expo",
+        "surface transition-[transform,border-color,box-shadow] duration-150 ease-out-expo",
         "hover:-translate-y-0.5 hover:border-volt-500/35 hover:shadow-e2",
         "focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus",
       ],

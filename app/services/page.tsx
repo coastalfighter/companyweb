@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FaqSection, homeFaqs } from "@/components/home/faq-section";
 import { VoltSlab } from "@/components/marketing/volt-slab";
+import { ScrollRail } from "@/components/motion/scroll-rail";
 import {
   Bundles,
   EngagementModels,
@@ -58,6 +59,16 @@ export default function ServicesPage() {
         heading="Tell us what's hurting. We'll tell you where to start."
         subheading="20 minutes. No slides. A scoped plan whether you hire us or not."
         primary={{ label: ctas.primary.label, href: ctas.primary.href }}
+      />
+      <ScrollRail
+        sections={[
+          { id: "services-hub-title", label: "Intro" },
+          { id: "standards-title", label: "Standards" },
+          { id: "bundles-title", label: "Bundles" },
+          { id: "models-title", label: "Engagement models" },
+          { id: "faq-title", label: "FAQ" },
+          { id: "volt-slab-title", label: "Book a call" },
+        ]}
       />
     </>
   );

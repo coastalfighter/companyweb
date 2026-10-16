@@ -38,7 +38,7 @@ export function EmptyResults({ filtered }: { filtered: boolean }) {
       </p>
       <Link
         href={REFERENCE_HREF}
-        className="group inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-text"
+        className="link-sweep group inline-flex items-center gap-1.5 text-body-sm font-medium text-accent-text"
       >
         Ask us for a private reference call
         <ArrowRightIcon

@@ -33,7 +33,10 @@ export function VoltSlab({
       data-cta-zone
       className={cn("px-(--gutter) py-(--section-y)", className)}
     >
-      <div className="volt-slab relative isolate mx-auto max-w-(--container-wide) overflow-hidden rounded-2xl bg-volt-500 px-6 py-16 text-center text-ink-950 sm:px-12 md:py-24">
+      <div
+        style={{ "--depth-end": "cover 35%" } as React.CSSProperties}
+        className="depth-in volt-slab relative isolate mx-auto max-w-(--container-wide) overflow-hidden rounded-2xl bg-volt-500 px-6 py-16 text-center text-ink-950 sm:px-12 md:py-24"
+      >
         <div aria-hidden className="volt-slab-grid pointer-events-none absolute inset-0 -z-10" />
         <div aria-hidden className="volt-slab-sweep pointer-events-none absolute inset-0 -z-10" />
 

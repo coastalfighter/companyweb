@@ -25,8 +25,13 @@ export function Hero() {
       <div aria-hidden className="grid-overlay pointer-events-none absolute inset-0 -z-10 animate-fade-in" />
       <div
         aria-hidden
-        className="pointer-events-none absolute -z-10 size-[720px] rounded-full bg-(image:--glow-volt) max-lg:top-[55%] max-lg:left-1/2 max-lg:-translate-x-1/2 lg:top-[8%] lg:right-[-8%]"
+        className="hero-glow-drift pointer-events-none absolute -z-10 size-[720px] rounded-full bg-(image:--glow-volt) max-lg:top-[55%] max-lg:left-1/2 max-lg:-translate-x-1/2 lg:top-[8%] lg:right-[-8%]"
       />
+      <div aria-hidden className="hero-floor pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[42%]">
+        <div className="hero-floor-plane">
+          <div className="hero-floor-lines" />
+        </div>
+      </div>
 
       <div className="mx-auto grid w-full max-w-(--container-content) grid-cols-1 items-center gap-14 px-(--gutter) lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
@@ -43,7 +48,7 @@ export function Hero() {
             <span className="lg:block lg:animate-rise-lcp">We run the parts </span>
             <span className="lg:block lg:animate-rise-lcp lg:[animation-delay:80ms]">of your business </span>
             <span className="lg:block lg:animate-rise-lcp lg:[animation-delay:160ms]">
-              <span className="text-volt-gradient">nobody sees.</span>
+              <span className="text-volt-gradient text-shimmer">nobody sees.</span>
             </span>
           </h1>
 
@@ -79,7 +84,9 @@ export function Hero() {
         </div>
 
         <div className="animate-panel-in lg:col-span-5">
-          <OpsFeed />
+          <div className="hero-depth">
+            <OpsFeed />
+          </div>
         </div>
       </div>
     </section>

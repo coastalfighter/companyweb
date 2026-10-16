@@ -22,8 +22,8 @@ function Reasons({
     <div
       className={
         highlight
-          ? "flex flex-col gap-5 rounded-lg border border-t-2 border-volt-500/40 border-t-volt-500 bg-volt-950 p-6 shadow-e1 md:p-8"
-          : "flex flex-col gap-5 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
+          ? "surface depth-in flex flex-col gap-5 rounded-lg border border-t-2 border-volt-500/40 border-t-volt-500 bg-volt-950 p-6 shadow-e1 md:p-8"
+          : "surface depth-in flex flex-col gap-5 rounded-lg border border-line bg-surface-1 p-6 shadow-e1 md:p-8"
       }
     >
       <h2 className="font-display text-h4 font-semibold text-fg">{title}</h2>
