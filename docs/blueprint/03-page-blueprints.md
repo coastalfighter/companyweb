@@ -34,6 +34,8 @@
 - **Content:** `Services ▾ · How it works · Work · About · Careers` | `Estimate savings` (ghost) | `Book a call →` (primary, sm).
 - **Interaction:** nav link hover = text from `--ink-200` to `--ink-50` + 1px lime underline that grows from left (150ms). The active page shows a 4px lime dot under the link.
 
+> **As built (M1b):** every homepage section below is implemented in `components/home/`. Logo bar (1.2), stats band (1.7) and case study + testimonials (1.8) render only once `content/proof.ts` holds real, permissioned data; until then they're absent from the live page and reviewable with sample data at `/design-system/home-preview`. The FAQ question about team locations is held back until locations are confirmed. Other deviations are noted inline.
+
 ### 1.1 Hero (Concept 1 "The Ops Feed": see Section D)
 - **Layout:** 2-column split on ≥1024: copy in cols 1–7 (left-aligned), live Ops Feed panel in cols 8–12. The H1 is capped at 88px in the hero so it sets in 3 lines and the CTAs + reassurance line stay above the fold on a 1440×900 screen. Top padding 128px desktop / 112px mobile. Height ≈ 100svh − 64px (min 680px). A faint 12-col grid overlay and the lime radial glow sit behind the panel.
 - **Content:**
@@ -95,6 +97,7 @@
 - **Interaction:** hover = card lifts 2px, border → `rgb(163 230 53 / 0.35)`, vignette plays its animation (they're paused until hover/in-view on desktop, and autoplay once on mobile when 60% visible). Arrow in the link translates 3px.
 
 ### 1.5 How it works (summary)
+> *As built (M1b):* the connector draws (1.2s) once the steps scroll into view and each number lights as the line reaches it, rather than being scrubbed to scroll position, which proved unreliable across section heights. No GSAP.
 - **Layout:** H2 centered. A horizontal 4-step track (4 equal cols) with an SVG connector line beneath the step numbers. Vertical on mobile.
 - **Content:**
   - Eyebrow: `HOW IT WORKS`
@@ -108,6 +111,7 @@
 - **Interaction:** the connector line draws left-to-right, scrubbed to scroll position (GSAP ScrollTrigger, `scrub: 0.5`). Each step number lights lime as the line reaches it.
 
 ### 1.6 Visibility: "You'll never wonder what we're doing."
+> *As built (M1b):* the dashboard stays inside the container (bleeding off the edge clipped its labels), is captioned "Illustrative example", and the sample Friday report opens in an HTML dialog labelled as sample data. The downloadable PDF comes with real report templates.
 - **Layout:** full-bleed `--bg-alt` band. Copy cols 1–5; a large dashboard vignette cols 6–12 that bleeds off the right edge on desktop.
 - **Content:**
   - Eyebrow: `VISIBILITY`
@@ -181,6 +185,7 @@
 - **Content:**
   - H3: **What is back-office work costing you right now?**
   - Body: *Three inputs. Ten seconds. A real number, not a sales pitch.*
+  - *As built (M1b):* two inputs (function + hours); team size was dropped because it didn't change the number, and an input that does nothing is dishonest UI. Copy is "Two inputs. Five seconds." The output is the cost of the senior time spent today (salary × 1.3 overhead ÷ 2,080 h × hours × 48 weeks), with the math shown under "How we calculate this". No savings figure until the full calculator has the rate card.
   - Inputs: `Team size` (select: 10–50 / 51–200 / 201–500 / 500+) · `Function` (segmented: Finance · Hiring · Admin · Web · Legal) · `Hours per week on it` (slider 5–200)
   - Live output: `≈ $184,600 / year in senior time on work we could take off your plate.`
   - CTA: `Get the full breakdown →` → `/resources/back-office-calculator?prefill=…` (carries the inputs over).

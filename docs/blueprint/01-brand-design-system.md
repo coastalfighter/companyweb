@@ -118,7 +118,7 @@ Semantic backgrounds (dark): same hue at 12% opacity on `--ink-850`, with a 1px 
 |---|---|---|---|
 | **Display / headings** | **Bricolage Grotesque** (variable, `opsz` 12–96, `wght` 200–800) | 500, 600, 700 (variable range 500–700) | It's a grotesque with genuine character: slightly ink-trapped, condensed at large optical sizes. It reads "designed" without being quirky. At 600 weight with −3% tracking it has the confidence of Linear's headlines but isn't the same Inter-everywhere look every SaaS site uses. The `opsz` axis means H1s get tighter, sharper forms automatically. |
 | **Body / UI** | **Inter** (variable, `wght` 400–600, with `opsz`) | 400, 500, 600 | The most legible screen sans for dense UI, tables, forms and long reading. It's neutral enough to let Bricolage carry the personality. Enable `font-feature-settings: "cv11", "ss01", "ss03", "tnum"` (single-story a off, open digits, tabular numbers for stats). |
-| *(Optional utility)* Mono | JetBrains Mono, 400/500 | 400, 500 | Only for the "ops feed" visual, timestamps, SLA readouts and code. It signals "systems" without needing an illustration. |
+| *(Optional utility)* Mono | **System monospace stack** (SF Mono / Menlo / Consolas / Liberation Mono) *(changed in M1b from JetBrains Mono)* | — | Only for the "ops feed" visual, timestamps, SLA readouts and code. It signals "systems" without needing an illustration. The web font cost 32 KB on every page for small labels; dropping it lifted mobile Lighthouse from 90–91 to 93–94. |
 
 Load via `next/font/google` (self-hosted at build, zero layout shift, no third-party request). Subset to Latin. Use `display: swap` with metric-matched fallbacks (`adjustFontFallback`).
 

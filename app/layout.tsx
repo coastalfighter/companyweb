@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { MobileCtaBar } from "@/components/layout/mobile-cta-bar";
+import { RevealObserver } from "@/components/layout/reveal-observer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SkipLink } from "@/components/layout/skip-link";
@@ -19,14 +20,6 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains",
-  display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -56,11 +49,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${bricolage.variable} ${inter.variable} ${jetbrains.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${bricolage.variable} ${inter.variable}`} suppressHydrationWarning>
       <body>
         <SkipLink />
         <SiteHeader />
@@ -69,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <SiteFooter />
         <MobileCtaBar />
+        <RevealObserver />
       </body>
     </html>
   );

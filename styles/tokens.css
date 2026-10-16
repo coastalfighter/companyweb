@@ -149,10 +149,11 @@
 
 /* ---------- Static scales → Tailwind utilities ---------- */
 @theme {
-  /* Fonts: next/font injects --font-bricolage / --font-inter / --font-jetbrains */
+  /* Fonts: next/font injects --font-bricolage / --font-inter. Mono is the system stack
+     (decision in M1b: saves a 32 KB font on every page for labels and timestamps). */
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Type scale (fluid 375px → 1440px). Usage: text-display-xl, text-h2, text-body-lg… */
   --text-display-xl: clamp(3rem, 1.94rem + 4.51vw, 6rem);

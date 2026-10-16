@@ -12,7 +12,8 @@ export const badgeVariants = cva(
         success: "border-success/30 bg-success/10 text-success",
         warning: "border-warning/30 bg-warning/10 text-warning",
         error: "border-error/30 bg-error/10 text-error",
-        mono: "border-line bg-transparent font-mono text-[0.625rem] tracking-wider text-fg-subtle",
+        // fg-muted, not fg-subtle: badges also sit on surface-3 (menus, dialogs), where fg-subtle fails AA.
+        mono: "border-line bg-transparent font-mono text-[0.625rem] tracking-wider text-fg-muted",
       },
     },
     defaultVariants: { variant: "neutral" },
