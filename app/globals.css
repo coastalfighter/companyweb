@@ -136,6 +136,18 @@
     transition: none;
   }
 }
+/* Service-page hero: play once on load, then idle (blueprint S1). */
+@keyframes vig-play {
+  from {
+    --vig-p: 0;
+  }
+  to {
+    --vig-p: 1;
+  }
+}
+.vig-autoplay .vig {
+  animation: vig-play 1400ms var(--ease-out-expo) 500ms both;
+}
 .vig-ring {
   stroke-dashoffset: calc(var(--ring) * (1 - (0.62 + 0.36 * var(--vig-p))));
 }
@@ -315,6 +327,26 @@
   }
   .marquee-track[aria-hidden] {
     display: none;
+  }
+}
+
+/* ---------- Services hub index rows (hub 2.2) ---------- */
+.svc-row-detail {
+  grid-template-rows: 1fr;
+}
+@media (hover: hover) and (pointer: fine) {
+  .svc-row-detail {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur-slow) var(--ease-out-expo);
+  }
+  .svc-row:hover .svc-row-detail,
+  .svc-row:focus-within .svc-row-detail {
+    grid-template-rows: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-row-detail {
+    transition: none;
   }
 }
 

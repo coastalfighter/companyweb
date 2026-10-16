@@ -21,7 +21,15 @@ export const siteConfig = {
  * later milestones will add. Each milestone adds its routes here (and they then
  * appear in the sitemap automatically).
  */
-export const liveRoutes = ["/"] as const;
+export const liveRoutes = [
+  "/",
+  "/services",
+  "/services/web-development",
+  "/services/recruitment",
+  "/services/virtual-assistance",
+  "/services/accounting",
+  "/services/legal",
+] as const;
 
 const liveRouteSet: ReadonlySet<string> = new Set(liveRoutes);
 

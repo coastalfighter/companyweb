@@ -3,7 +3,11 @@
     "collect": {
       "startServerCommand": "npm run start -- --port 3200",
       "startServerReadyPattern": "Ready",
-      "url": ["http://localhost:3200/"],
+      "url": [
+        "http://localhost:3200/",
+        "http://localhost:3200/services",
+        "http://localhost:3200/services/accounting"
+      ],
       "numberOfRuns": 3,
       "settings": {
         "preset": "desktop"

@@ -276,6 +276,8 @@ Per Section B2.5.
 
 ## Service detail template
 
+> **As built (M1c):** `app/services/[slug]/page.tsx` + `components/services/`, content in `content/services/*.ts` (typed to mirror the planned Sanity `service` schema). S2 metrics and S9 proof render only when verified data exists, so all five pages currently ship without them. Scope cards are numbered rather than repeating the service glyph six times. Tools are text names, no third-party logos. The web "What does a rebuild cost?" answer is held back until the price range is confirmed. The services hub drops the "Most chosen" badge on engagement models (a claim about client behavior) and the "Most clients add a second within six months" line.
+
 All five service pages share this structure, so buyers comparing services know where everything is. Per-service copy follows.
 
 | # | Section | Purpose |

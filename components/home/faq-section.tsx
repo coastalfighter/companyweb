@@ -1,11 +1,9 @@
 import { PlusIcon } from "@phosphor-icons/react/ssr";
+import { type FaqItem } from "@/content/faq";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { Eyebrow } from "@/components/ui/eyebrow";
 
-export interface FaqItem {
-  id: string;
-  question: string;
-  answer: string;
-}
+export type { FaqItem } from "@/content/faq";
 
 /**
  * Homepage FAQ copy (blueprint 1.12). "Where is your team located?" is held back
@@ -53,22 +51,29 @@ export const homeFaqs: readonly FaqItem[] = [
 
 /** schema.org FAQPage, escaped per the Next.js JSON-LD guide. */
 export function faqJsonLd(items: readonly FaqItem[]): string {
-  return JSON.stringify({
-    "@context": "https://schema.org",
+  return serializeJsonLd({
     "@type": "FAQPage",
     mainEntity: items.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer },
     })),
-  }).replace(/</g, "\\u003c");
+  });
 }
 
 /**
  * Homepage 1.12. Native <details name="faq"> gives a single-open accordion with no JS
  * (blueprint G5); the first item starts open; each item is deep-linkable (#faq-<id>).
  */
-export function FaqSection({ items = homeFaqs }: { items?: readonly FaqItem[] }) {
+export interface FaqSectionProps {
+  items?: readonly FaqItem[];
+  title?: string;
+}
+
+export function FaqSection({
+  items = homeFaqs,
+  title = "Questions buyers ask us on the first call.",
+}: FaqSectionProps) {
   return (
     <section aria-labelledby="faq-title" className="py-(--section-y)">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(items) }} />
@@ -77,7 +82,7 @@ export function FaqSection({ items = homeFaqs }: { items?: readonly FaqItem[] })
           <div data-reveal className="flex flex-col gap-5 lg:sticky lg:top-32">
             <Eyebrow>FAQ</Eyebrow>
             <h2 id="faq-title" className="font-display text-h2 font-semibold text-fg">
-              Questions buyers ask us on the first call.
+              {title}
             </h2>
           </div>
         </div>

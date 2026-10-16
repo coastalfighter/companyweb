@@ -2,7 +2,7 @@
 
 Marketing site for Akrostech. The design and content spec lives in [`docs/blueprint/`](docs/blueprint/README.md).
 
-**Status:** M0 (foundation), M1a (global layout) and M1b (homepage) complete. The full homepage is live, with the header, mobile menu, footer and mobile CTA bar; the remaining pages follow the milestones in [`docs/blueprint/10-starter-code.md`](docs/blueprint/10-starter-code.md#j3-next-steps-build-milestones).
+**Status:** M0, M1a, M1b and M1c complete. Live: the homepage, the services hub and the five service pages, with the header, mobile menu, footer and mobile CTA bar; the remaining pages follow the milestones in [`docs/blueprint/10-starter-code.md`](docs/blueprint/10-starter-code.md#j3-next-steps-build-milestones).
 
 ## Stack
 
@@ -37,17 +37,20 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every pull request.
 ## Project structure
 
 ```
-app/                     Routes (layout, homepage, 404, robots, sitemap, /design-system)
+app/                     Routes (layout, homepage, /services, /services/[slug], 404, robots, sitemap,
+                         /design-system)
 components/
   ui/                    Base components: Button, Badge, Card, Eyebrow, Field, Input, Textarea
   layout/                SiteHeader, ServicesMegaMenu, MobileNav, MobileCtaBar, SiteFooter,
                          Container, Logo, SkipLink
   home/                  Homepage sections (problem, services bento + vignettes, process, visibility,
                          proof, comparison, security, calculator teaser, FAQ)
+  services/              Service page template (S1–S11) and services hub sections
   marketing/             VoltSlab (closing CTA), ServiceGlyph, SectionHeader
   marketing/hero/        Homepage hero + Ops Feed (pure state logic in ops-feed-data.ts)
 content/proof.ts         VERIFIED proof only (logos, stats, testimonials, case study, certifications)
 content/samples.ts       Sample proof for /design-system/home-preview only
+content/services/        Service page content, one typed file per service (Sanity-shaped)
 hooks/                   usePrefersReducedMotion
 lib/                     cn(), site config + navigation, services, live-route registry, calculator teaser model
 styles/tokens.css        Design tokens (source of truth) mapped to Tailwind utilities
@@ -79,6 +82,13 @@ starter/hero.html        Standalone HTML prototype of the hero
 - **Calculator teaser shows cost, not savings,** with its math on screen (blueprint F4 rules).
 - **Two more contrast fixes from axe:** the mono badge on raised surfaces, and the scrollable dialog body is now keyboard-focusable.
 
+## Decisions made in M1c
+
+- **Content in code, shaped for Sanity.** No Sanity project yet, so each service is a typed file in `content/services/` matching the planned `service` document. Moving to the CMS is an import, not a redesign.
+- **Real 404s for unknown service URLs.** With Partial Prerendering, an unknown `/services/<slug>` first returned 200 (a soft 404) before streaming the not-found page. `ensureStatic = "navigation"` makes Next finish the render first, so the status is 404 from the first request. This matters for the spam-URL cleanup.
+- **Copy rules are tested.** A unit test lints all shipped content for the blueprint's banned words, exclamation marks and leftover `[VERIFY]` / `[SAMPLE]` / `TODO` markers.
+- **Regulatory notes are tested** to stay on the legal and accounting pages.
+
 ## Claims to confirm before launch
 
 These are business commitments in the live copy. They aren't gated (they're offers Akrostech defines), but each must be true on day one. Change the copy wherever one isn't.
@@ -105,3 +115,4 @@ These are business commitments in the live copy. They aren't gated (they're offe
 - `npm audit` reports advisories only in dev tooling (Lighthouse CI, shadcn CLI, eslint-config-next transitive deps); production dependencies have 0.
 - Service glyphs are Phosphor stand-ins until the five custom icons are drawn.
 - The mega-menu proof slot shows a process card until a permissioned case study exists.
+- Unknown `/services/<slug>` URLs may each leave a cached 404 entry; M4's proxy (which also serves the spam-URL 410s) should reject unknown paths before they reach the page.
