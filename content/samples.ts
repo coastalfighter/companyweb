@@ -3,6 +3,7 @@
  * Rendered exclusively on /design-system/home-preview, under a "Sample data"
  * banner. Never import this from a public page.
  */
+import { type CompanyFacts } from "./company";
 import { type Proof } from "./proof";
 
 export const sampleProof: Proof = {
@@ -59,4 +60,51 @@ export const sampleProof: Proof = {
     href: "/work/tidemark-health",
   },
   certifications: { soc2Type2: true, iso27001: true },
+};
+
+/** About page facts for design review (blueprint 8.2–8.6, all [VERIFY]). */
+export const sampleCompany: CompanyFacts = {
+  originStory: [
+    "Akrostech began in 2019 with our founder running operations for a fast-growing logistics company. The pattern was always the same: brilliant people buried in admin, and outsourcing partners who were cheap until they were expensive.",
+    "So we set three rules that still run the company today:",
+  ],
+  originToday:
+    "Today we're 140 specialists across 4 countries, running back offices for companies from 40-person startups to 2,000-person enterprises.",
+  numbers: [
+    { value: "140", label: "specialists", source: "sample" },
+    { value: "4", label: "countries", source: "sample" },
+    { value: "86", label: "clients", source: "sample" },
+    { value: "2019", label: "founded", source: "sample" },
+  ],
+  leadership: [
+    {
+      name: "Sample Founder",
+      role: "Founder & CEO",
+      background: "Ran operations at a logistics scale-up through 4× growth.",
+      previously: ["Sample Freight Co.", "Sample Consulting"],
+    },
+    {
+      name: "Sample Operator",
+      role: "Head of Delivery",
+      background: "Built shared-services teams for three mid-market companies.",
+      previously: ["Sample Health", "Sample Bank"],
+    },
+    {
+      name: "Sample Controller",
+      role: "Head of Finance Operations",
+      background: "Former audit senior; has run more than 400 month-end closes.",
+      previously: ["Sample Audit LLP"],
+    },
+    {
+      name: "Sample Counsel",
+      role: "Head of Legal Operations",
+      background: "Contract manager for a 2,000-person SaaS company.",
+      previously: ["Sample Software Inc."],
+    },
+  ],
+  hubs: [
+    { city: "Manila", timeZone: "Asia/Manila", lat: 14.6, lon: 121 },
+    { city: "Bogotá", timeZone: "America/Bogota", lat: 4.7, lon: -74.1 },
+    { city: "Kraków", timeZone: "Europe/Warsaw", lat: 50.1, lon: 19.9 },
+  ],
 };

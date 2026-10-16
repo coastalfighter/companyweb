@@ -561,6 +561,8 @@ All five service pages share this structure, so buyers comparing services know w
 
 ## 8. About Us `/about`
 
+> **As built (M2a):** sections built on company facts (origin narrative, 8.4 numbers, 8.5 leadership, 8.6 hubs) render only once `content/company.ts` holds real data; until then the page carries the hero, the three operating rules, the principles and the teasers, and the full design is reviewable at `/design-system/about-preview`. With no real photos yet, 8.2 is typographic (no duotone image) and leader cards fall back to an initials tile. The 8.7 security teaser links to `/contact?topic=security` until `/about/security` exists.
+
 ### 8.1 Hero
 - **Layout:** left-aligned, cols 1–9; large type, no image.
 - **Content:**
@@ -608,6 +610,8 @@ All five service pages share this structure, so buyers comparing services know w
 ---
 
 ## 9. How It Works `/how-it-works`
+
+> **As built (M2a):** the 9.2 progress bar follows scroll through one small client component, not a scroll-scrubbing library, and the tracker is a working list of anchor links without JS. The 9.3 previews are generic templates with redaction bars and an "Example" badge. The 30-day fit guarantee (9.4) is held back until finance and legal sign it off, so two guarantees show.
 
 **Goal:** remove the fear of the unknown. A COO should be able to forward this page to their CEO as "here's exactly what happens."
 

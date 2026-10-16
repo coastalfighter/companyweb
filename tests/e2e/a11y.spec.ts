@@ -1,7 +1,13 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const routes = ["/", "/design-system", "/design-system/home-preview", "/this-route-does-not-exist"] as const;
+const routes = [
+  "/",
+  "/design-system",
+  "/design-system/home-preview",
+  "/design-system/about-preview",
+  "/this-route-does-not-exist",
+] as const;
 
 for (const route of routes) {
   test(`no WCAG 2.1 A/AA violations on ${route}`, async ({ page }) => {
@@ -33,7 +39,10 @@ const layoutRoutes = [
   "/services/legal",
   "/contact",
   "/contact/thank-you",
+  "/about",
+  "/how-it-works",
   "/design-system",
+  "/design-system/about-preview",
 ] as const;
 
 for (const route of layoutRoutes) {

@@ -7,7 +7,9 @@
         "http://localhost:3200/",
         "http://localhost:3200/services",
         "http://localhost:3200/services/accounting",
-        "http://localhost:3200/contact"
+        "http://localhost:3200/contact",
+        "http://localhost:3200/about",
+        "http://localhost:3200/how-it-works"
       ],
       "numberOfRuns": 3,
       "settings": {

@@ -102,6 +102,15 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in M2a (About, How it works)
+
+- **Company facts are gated like proof.** `content/company.ts` (origin story, numbers, leadership, hubs) ships empty, and each About section built on it renders only once it has real data. Until then the page runs on what is policy, not proof: the three operating rules and the four principles. Review the full design with sample data at `/design-system/about-preview`.
+- **Unsigned guarantees stay unpublished.** The 30-day fit guarantee is marked "[VERIFY with finance/legal]" in the blueprint, so it lives in `pendingGuarantees` and only appears on the preview page. A unit test fails if a pending guarantee is ever published.
+- **Deliverable previews are examples, labelled as such.** The Operating Brief, Proposal, SOP and Friday report previews are generic templates with redaction bars and an "Example" badge. They show the format, not a client.
+- **No animation library.** The phase tracker is one small client component (scroll listener, one rAF per frame) that degrades to a list of anchor links; the headline word rise and hub pulse are CSS. Live hub clocks share one minute-aligned timer and render no time on the server, so there's no stale or mismatched time.
+- **The security link goes to the contact form** (`/contact?topic=security`) until the `/about/security` trust centre exists.
+- **Bug caught by tests:** a deep link to a phase landed about 1,100px short on phones, because layout kept shifting after the browser's initial jump; the tracker re-applies the jump once fonts settle, unless the visitor has already scrolled.
+
 ## Decisions made in M1d
 
 - **One schema, two places.** `lib/contact/schema.ts` (zod/mini) validates on blur in the browser and again in the server action, which is reachable by direct POST, so every check lives server-side.
@@ -121,21 +130,31 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 These are business commitments in the live copy. They aren't gated (they're offers Akrostech defines), but each must be true on day one. Change the copy wherever one isn't.
 
-| Claim                                                                        | Where                                |
-| ---------------------------------------------------------------------------- | ------------------------------------ |
-| Live / first delivery in 10 business days                                    | Hero, How it works, comparison table |
-| No long-term lock-in; 90-day term, then month-to-month with 30 days' notice  | Hero, comparison, FAQ                |
-| NDA before the first call                                                    | Hero, security band                  |
-| Requests acknowledged within 1 business hour, resolved within 1 business day | Visibility section                   |
-| Replacement within 5 business days at no cost                                | FAQ                                  |
-| Written quote within 48 hours; no setup fees                                 | FAQ                                  |
-| Access revoked within an hour of any change / of offboarding                 | FAQ, security band                   |
-| Background checks, SSO + hardware-key MFA, AES-256 / TLS 1.3, GDPR/CCPA DPAs | Security band                        |
-| Tools the team already works in (Slack … DocuSign)                           | FAQ                                  |
-| Replies within 4 business hours; Mon–Fri hours                               | Mobile menu (`lib/site.ts`)          |
-| Salary presets for the calculator teaser (cite a current source)             | `lib/calculator/teaser.ts`           |
+| Claim                                                                             | Where                                |
+| --------------------------------------------------------------------------------- | ------------------------------------ |
+| Live / first delivery in 10 business days                                         | Hero, How it works, comparison table |
+| No long-term lock-in; 90-day term, then month-to-month with 30 days' notice       | Hero, comparison, FAQ                |
+| NDA before the first call                                                         | Hero, security band                  |
+| Requests acknowledged within 1 business hour, resolved within 1 business day      | Visibility section                   |
+| Replacement within 5 business days at no cost                                     | FAQ                                  |
+| Written quote within 48 hours; no setup fees                                      | FAQ                                  |
+| Access revoked within an hour of any change / of offboarding                      | FAQ, security band                   |
+| Background checks, SSO + hardware-key MFA, AES-256 / TLS 1.3, GDPR/CCPA DPAs      | Security band                        |
+| Tools the team already works in (Slack … DocuSign)                                | FAQ                                  |
+| Replies within 4 business hours; Mon–Fri hours                                    | Mobile menu (`lib/site.ts`)          |
+| Salary presets for the calculator teaser (cite a current source)                  | `lib/calculator/teaser.ts`           |
+| Phase timings: Operating Brief in 24h, team match days 3–6, running by day 10     | How it works (`content/process.ts`)  |
+| NDA and DPA signed before any data is shared; SSO provisioning                    | How it works                         |
+| Onboarding takes about three hours of the client's time                           | How it works FAQ                     |
+| Core overlap hours written into every proposal                                    | How it works FAQ                     |
+| Offboarding: 30 days' notice, handover pack, access revoked within 1 business day | How it works ("Leaving well"), FAQ   |
+| SOPs belong to the client                                                         | How it works, guarantees             |
+| Senior hiring; month-to-month after 90 days                                       | About (operating rules)              |
 
 ## Known gaps
+
+- Offboarding access timing differs between pages: the homepage FAQ says "revoke access within an hour of any change", How it works (blueprint 9.5) says "within one business day". Pick one.
+- The homepage process summary says work starts "Day 7 onward" while How it works (blueprint 9.2) starts running on day 10. Both come from the blueprint; align them when the timeline is confirmed.
 
 - Logo is a placeholder mark: replace `components/layout/logo.tsx` and `app/icon.svg` with the official SVG.
 - Hero numbers (38 tasks, 3h 41m) are illustrative and announced as an example; wire to real data or keep them framed that way.

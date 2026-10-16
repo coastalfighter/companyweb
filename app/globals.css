@@ -475,6 +475,47 @@ html:has(dialog[open]:modal) {
   }
 }
 
+/* ---------- About: headline words rise in sequence (blueprint 8.1) ----------
+   Transform-only, like animate-rise-lcp: the words are painted on the first frame. */
+.word-rise {
+  animation: rise-in-place 700ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--w, 0) * 45ms);
+}
+
+/* ---------- About: hub dots pulse once, in sequence, when the map is revealed ---------- */
+.hub-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hub-map[data-revealed] .hub-pulse {
+    animation: hub-pulse 1200ms var(--ease-out-expo) both;
+    animation-delay: calc(300ms + var(--hub-i, 0) * 220ms);
+  }
+}
+@keyframes hub-pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+/* ---------- How it works: the mobile stepper follows the header (blueprint 9.2) ----------
+   It sits under the 64px header and moves up to the top edge while the header is hidden. */
+@media (max-width: 1023px) {
+  .phase-stepper {
+    transition: top 220ms var(--ease-out-expo);
+  }
+  :root:has(header[data-hidden="true"]) .phase-stepper {
+    top: 0;
+  }
+}
+
 /* ---------- Motion primitives ---------- */
 @keyframes rise {
   from {
@@ -568,6 +609,7 @@ html:has(dialog[open]:modal) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .word-rise,
   .animate-rise-lcp {
     animation: none !important;
   }
