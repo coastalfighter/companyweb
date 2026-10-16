@@ -91,6 +91,8 @@ The current site is spam-injected. Launch tasks:
 2. **301** legitimate legacy URLs to their new equivalents (map in a `redirects.ts` file in Next.js).
 3. Return **410 Gone** for every spam URL (pharma, casino, foreign-language injected pages). 410 de-indexes faster than 404.
 4. Submit the new `sitemap.xml`, use the GSC Removals tool for the worst spam URLs, and request review if a Manual Action exists.
+> **As built (M4a):** steps 2–3 are implemented in `lib/edge/rules.ts` (301 map in `next.config.ts`, 410 patterns in `proxy.ts`), with E2E tests. Steps 1, 4 and 5 are operational tasks for launch week.
+
 5. Rotate all hosting, DNS, CMS and email credentials. Enable DNSSEC, and set SPF/DKIM/DMARC (`p=reject`) so spammers can't spoof the domain.
 
 ---

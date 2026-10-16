@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./lib/edge/rules";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -55,7 +56,19 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      // Design-review pages hold sample data: never indexed, even if linked from elsewhere.
+      { source: "/design-system/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+    ];
+  },
+  // Legitimate URLs from the old site (blueprint B1 migration, step 2).
+  async redirects() {
+    return Object.entries(legacyRedirects).map(([source, destination]) => ({
+      source,
+      destination,
+      statusCode: 301 as const,
+    }));
   },
 };
 

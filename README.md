@@ -102,6 +102,15 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in M4a (edge hardening)
+
+- **Old-site cleanup is code.** `lib/edge/rules.ts` holds the legacy 301 map (served from `next.config.ts` redirects, so it's cached and runs before anything else) and the spam patterns that `proxy.ts` answers with **410 Gone** + `X-Robots-Tag: noindex`: WordPress paths (`wp-*`, `xmlrpc.php`, `.php`, `.html`), date and taxonomy archives, `?p=` / `?s=` style queries, non-ASCII paths, and injected keywords. Keyword rules never fire inside the site's own sections, so a client called "Acme Pharma" can still have a case study.
+- **Add your crawl export to `legacyRedirects`.** It's seeded with common equivalents (`/about-us`, `/case-studies`, `/privacy-policy`…); every legitimate URL from Screaming Frog and Search Console belongs there before launch.
+- **Unknown slugs share one 404.** Unknown `/services/*` and `/work/*` slugs are rewritten to a single not-found path, closing the M1c gap where each random URL could leave its own cache entry.
+- **Error pages:** a branded 500 inside the site chrome with a retry and the server-log reference (never the message), and an inline-styled `global-error` for root-layout failures.
+- **Budget trade, made explicitly.** Real error boundaries cost every page about 1.6 KB, which pushed Lighthouse's total (it counts idle prefetches) over 240 KB. The calculator is now never prefetched (`prefetchFor`), an interactive tool that most visitors don't open, so every other page dropped to 228 KB. The calculator page itself gets a documented 255 KB Lighthouse cap (its own 14 KB tool chunk); the strict 200 KB render-critical test still covers it, at 175 KB.
+- **`/.well-known/security.txt`** (RFC 9116, `Expires` recomputed daily so it can't lapse) and **`/llms.txt`**. Design-review pages also send `X-Robots-Tag: noindex, nofollow`.
+
 ## Decisions made in M3b (calculator report)
 
 - **Downloaded, and emailed only when it really was.** `POST /api/calculator/report` (name + work email, optional company) returns the PDF for an immediate download and, with Resend configured, emails a copy. The page says which happened, never "sent to your inbox" when it wasn't.
@@ -200,4 +209,3 @@ These are business commitments in the live copy. They aren't gated (they're offe
 - `npm audit` reports advisories only in dev tooling (Lighthouse CI, shadcn CLI, eslint-config-next transitive deps); production dependencies have 0.
 - Service glyphs are Phosphor stand-ins until the five custom icons are drawn.
 - The mega-menu proof slot shows a process card until a permissioned case study exists.
-- Unknown `/services/<slug>` URLs may each leave a cached 404 entry; M4's proxy (which also serves the spam-URL 410s) should reject unknown paths before they reach the page.

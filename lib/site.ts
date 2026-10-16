@@ -43,9 +43,17 @@ export function isLiveRoute(href: string): boolean {
   return liveRouteSet.has(href.split(/[?#]/)[0] ?? href);
 }
 
+/**
+ * Live routes that are never prefetched: interactive tools most visitors don't open.
+ * Linked from the header on every page, so prefetching them would add their JS to
+ * every page's idle downloads (Lighthouse script budget, lighthouserc.json).
+ */
+const loadOnClick: ReadonlySet<string> = new Set(["/resources/back-office-calculator"]);
+
 /** `prefetch` prop for next/link: default behavior for live routes, off otherwise. */
 export function prefetchFor(href: string): false | undefined {
-  return isLiveRoute(href) ? undefined : false;
+  const path = href.split(/[?#]/)[0] ?? href;
+  return isLiveRoute(href) && !loadOnClick.has(path) ? undefined : false;
 }
 
 export interface NavItem {

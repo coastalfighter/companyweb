@@ -95,9 +95,14 @@ test.describe("global", () => {
   });
 
   test("unknown routes return a branded 404", async ({ page }) => {
-    const res = await page.goto("/cheap-pills-casino");
+    const res = await page.goto("/no-such-page");
     expect(res?.status()).toBe(404);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("isn't part of the operation");
+  });
+
+  test("spam-shaped URLs from the old site are gone, not missing", async ({ page }) => {
+    const res = await page.goto("/cheap-pills-casino");
+    expect(res?.status()).toBe(410);
   });
 
   test("design system page is not indexable", async ({ page }) => {
