@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { BenefitsSection, CultureSection, OpenRoles, TeamQuote } from "@/components/careers/careers-sections";
+import { BenefitsSection, CultureSection, OpenRoles } from "@/components/careers/careers-sections";
+import { TeamQuote } from "@/components/careers/team-quote";
 import { sampleCareersFacts, sampleJobs } from "@/content/samples";
 import { SampleBanner } from "../sample-banner";
 

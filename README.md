@@ -102,6 +102,16 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in M3a (calculator)
+
+- **No savings without a real rate card.** `content/rate-card.ts` ships `null`, so the live calculator shows today's fully loaded cost, the senior hours returned and the FTE, then offers a written quote. Once Akrostech approves hourly ranges per function, our cost, savings (as ranges), break-even and the comparison bars switch on. Review that view at `/design-system/calculator-preview` with a fictional card.
+- **Candor is in the model, not the copy.** `lib/calculator/model.ts` returns a verdict: savings under 15% of today's cost are called small; when even our low rate costs more, the summary says an in-house hire might make more sense and gives the salary above which we'd become cheaper.
+- **No guessed salaries.** Presets exist only for US/Canada (the blueprint figures, still to be checked against a cited salary guide). Elsewhere the visitor enters the salary, and every amount is in USD. Company size is optional and labelled as not changing the numbers.
+- **Resume, don't track.** Inputs (never results or contact details) are saved to localStorage once the visitor changes something. Returning visitors see "Pick up where you left off" in the header, and "Start over" clears it. The homepage teaser hands its function and hours over in the URL.
+- **Mobile is one step per screen** with a pinned results summary; the site-wide CTA bar stays off this page.
+- **Bugs caught by tests:** the mobile grid column sized to its widest content and pushed the results card off-screen; a wrapper `<div>` broke the results' term/value pairing for screen readers.
+- **JS budget held without raising caps.** Making the calculator a live route means its JS is prefetched from the header on every page. Lighthouse counts that, which put `/careers` over the 240 KB cap. Instead of raising the cap: the header's resume check moved to a tiny module so the cost model stays off other pages; the careers team filter became a radio group plus CSS `:has()` (no JS); and the employee-quote avatar uses a plain sized `<img>`, because Turbopack loads client code by import, not by what renders. Every audited page is now 236 KB.
+
 ## Careers (ATS)
 
 Set `ATS_PROVIDER` (`ashby`, `greenhouse` or `lever`) and `ATS_BOARD` (the board name or token) to list open roles on `/careers`, each with its own page at `/careers/<title>-<id>` and `JobPosting` structured data. These are the providers' public, read-only job-board APIs, so no API key is needed. Roles are cached and refresh hourly; call `revalidateTag("jobs")` from an ATS webhook to refresh sooner. Applications happen on the ATS's own form. `NEXT_PUBLIC_TALENT_POOL_URL` points "Join the talent pool" at the ATS general application; without it, the link is an email.

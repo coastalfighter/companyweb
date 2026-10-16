@@ -12,6 +12,8 @@ const routes = [
   "/careers",
   "/design-system/careers-preview",
   "/design-system/careers-preview/senior-bookkeeper-sample1",
+  "/resources/back-office-calculator",
+  "/design-system/calculator-preview?fn=finance&hours=40",
   "/this-route-does-not-exist",
 ] as const;
 
@@ -55,6 +57,8 @@ const layoutRoutes = [
   "/careers",
   "/design-system/careers-preview",
   "/design-system/careers-preview/senior-bookkeeper-sample1",
+  "/resources/back-office-calculator",
+  "/design-system/calculator-preview?fn=finance&hours=40",
 ] as const;
 
 for (const route of layoutRoutes) {

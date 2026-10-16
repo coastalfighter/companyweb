@@ -9,8 +9,8 @@ describe("live route registry", () => {
   });
 
   it("disables prefetch for routes that don't exist yet", () => {
-    expect(isLiveRoute("/resources/back-office-calculator")).toBe(false);
-    expect(prefetchFor("/resources/back-office-calculator")).toBe(false);
+    expect(isLiveRoute("/about/security")).toBe(false);
+    expect(prefetchFor("/about/security")).toBe(false);
     expect(prefetchFor("/")).toBeUndefined();
   });
 });

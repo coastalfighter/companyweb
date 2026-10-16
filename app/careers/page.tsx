@@ -6,8 +6,8 @@ import {
   HowWeHire,
   OpenRoles,
   TalentPoolBand,
-  TeamQuote,
 } from "@/components/careers/careers-sections";
+import { TeamQuote } from "@/components/careers/team-quote";
 import { getJobs } from "@/lib/careers/jobs";
 
 export const metadata: Metadata = {

@@ -3,6 +3,7 @@
  * Rendered exclusively on /design-system/home-preview, under a "Sample data"
  * banner. Never import this from a public page.
  */
+import { type RateCard } from "@/lib/calculator/model";
 import { type Job } from "@/lib/careers/types";
 import { type CaseStudy } from "./case-studies";
 import { type CareersFacts } from "./careers";
@@ -349,3 +350,16 @@ export const sampleJobs: readonly Job[] = [
     description: [...sampleDescription("executive assistant")],
   },
 ];
+
+/** A fictional rate card for reviewing the calculator's savings view. Not Akrostech's prices. */
+export const sampleRateCard: RateCard = {
+  hourly: {
+    finance: { low: 32, high: 48 },
+    hiring: { low: 26, high: 40 },
+    admin: { low: 18, high: 28 },
+    web: { low: 45, high: 70 },
+    legal: { low: 28, high: 42 },
+  },
+  setupFee: 0,
+  approvedBy: "sample",
+};

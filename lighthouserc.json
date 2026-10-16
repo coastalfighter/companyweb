@@ -11,7 +11,8 @@
         "http://localhost:3200/about",
         "http://localhost:3200/how-it-works",
         "http://localhost:3200/work",
-        "http://localhost:3200/careers"
+        "http://localhost:3200/careers",
+        "http://localhost:3200/resources/back-office-calculator"
       ],
       "numberOfRuns": 3,
       "settings": {

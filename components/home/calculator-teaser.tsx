@@ -88,7 +88,7 @@ export function CalculatorTeaser() {
               step={1}
               value={hours}
               onChange={(e) => setHours(Number(e.target.value))}
-              className="teaser-range w-full"
+              className="range-input w-full"
               style={
                 {
                   "--fill": `${((hours - HOURS_MIN) / (HOURS_MAX - HOURS_MIN)) * 100}%`,

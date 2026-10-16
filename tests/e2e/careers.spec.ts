@@ -51,14 +51,19 @@ test.describe("/careers (no ATS configured)", () => {
 test.describe("open roles (sample preview)", () => {
   test("lists roles and filters by team", async ({ page }) => {
     await page.goto(PREVIEW);
-    await expect(page.getByRole("list", { name: "4 open roles" })).toBeVisible();
+    const list = page.getByRole("list", { name: "Open roles" });
+    await expect(list.getByRole("listitem")).toHaveCount(4);
     const filters = page.getByRole("group", { name: "Filter by team" });
-    await filters.getByRole("button", { name: "Engineering" }).click();
-    await expect(page.getByRole("list", { name: "1 open role" })).toContainText("Full-Stack Engineer");
-    await expect(filters.getByRole("button", { name: "Engineering" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
+    await filters.getByText("Engineering").click();
+    await expect(filters.getByRole("radio", { name: "Engineering" })).toBeChecked();
+    await expect(list.getByRole("listitem")).toHaveCount(1);
+    await expect(list).toContainText("Full-Stack Engineer");
+    // Keyboard: arrow keys move through the radio group.
+    await page.keyboard.press("ArrowRight");
+    await expect(filters.getByRole("radio", { name: "Recruiting" })).toBeChecked();
+    await expect(list).toContainText("Technical Recruiter");
+    await filters.getByText("All").click();
+    await expect(list.getByRole("listitem")).toHaveCount(4);
   });
 
   test("a role opens its detail page with an apply link", async ({ page }) => {

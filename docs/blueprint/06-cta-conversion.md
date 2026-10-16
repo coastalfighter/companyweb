@@ -116,6 +116,8 @@ CFOs and COOs must justify outsourcing internally. The calculator **writes their
 - A plain-language summary: *"Your team spends about 46 hours a week on work Akrostech could run. Moving it would cost roughly $X and return 1,840 senior hours a year."*
 - CTAs: `Book a call to validate these numbers →` (primary) · `Email me the PDF` (secondary)
 
+> **As built (M3a):** the live page shows today's cost, hours returned and FTE, and invites a written quote; "Estimated Akrostech cost", savings, break-even and the bar chart switch on once `content/rate-card.ts` holds Akrostech's approved hourly ranges. Salary presets apply to US/Canada only (elsewhere the salary is entered), the overhead multiplier is editable as a percentage, company size is optional and doesn't change the result, and the role select became an editable salary with the preset role named. The gated PDF report follows in M3b.
+
 ### Rules
 - Show the **methodology and assumptions** inline (an expandable "How we calculate this"). Hidden math kills CFO trust.
 - Show *ranges*, never a single magic number.

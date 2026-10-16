@@ -260,24 +260,24 @@
   outline-color: var(--volt-500);
 }
 
-/* ---------- Calculator teaser range input ---------- */
-.teaser-range {
+/* ---------- Range input (components/ui/slider.tsx, calculator teaser) ---------- */
+.range-input {
   appearance: none;
   height: 24px;
   background: transparent;
   cursor: pointer;
 }
-.teaser-range::-webkit-slider-runnable-track {
+.range-input::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 9999px;
   background: linear-gradient(to right, var(--volt-500) var(--fill), var(--ink-600) var(--fill));
 }
-.teaser-range::-moz-range-track {
+.range-input::-moz-range-track {
   height: 4px;
   border-radius: 9999px;
   background: linear-gradient(to right, var(--volt-500) var(--fill), var(--ink-600) var(--fill));
 }
-.teaser-range::-webkit-slider-thumb {
+.range-input::-webkit-slider-thumb {
   appearance: none;
   margin-top: -8px;
   width: 20px;
@@ -286,14 +286,18 @@
   border: 2px solid var(--volt-500);
   background: var(--paper);
 }
-.teaser-range::-moz-range-thumb {
+.range-input::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 9999px;
   border: 2px solid var(--volt-500);
   background: var(--paper);
 }
-.teaser-range:focus-visible {
+/* The uncertain part of a range bar (calculator: Akrostech low → high). */
+.range-hatch {
+  background: repeating-linear-gradient(135deg, rgb(163 230 53 / 0.55) 0 4px, rgb(163 230 53 / 0.18) 4px 8px);
+}
+.range-input:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 4px;
   border-radius: 4px;

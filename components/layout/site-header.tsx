@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { hasSavedCalculatorInput, subscribeCalculatorInput } from "@/lib/calculator/saved";
 import { servicesHubHref } from "@/lib/services";
 import { ctas, prefetchFor, primaryNav } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,8 @@ export function SiteHeader() {
   const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const menuOpenRef = useRef(false);
+  // Return visitors with calculator inputs saved get "Pick up where you left off" (blueprint F1).
+  const resume = useSyncExternalStore(subscribeCalculatorInput, hasSavedCalculatorInput, () => false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,7 +122,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 lg:gap-3">
           <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
             <Link href={ctas.secondary.href} prefetch={prefetchFor(ctas.secondary.href)}>
-              {ctas.secondary.short}
+              {resume ? "Pick up where you left off" : ctas.secondary.short}
             </Link>
           </Button>
           <Button asChild size="sm" iconRight="arrow">

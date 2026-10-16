@@ -1,11 +1,12 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { careersFacts, cultureItems, joinList } from "@/content/careers";
 import { sampleCareersFacts, sampleJobs } from "@/content/samples";
 import { type Job } from "@/lib/careers/types";
-import { BenefitsSection, CultureSection, OpenRoles, talentPoolHref, TeamQuote } from "./careers-sections";
+import { BenefitsSection, CultureSection, OpenRoles, talentPoolHref } from "./careers-sections";
+import { TeamQuote } from "./team-quote";
 import { JobDetail, jobPostingJsonLd } from "./job-detail";
-import { teamsOf } from "./open-roles";
+import { teamFilterCss, teamsOf } from "./open-roles";
 
 const [bookkeeper, engineer] = sampleJobs as [Job, Job, Job, Job];
 
@@ -95,19 +96,40 @@ describe("<OpenRoles />", () => {
     );
   });
 
-  it("lists roles and filters by team", () => {
-    render(<OpenRoles result={{ status: "ok", jobs: [...sampleJobs] }} basePath="/careers" />);
-    expect(screen.getByRole("list", { name: "4 open roles" })).toBeInTheDocument();
+  it("lists roles with a no-JS team filter keyed by index", () => {
+    const { container } = render(
+      <OpenRoles result={{ status: "ok", jobs: [...sampleJobs] }} basePath="/careers" />,
+    );
+    expect(within(screen.getByRole("list", { name: "Open roles" })).getAllByRole("listitem")).toHaveLength(4);
     expect(screen.getByRole("link", { name: bookkeeper.title })).toHaveAttribute(
       "href",
       `/careers/${bookkeeper.slug}`,
     );
     const filters = screen.getByRole("group", { name: "Filter by team" });
-    fireEvent.click(within(filters).getByRole("button", { name: "Finance" }));
-    expect(within(filters).getByRole("button", { name: "Finance" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("list", { name: "1 open role" })).toBeInTheDocument();
-    fireEvent.click(within(filters).getByRole("button", { name: "All" }));
-    expect(screen.getByRole("list", { name: "4 open roles" })).toBeInTheDocument();
+    const radios = within(filters).getAllByRole("radio");
+    expect(radios.map((r) => r.closest("label")?.textContent)).toEqual([
+      "All",
+      "Engineering",
+      "Recruiting",
+      "Assistance",
+      "Finance",
+    ]);
+    expect(within(filters).getByRole("radio", { name: "All" })).toBeChecked();
+    // Finance is team 4: its rows carry data-team="4", and checking #team-4 hides the rest.
+    expect(screen.getByRole("link", { name: bookkeeper.title }).closest("li")).toHaveAttribute(
+      "data-team",
+      "4",
+    );
+    expect(container.querySelector("style")?.textContent).toContain(
+      '.open-roles:has(#team-4:checked) li[data-team]:not([data-team="4"]){display:none}',
+    );
+  });
+
+  it("builds filter CSS from indices only", () => {
+    expect(teamFilterCss(2)).toBe(
+      '.open-roles:has(#team-1:checked) li[data-team]:not([data-team="1"]){display:none}' +
+        '.open-roles:has(#team-2:checked) li[data-team]:not([data-team="2"]){display:none}',
+    );
   });
 
   it("orders teams as in the blueprint, then others", () => {
