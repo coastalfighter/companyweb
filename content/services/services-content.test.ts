@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import { homeFaqs } from "@/components/home/faq-section";
 import { proof } from "@/content/proof";
 import { services } from "@/lib/services";
+import { caseStudies } from "@/content/case-studies";
+import { company, operatingRules, principles } from "@/content/company";
+import { guarantees, pendingGuarantees, phases, processFaqs } from "@/content/process";
 import { getServiceContent, serviceContent } from "./index";
 
 /** Copy bans from docs/blueprint/README.md ("Non-negotiables"). */
@@ -80,7 +83,20 @@ describe("service content", () => {
 });
 
 describe("copy rules (all shipped content)", () => {
-  const corpus = [...strings(serviceContent), ...strings(services), ...strings(homeFaqs), ...strings(proof)];
+  const corpus = [
+    ...strings(serviceContent),
+    ...strings(services),
+    ...strings(homeFaqs),
+    ...strings(proof),
+    ...strings(company),
+    ...strings(operatingRules),
+    ...strings(principles),
+    ...strings(phases),
+    ...strings(guarantees),
+    ...strings(pendingGuarantees),
+    ...strings(processFaqs),
+    ...strings(caseStudies),
+  ];
 
   it.each(BANNED.map((re) => [re.source, re] as const))("never uses %s", (_name, re) => {
     expect(corpus.filter((s) => re.test(s))).toEqual([]);

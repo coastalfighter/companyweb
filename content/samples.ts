@@ -3,6 +3,7 @@
  * Rendered exclusively on /design-system/home-preview, under a "Sample data"
  * banner. Never import this from a public page.
  */
+import { type CaseStudy } from "./case-studies";
 import { type CompanyFacts } from "./company";
 import { type Proof } from "./proof";
 
@@ -108,3 +109,139 @@ export const sampleCompany: CompanyFacts = {
     { city: "Kraków", timeZone: "Europe/Warsaw", lat: 50.1, lon: 19.9 },
   ],
 };
+
+/** Case studies for design review (blueprint 10C and the homepage sample quotes). All fictional. */
+export const sampleCaseStudies: readonly CaseStudy[] = [
+  {
+    slug: "tidemark-health",
+    client: "Tidemark Health",
+    services: ["accounting", "virtual-assistance"],
+    industry: "Healthcare",
+    title: "How Tidemark Health cut month-end close from 15 days to 5.",
+    oneLiner:
+      "A 380-person multi-site clinic group was growing faster than its finance team. We rebuilt the close, took over payables, and gave leadership their numbers while they still mattered.",
+    stats: [
+      { value: "15 → 5", label: "days to close" },
+      { value: "$212K", label: "saved per year" },
+      { value: "0", label: "audit adjustments" },
+    ],
+    snapshot: {
+      size: "380 employees, 7 locations, $64M revenue",
+      team: "Finance Lead, 2 Senior Bookkeepers, 1 Executive Assistant",
+      duration: "18 months, ongoing",
+      tools: ["NetSuite", "Bill.com", "Ramp", "Rippling", "Slack"],
+    },
+    situation: [
+      "When Tidemark's CFO, Dana Whitfield, joined in early 2025, the monthly close took 15 business days. The finance team of three was coding 4,000 transactions a month by hand across seven locations, and payables ran on a shared inbox. Board packages arrived the week before the next month ended, which meant leadership was always steering by a month-old map.",
+      "Hiring two more accountants would have cost about $260,000 a year fully loaded, and taken a quarter to fill. Dana needed the capacity in weeks, and she needed it auditable.",
+    ],
+    approach: [
+      {
+        title: "Diagnostic (week 1).",
+        body: "We reviewed the last three closes and found 61% of close time went to reconciliations that could be daily, not monthly.",
+      },
+      {
+        title: "Cleanup (weeks 2–3).",
+        body: "We reconciled 14 months of intercompany balances and cleared 312 aged items.",
+      },
+      {
+        title: "A documented close.",
+        body: "We wrote a 46-step close checklist with owners and deadlines, run in NetSuite with task tracking visible to Dana's team.",
+      },
+      {
+        title: "AP takeover.",
+        body: "We moved payables from a shared inbox into Bill.com with approval routing by location manager. Vendor queries dropped by 70%.",
+      },
+      {
+        title: "Executive support.",
+        body: "An Akrostech EA took over board-package assembly and the CFO's calendar, returning about 9 hours a week to Dana.",
+      },
+    ],
+    results: [
+      { label: "Close time", before: "15 days", after: "5 days" },
+      { label: "Annual cost", before: "$260K", after: "$48K", note: "net of Akrostech fees: $212K saved" },
+      { label: "AP processing time", after: "−64%" },
+      { label: "External audit adjustments", after: "0", note: "first time in 4 years" },
+    ],
+    quote: {
+      text: "I expected to spend the first three months managing a vendor. Instead I got my first business-day-5 close in month two, and a report every Friday that I actually read.",
+      name: "Dana Whitfield",
+      title: "CFO, Tidemark Health",
+    },
+    whatsNext:
+      "Tidemark has since added Recruitment Assistance for its clinical admin roles, and we're supporting its migration to a multi-subsidiary NetSuite setup ahead of two acquisitions.",
+    publishedAt: "2026-09-01",
+    permission: "sample",
+  },
+  {
+    slug: "bramblecrest-analytics",
+    client: "Bramblecrest Analytics",
+    services: ["web-development", "recruitment"],
+    industry: "SaaS",
+    title: "How Bramblecrest shipped a new site in six weeks and filled three backend roles.",
+    oneLiner:
+      "A Series C analytics company needed a faster marketing site and senior engineers, without pulling anyone off the product.",
+    stats: [
+      { value: "6", label: "weeks to launch" },
+      { value: "0.8s", label: "median LCP" },
+      { value: "3", label: "roles filled" },
+    ],
+    snapshot: {
+      size: "220 employees, Series C",
+      team: "Web Lead, 2 Engineers, 1 Recruiter",
+      duration: "9 months, ongoing",
+      tools: ["Next.js", "Sanity", "Vercel", "Greenhouse", "Linear"],
+    },
+    situation: [
+      "Bramblecrest's site was a three-year-old theme that took four seconds to load, and every change waited on the product team. Three backend roles had been open since spring.",
+    ],
+    approach: [
+      { title: "Rebuild.", body: "A Next.js and Sanity rebuild, shipped in weekly increments." },
+      { title: "Hiring.", body: "A dedicated recruiter ran sourcing and screening inside Greenhouse." },
+    ],
+    results: [
+      { label: "Largest Contentful Paint", before: "4.1s", after: "0.8s" },
+      { label: "Demo requests", after: "+38%" },
+      { label: "Time to fill", before: "5 months", after: "7 weeks" },
+    ],
+    quote: {
+      text: "Our team never had to chase them for an update, not once.",
+      name: "Marcus Oyelaran",
+      title: "CTO, Bramblecrest Analytics",
+    },
+    whatsNext: "We now run Bramblecrest's site on a care plan and support two more engineering searches.",
+    publishedAt: "2026-07-15",
+    permission: "sample",
+  },
+  {
+    slug: "larkspur-freight",
+    client: "Larkspur Freight",
+    services: ["legal", "virtual-assistance"],
+    industry: "Logistics",
+    title: "How Larkspur Freight caught 23 renewals before they auto-renewed.",
+    oneLiner: "1,200 contracts in a shared drive became a searchable register with every date on a calendar.",
+    stats: [
+      { value: "1,200", label: "contracts registered" },
+      { value: "23", label: "renewals caught" },
+    ],
+    snapshot: {
+      size: "$140M revenue",
+      team: "Legal Ops Lead, 1 Contract Analyst",
+      duration: "6 months",
+      tools: ["Ironclad", "Google Drive", "Slack"],
+    },
+    situation: ["Contracts lived in a shared drive with no owners or dates."],
+    approach: [
+      { title: "Register.", body: "Every contract abstracted into Ironclad with owners and key dates." },
+    ],
+    results: [
+      { label: "Contracts with a named owner", before: "0%", after: "100%" },
+      { label: "Unwanted renewals", after: "23 avoided" },
+      { label: "Time to find a contract", before: "Days", after: "Seconds" },
+    ],
+    quote: null,
+    whatsNext: "Larkspur's general counsel now gets a monthly renewal calendar from us.",
+    publishedAt: "2026-05-20",
+    permission: "sample",
+  },
+];

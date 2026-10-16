@@ -675,6 +675,8 @@ All five service pages share this structure, so buyers comparing services know w
 
 ## 10. Case Studies `/work` + `/work/[slug]`
 
+> **As built (M2b):** only studies in `content/case-studies/index.ts` (written client permission required) are published; with none, `/work` shows the 10A empty state without a filter bar, and the template renders the fictional 10C study at `/design-system/work-preview/tidemark-health`. Deviations: the T5 results band sits inside the reading column (so the sticky snapshot and scrollspy cover every section) rather than full-bleed; results animate with a 220ms fade rather than a layout transition; card media is a lime-glow panel with the lead stat until real imagery exists.
+
 ### 10A. Index page `/work`
 - **Hero:** Eyebrow `WORK` · H1 **Proof, not promises.** · Sub *Real clients, real numbers, published with permission. (Most of our clients prefer NDA silence; these generously didn't.)*
 - **Filter bar:** tabs `All · Web · Recruitment · Virtual Assistance · Accounting · Legal` + select `Industry`. Filters update the URL query (`?service=accounting`) for shareability. Results animate with a layout transition (220ms).

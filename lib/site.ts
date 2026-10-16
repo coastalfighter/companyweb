@@ -32,6 +32,7 @@ export const liveRoutes = [
   "/contact",
   "/about",
   "/how-it-works",
+  "/work",
 ] as const;
 
 const liveRouteSet: ReadonlySet<string> = new Set(liveRoutes);

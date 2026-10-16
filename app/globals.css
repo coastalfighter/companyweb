@@ -516,6 +516,41 @@ html:has(dialog[open]:modal) {
   }
 }
 
+/* ---------- Case study: 2px lime reading progress (blueprint 10B) ----------
+   Scroll-driven, no JS. Sits on the header's bottom edge while the header shows and
+   on the top edge while it is hidden. Browsers without scroll timelines show nothing. */
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .reading-progress {
+    display: block;
+    position: fixed;
+    inset-inline: 0;
+    top: 64px;
+    z-index: 41;
+    height: 2px;
+    background: var(--volt-500);
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: reading-progress linear both;
+    animation-timeline: scroll(root block);
+    transition: top 220ms var(--ease-out-expo);
+    pointer-events: none;
+  }
+  :root:has(header[data-scrolled="false"]) .reading-progress {
+    top: 80px;
+  }
+  :root:has(header[data-hidden="true"]) .reading-progress {
+    top: 0;
+  }
+}
+@keyframes reading-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* ---------- Motion primitives ---------- */
 @keyframes rise {
   from {

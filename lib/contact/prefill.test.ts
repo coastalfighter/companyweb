@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SECURITY_TOPIC_DETAILS, prefillFromSearch } from "./prefill";
+import { REFERENCE_TOPIC_DETAILS, SECURITY_TOPIC_DETAILS, prefillFromSearch } from "./prefill";
 
 const p = (query: string) => prefillFromSearch(new URLSearchParams(query));
 
@@ -17,5 +17,13 @@ describe("prefillFromSearch", () => {
   it("sets up a security review", () => {
     expect(p("topic=security")).toEqual({ services: [], nda: true, details: SECURITY_TOPIC_DETAILS });
     expect(p("topic=quote")).toEqual({ services: [], nda: false, details: "" });
+  });
+
+  it("asks for a reference call", () => {
+    expect(p("topic=reference&service=legal")).toEqual({
+      services: ["legal"],
+      nda: false,
+      details: REFERENCE_TOPIC_DETAILS,
+    });
   });
 });

@@ -102,6 +102,14 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in M2b (Work, case-study template)
+
+- **Publishing a case study is one entry.** Add it to `content/case-studies/index.ts` (typed like the planned Sanity `caseStudy` document) with the client's written permission recorded in `permission`. It then gets a page at `/work/<slug>`, an index card, a sitemap entry, related-study links and a link on the contact thank-you page for visitors who chose that service.
+- **Until then, an honest empty state.** `/work` shows the hero and "Ask us for a private reference call", which opens the contact form pre-filled with `?topic=reference`. There's no filter bar with nothing to filter. The template and filters are reviewable with the fictional blueprint studies at `/design-system/work-preview`.
+- **Placeholder param for Cache Components.** A dynamic route must prerender at least one param, so with nothing published `/work/[slug]` generates one placeholder slug that 404s like any other; with `ensureStatic`, unknown slugs return a real 404 on the first request.
+- **Filters live in the URL** (`?service=legal&industry=SaaS`), so a filtered view can be shared; unknown values fall back to "All" instead of an empty page.
+- **No JS for the reading-progress bar:** a CSS scroll-driven animation that follows the header's bottom edge, absent in browsers without scroll timelines. The section nav (scrollspy) is a small IntersectionObserver.
+
 ## Decisions made in M2a (About, How it works)
 
 - **Company facts are gated like proof.** `content/company.ts` (origin story, numbers, leadership, hubs) ships empty, and each About section built on it renders only once it has real data. Until then the page runs on what is policy, not proof: the three operating rules and the four principles. Review the full design with sample data at `/design-system/about-preview`.

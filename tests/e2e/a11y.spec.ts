@@ -6,6 +6,9 @@ const routes = [
   "/design-system",
   "/design-system/home-preview",
   "/design-system/about-preview",
+  "/work",
+  "/design-system/work-preview",
+  "/design-system/work-preview/tidemark-health",
   "/this-route-does-not-exist",
 ] as const;
 
@@ -43,6 +46,9 @@ const layoutRoutes = [
   "/how-it-works",
   "/design-system",
   "/design-system/about-preview",
+  "/work",
+  "/design-system/work-preview",
+  "/design-system/work-preview/tidemark-health",
 ] as const;
 
 for (const route of layoutRoutes) {

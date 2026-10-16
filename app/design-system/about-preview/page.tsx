@@ -9,6 +9,8 @@ import { GuaranteesSection } from "@/components/process/process-sections";
 import { guarantees, pendingGuarantees } from "@/content/process";
 import { sampleCompany } from "@/content/samples";
 
+import { SampleBanner } from "../sample-banner";
+
 export const metadata: Metadata = {
   title: "About page facts (sample data)",
   robots: { index: false, follow: false },
@@ -21,12 +23,9 @@ export const metadata: Metadata = {
 export default function AboutPreviewPage() {
   return (
     <div className="pt-24">
-      <div
-        role="note"
-        className="sticky top-16 z-30 border-y border-warning/40 bg-warning/15 px-(--gutter) py-3 text-center text-body-sm font-medium text-warning backdrop-blur-md"
-      >
+      <SampleBanner>
         Sample data for design review. Not real people, numbers, locations or policies. Not for publication.
-      </div>
+      </SampleBanner>
       <OriginSection company={sampleCompany} />
       <NumbersBand company={sampleCompany} />
       <LeadershipSection company={sampleCompany} />

@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
+import { caseStudies } from "@/content/case-studies";
 import { addBusinessHours, formatReplyBy } from "@/lib/contact/reply-by";
 import { services } from "@/lib/services";
 import { siteConfig } from "@/lib/site";
@@ -41,6 +42,8 @@ export function ThankYou() {
   const sentAt = result ? new Date(result.at) : null;
   const replyBy = sentAt ? formatReplyBy(addBusinessHours(sentAt, 4), sentAt) : null;
   const related = services.filter((s) => result?.services.includes(s.slug)).slice(0, 2);
+  // The most relevant published case study for what they asked about (blueprint 11.5).
+  const study = caseStudies.find((s) => s.services.some((slug) => result?.services.includes(slug)));
 
   return (
     <div className="flex flex-col gap-8">
@@ -61,6 +64,17 @@ export function ThankYou() {
       <div className="flex flex-col gap-3">
         <h2 className="text-h5 font-semibold text-fg">While you wait</h2>
         <ul className="flex flex-col gap-2 text-body-sm">
+          {study ? (
+            <li>
+              <Link
+                href={`/work/${study.slug}`}
+                className="inline-flex items-center gap-1.5 text-fg-muted hover:text-fg"
+              >
+                Case study: {study.title}
+                <ArrowRightIcon aria-hidden className="size-4 shrink-0 text-accent-text" />
+              </Link>
+            </li>
+          ) : null}
           {related.map((service) => (
             <li key={service.slug}>
               <Link
@@ -72,6 +86,15 @@ export function ThankYou() {
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              href="/how-it-works"
+              className="inline-flex items-center gap-1.5 text-fg-muted hover:text-fg"
+            >
+              What happens next, phase by phase
+              <ArrowRightIcon aria-hidden className="size-4 text-accent-text" />
+            </Link>
+          </li>
           <li>
             <Link
               href="/services#engagement-models"
