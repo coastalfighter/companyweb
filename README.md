@@ -102,6 +102,14 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in M4c (analytics, error reporting)
+
+- **No analytics until "Allow".** With `NEXT_PUBLIC_POSTHOG_KEY` set, a small non-blocking banner asks once; Global Privacy Control counts as "No thanks" and is never asked. PostHog (~100 KB) is a dynamic import that loads only after consent, so it never touches anyone else's JS budget. "Analytics settings" in the footer changes the choice, and withdrawing stops sending immediately.
+- **Minimal by configuration:** localStorage persistence (still no cookies), no autocapture, session replay, surveys, heatmaps, feature flags or remote scripts, and no person profiles. Events are the F5 plan only (`cta_click`, `calculator_start` / `_complete` / `_pdf`, `form_start`, `form_field_error` with the field name, never its value, and `form_submit`), plus page views. CTA clicks come from one delegated listener, so no markup changed.
+- **Verified in a real browser** with a test key: nothing contacted PostHog before consent; after "Allow" only its two hosts were contacted (now allowed by the CSP only when configured), with no cookies; after withdrawing, zero requests. That check also found a second PostHog storage key, now disclosed on the cookies page, which an E2E test keeps in sync with what the site really stores.
+- **Server errors to Sentry** (`SENTRY_DSN`) through `instrumentation.ts` and a ~100-line envelope client instead of the SDK: error, route and path without the query string; never headers, cookies or bodies. Sentry and PostHog join the processor list automatically when configured.
+- **Not built (needs an account):** uptime and a synthetic contact-form check every 15 minutes (Checkly / Better Stack, blueprint 09). Point it at `/contact` with `LEADS_LOG_ONLY` off and a test address you filter in HubSpot.
+
 ## Decisions made in M4b (trust center, legal pages)
 
 - **`/about/security` and `/legal/*` (privacy, terms, cookies, DPA, accessibility)** are drafted from what this site actually does. The processor list is built from the integrations switched on in the environment, and the browser-storage table is tested against the storage keys in the code, so neither can drift.
@@ -212,6 +220,7 @@ These are business commitments in the live copy. They aren't gated (they're offe
 - [ ] Approve the rate card (`content/rate-card.ts`) and cite the salary source for the calculator presets.
 - [ ] Confirm every row in "Claims to confirm" below, and the two inconsistencies under "Known gaps".
 - [ ] Set the integration keys (`.env.example`) and add the HubSpot form properties.
+- [ ] In PostHog: enable IP discarding for the project, and set up the uptime + synthetic form check.
 - [ ] Replace the placeholder logo; supply verified proof (`content/proof.ts`, `content/company.ts`, `content/careers.ts`, case studies).
 
 ## Known gaps

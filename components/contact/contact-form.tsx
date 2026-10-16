@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { PlusIcon, WarningCircleIcon } from "@phosphor-icons/react/ssr";
 import { submitContact } from "@/app/contact/actions";
 import { readStoredAttribution } from "@/components/layout/attribution-tracker";
+import { track } from "@/lib/analytics/track";
 import { readSavedCalculatorRaw } from "@/lib/calculator/saved";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -160,6 +161,7 @@ export function ContactForm({
   // React to the server's answer.
   useEffect(() => {
     if (state.status === "success") {
+      track("form_submit", { form: "contact", services: state.services.length });
       try {
         sessionStorage.removeItem(DRAFT_STORAGE_KEY);
         sessionStorage.setItem(
@@ -185,6 +187,7 @@ export function ContactForm({
   const update = <K extends keyof ContactInput>(field: K, value: ContactInput[K]) => {
     const next = { ...values, [field]: value };
     setValues(next);
+    if (!dirty) track("form_start", { form: "contact" });
     setDirty(true);
     setEditedSinceSubmit((prev) => new Set(prev).add(field as ContactField));
     // Once a field has shown an error, re-validate as the visitor fixes it.
@@ -194,7 +197,10 @@ export function ContactForm({
   };
 
   const blur = (field: ContactField) => {
-    setClientErrors((prev) => ({ ...prev, [field]: validateField(field, values) }));
+    const error = validateField(field, values);
+    // The field's name only, never its value.
+    if (error && clientErrors[field] === undefined) track("form_field_error", { form: "contact", field });
+    setClientErrors((prev) => ({ ...prev, [field]: error }));
   };
 
   const text = (field: "firstName" | "lastName" | "email" | "company" | "details" | "phone") => ({

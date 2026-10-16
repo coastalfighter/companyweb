@@ -12,6 +12,7 @@ import {
   trustBadges,
   type NavItem,
 } from "@/lib/site";
+import { AnalyticsSettingsButton } from "@/components/analytics/analytics-settings";
 import { Logo } from "./logo";
 
 /** Cached so the static shell can prerender; refreshes whenever the site is rebuilt. */
@@ -138,6 +139,11 @@ export function SiteFooter() {
                     </Link>
                   </li>
                 ))}
+                {process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim() ? (
+                  <li>
+                    <AnalyticsSettingsButton className="inline-flex min-h-8 cursor-pointer items-center text-caption text-fg-subtle transition-colors hover:text-fg" />
+                  </li>
+                ) : null}
               </ul>
             </nav>
             {socialLinks.length > 0 ? (

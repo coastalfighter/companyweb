@@ -3,7 +3,7 @@ import { type LegalSection } from "@/components/legal/legal-document";
 import { proof } from "@/content/proof";
 import { siteConfig } from "@/lib/site";
 import {
-  browserStorage,
+  browserStorageItems,
   LEGAL_LAST_UPDATED,
   securityPractices,
   trustFacts,
@@ -341,7 +341,7 @@ export function cookiesContent(env: NodeJS.ProcessEnv = process.env): DocumentCo
             kind: "table",
             caption: "Browser storage used by this website",
             head: ["Name", "Where", "Why", "How long"],
-            rows: browserStorage.map((item) => [
+            rows: browserStorageItems(env).map((item) => [
               <code key="k" className="font-mono text-caption">
                 {item.key}
               </code>,
@@ -356,6 +356,20 @@ export function cookiesContent(env: NodeJS.ProcessEnv = process.env): DocumentCo
           },
         ],
       },
+      ...(env.NEXT_PUBLIC_POSTHOG_KEY?.trim()
+        ? [
+            {
+              id: "analytics",
+              heading: "Analytics",
+              blocks: [
+                {
+                  kind: "p" as const,
+                  text: "We use PostHog to count visits and see which pages and buttons help, and only if you choose “Allow”. It stores an anonymous ID in your browser (no cookies), records page views and a few named actions such as starting the cost calculator, and never records what you type into a form. Change your mind any time under “Analytics settings” at the bottom of every page; a Global Privacy Control signal from your browser counts as “No thanks”.",
+                },
+              ],
+            },
+          ]
+        : []),
       {
         id: "third-parties",
         heading: "Third-party services",

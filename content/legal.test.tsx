@@ -11,7 +11,7 @@ import {
   trustContent,
   type DocumentContent,
 } from "./legal";
-import { browserStorage, trustFacts, websiteProcessors, type TrustFacts } from "./trust";
+import { browserStorage, browserStorageItems, trustFacts, websiteProcessors, type TrustFacts } from "./trust";
 
 const env = (vars: Record<string, string> = {}) => vars as unknown as NodeJS.ProcessEnv;
 const ids = (doc: DocumentContent) => doc.sections.map((s) => s.id);
@@ -120,6 +120,27 @@ describe("browser storage disclosure", () => {
     const used = [...sources.matchAll(/STORAGE_KEY = "([^"]+)"/g)].map((m) => m[1]);
     expect(used.length).toBeGreaterThanOrEqual(4);
     expect(browserStorage.map((s) => s.key).sort()).toEqual([...used].sort());
+  });
+
+  it("adds the consent choice and PostHog's ID only when analytics is configured", () => {
+    expect(browserStorageItems(env())).toEqual(browserStorage);
+    const keys = browserStorageItems(env({ NEXT_PUBLIC_POSTHOG_KEY: "phc_abc" })).map((i) => i.key);
+    expect(keys).toEqual([
+      ...browserStorage.map((i) => i.key),
+      "akros:consent",
+      "ph_phc_abc_posthog",
+      "__ph_opt_in_out_phc_abc",
+    ]);
+    renderDoc(cookiesContent(env({ NEXT_PUBLIC_POSTHOG_KEY: "phc_abc" })));
+    expect(screen.getByRole("heading", { name: "Analytics" })).toBeInTheDocument();
+  });
+
+  it("lists Sentry once error reporting is on", () => {
+    expect(
+      websiteProcessors(env({ SENTRY_DSN: "https://k@o1.ingest.sentry.io/1" }), trustFacts).map(
+        (p) => p.name,
+      ),
+    ).toEqual(["Sentry"]);
   });
 
   it("lists them on the cookies page", () => {

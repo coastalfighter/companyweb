@@ -31,6 +31,7 @@ import {
   type RateCard,
   type Region,
 } from "@/lib/calculator/model";
+import { track } from "@/lib/analytics/track";
 import { clearCalculatorInput, saveCalculatorInput } from "@/lib/calculator/storage";
 import { FUNCTION_PRESETS } from "@/lib/calculator/teaser";
 import { cn } from "@/lib/utils";
@@ -201,9 +202,17 @@ export function BackOfficeCalculator({
   }, [input, interactive, touched]);
 
   const update = (next: CalculatorInput) => {
+    if (!touched) track("calculator_start", {});
     setTouched(true);
     setInput(next);
   };
+
+  // calculator_complete: the first time a change produces a result (F5 funnel).
+  const [completed, setCompleted] = useState(false);
+  if (touched && !completed && result.verdict !== "empty") {
+    setCompleted(true);
+    track("calculator_complete", { functions: result.lines.length, has_rate_card: rateCard !== null });
+  }
   const updateFunction = (fn: CalcFunction, next: FunctionInput) =>
     update({ ...input, functions: { ...input.functions, [fn]: next } });
 

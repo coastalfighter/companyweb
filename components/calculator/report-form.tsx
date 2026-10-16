@@ -6,6 +6,7 @@ import { TurnstileWidget } from "@/components/contact/turnstile-widget";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { track } from "@/lib/analytics/track";
 import { type CalculatorInput } from "@/lib/calculator/model";
 import { siteConfig } from "@/lib/site";
 
@@ -84,11 +85,9 @@ export function ReportForm({ input, available, turnstileSiteKey }: ReportFormPro
       });
       if (response.ok) {
         download(await response.blob(), "akrostech-back-office-cost-report.pdf");
-        setStatus({
-          kind: "done",
-          emailed: response.headers.get("X-Report-Emailed") === "true",
-          email: payload.email.trim(),
-        });
+        const emailed = response.headers.get("X-Report-Emailed") === "true";
+        track("calculator_pdf", { emailed });
+        setStatus({ kind: "done", emailed, email: payload.email.trim() });
         return;
       }
       const body = (await response.json().catch(() => ({}))) as {

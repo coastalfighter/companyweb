@@ -9,6 +9,17 @@ const isDev = process.env.NODE_ENV === "development";
  * script-src once it is stable. See docs/blueprint/09-tech-stack.md (I3).
  * Allowlist new third parties here explicitly (e.g. Cal.com, PostHog, Turnstile in M1d).
  */
+/**
+ * PostHog (M4c) is loaded only after consent, and only when configured. It needs its
+ * ingestion host and the matching assets host for config; nothing else.
+ */
+const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim()
+  ? new URL(process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim() || "https://us.i.posthog.com").origin
+  : null;
+const analyticsOrigins = posthogHost
+  ? ` ${posthogHost} ${posthogHost.replace(".i.posthog.com", "-assets.i.posthog.com")}`
+  : "";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   // challenges.cloudflare.com: Turnstile on the contact form (loaded only on intent).
@@ -17,7 +28,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' blob: data:",
   "font-src 'self'",
-  `connect-src 'self' https://challenges.cloudflare.com${isDev ? " ws:" : ""}`,
+  `connect-src 'self' https://challenges.cloudflare.com${analyticsOrigins}${isDev ? " ws:" : ""}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

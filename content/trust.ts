@@ -8,6 +8,7 @@
  *   timelines, retention periods, the legal entity). Those ship null/empty and
  *   the sections built on them are not rendered until they're filled in.
  */
+import { CONSENT_STORAGE_KEY } from "@/lib/analytics/consent";
 import { CALCULATOR_STORAGE_KEY } from "@/lib/calculator/saved";
 
 /** Security practices already stated on the homepage security band (README "Claims to confirm"). */
@@ -139,6 +140,12 @@ export function websiteProcessors(
         data: "What you submit when you apply (on their site)",
       });
   }
+  if (has("SENTRY_DSN"))
+    list.push({
+      name: "Sentry",
+      purpose: "Tells us when something breaks on our servers",
+      data: "The page path and technical error details; never form contents",
+    });
   if (has("NEXT_PUBLIC_POSTHOG_KEY"))
     list.push({
       name: "PostHog",
@@ -185,3 +192,33 @@ export const browserStorage: readonly StoredItem[] = [
     lasts: "Until you close the tab",
   },
 ];
+
+/**
+ * Everything stored in the browser, including the analytics items that exist only
+ * when analytics is configured (and, for PostHog's own entry, only after "Allow").
+ */
+export function browserStorageItems(env: NodeJS.ProcessEnv = process.env): StoredItem[] {
+  const key = env.NEXT_PUBLIC_POSTHOG_KEY?.trim();
+  if (!key) return [...browserStorage];
+  return [
+    ...browserStorage,
+    {
+      key: CONSENT_STORAGE_KEY,
+      where: "localStorage",
+      purpose: "Your answer to “Can we count visits anonymously?”",
+      lasts: "Until you change it under “Analytics settings” or clear site data",
+    },
+    {
+      key: `ph_${key}_posthog`,
+      where: "localStorage",
+      purpose: "PostHog's anonymous visitor ID, only if you chose “Allow”",
+      lasts: "Until you change your choice or clear site data",
+    },
+    {
+      key: `__ph_opt_in_out_${key}`,
+      where: "localStorage",
+      purpose: "PostHog's record of your analytics choice",
+      lasts: "Until you change your choice or clear site data",
+    },
+  ];
+}

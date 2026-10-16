@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { AttributionTracker } from "@/components/layout/attribution-tracker";
 import { MobileCtaBar } from "@/components/layout/mobile-cta-bar";
 import { RevealObserver } from "@/components/layout/reveal-observer";
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MobileCtaBar />
         <RevealObserver />
         <AttributionTracker />
+        <AnalyticsProvider />
       </body>
     </html>
   );
