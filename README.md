@@ -102,6 +102,12 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in M4b (trust center, legal pages)
+
+- **`/about/security` and `/legal/*` (privacy, terms, cookies, DPA, accessibility)** are drafted from what this site actually does. The processor list is built from the integrations switched on in the environment, and the browser-storage table is tested against the storage keys in the code, so neither can drift.
+- **Commitments wait for you.** Certifications (with auditor and report date), insurance, the vetting provider, incident-response timelines, client-data retention, hosting provider, status page and the legal entity live in `content/trust.ts` and ship empty. Their sections, and the terms' governing-law clause, appear only once filled in.
+- **Claims were made true before publishing.** The accessibility statement promises pages work at 320px and at 200% zoom, so a test now checks every page at 320px and 640px. It found five pages that overflowed (two long button labels, three single-column grids, and the careers filter's hidden radios escaping their scroll container), all fixed. Known limitations (the untagged PDF, non-Latin names in it, third-party widgets) are stated, not hidden.
+
 ## Decisions made in M4a (edge hardening)
 
 - **Old-site cleanup is code.** `lib/edge/rules.ts` holds the legacy 301 map (served from `next.config.ts` redirects, so it's cached and runs before anything else) and the spam patterns that `proxy.ts` answers with **410 Gone** + `X-Robots-Tag: noindex`: WordPress paths (`wp-*`, `xmlrpc.php`, `.php`, `.html`), date and taxonomy archives, `?p=` / `?s=` style queries, non-ASCII paths, and injected keywords. Keyword rules never fire inside the site's own sections, so a client called "Acme Pharma" can still have a case study.
@@ -197,6 +203,16 @@ These are business commitments in the live copy. They aren't gated (they're offe
 | Offboarding: 30 days' notice, handover pack, access revoked within 1 business day | How it works ("Leaving well"), FAQ   |
 | SOPs belong to the client                                                         | How it works, guarantees             |
 | Senior hiring; month-to-month after 90 days                                       | About (operating rules)              |
+
+## Launch checklist
+
+- [ ] Counsel reviews `/legal/*` and `/about/security` (drafts based on the site's real behaviour, not legal advice).
+- [ ] Fill `content/trust.ts`: legal entity and address, hosting provider, privacy email, and any certifications, insurance, vetting, incident and retention commitments.
+- [ ] Add every legitimate old-site URL to `legacyRedirects` (`lib/edge/rules.ts`); spot-check the spam crawl against `isSpamUrl`.
+- [ ] Approve the rate card (`content/rate-card.ts`) and cite the salary source for the calculator presets.
+- [ ] Confirm every row in "Claims to confirm" below, and the two inconsistencies under "Known gaps".
+- [ ] Set the integration keys (`.env.example`) and add the HubSpot form properties.
+- [ ] Replace the placeholder logo; supply verified proof (`content/proof.ts`, `content/company.ts`, `content/careers.ts`, case studies).
 
 ## Known gaps
 

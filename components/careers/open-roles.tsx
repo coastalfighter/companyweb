@@ -44,13 +44,13 @@ export function OpenRolesList({ jobs, basePath }: OpenRolesListProps) {
       {teams.length > 1 ? (
         <>
           <style>{teamFilterCss(teams.length)}</style>
-          <fieldset className="-mx-(--gutter) min-w-0 overflow-x-auto px-(--gutter)">
+          <fieldset className="min-w-0">
             <legend className="sr-only">Filter by team</legend>
-            <div className="flex gap-1">
+            <div className="-mx-(--gutter) flex gap-1 overflow-x-auto px-(--gutter)">
               {["All", ...teams].map((label, i) => (
                 <label
                   key={label}
-                  className="inline-flex h-10 shrink-0 cursor-pointer items-center rounded-md px-3.5 text-body-sm font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg has-[:checked]:bg-surface-3 has-[:checked]:text-fg has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
+                  className="relative inline-flex h-10 shrink-0 cursor-pointer items-center rounded-md px-3.5 text-body-sm font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg has-[:checked]:bg-surface-3 has-[:checked]:text-fg has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
                 >
                   <input
                     type="radio"

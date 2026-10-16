@@ -115,7 +115,13 @@ export function ComparisonSection() {
         </div>
 
         <div data-reveal>
-          <Button asChild variant="secondary" size="lg" iconRight="arrow">
+          <Button
+            asChild
+            variant="secondary"
+            size="lg"
+            iconRight="arrow"
+            className="max-sm:h-auto max-sm:min-h-14 max-sm:w-full max-sm:py-3 max-sm:text-center max-sm:whitespace-normal"
+          >
             <Link href={ctas.secondary.href} prefetch={prefetchFor(ctas.secondary.href)}>
               Run the numbers for your team
             </Link>

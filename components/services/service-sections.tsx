@@ -87,7 +87,7 @@ export function ServiceTimeline({ content }: { content: ServiceContent }) {
           eyebrow="How an engagement runs"
           title={`${content.timeline.label}, step by step.`}
         />
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
           <ol className="relative flex flex-col gap-10 border-l border-line pl-8 lg:col-span-8">
             {content.timeline.steps.map((step) => (
               <li key={step.title} data-reveal className="relative flex flex-col gap-2">

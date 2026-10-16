@@ -14,6 +14,12 @@ const routes = [
   "/design-system/careers-preview/senior-bookkeeper-sample1",
   "/resources/back-office-calculator",
   "/design-system/calculator-preview?fn=finance&hours=40",
+  "/about/security",
+  "/legal/privacy",
+  "/legal/terms",
+  "/legal/cookies",
+  "/legal/dpa",
+  "/legal/accessibility",
   "/this-route-does-not-exist",
 ] as const;
 
@@ -59,6 +65,12 @@ const layoutRoutes = [
   "/design-system/careers-preview/senior-bookkeeper-sample1",
   "/resources/back-office-calculator",
   "/design-system/calculator-preview?fn=finance&hours=40",
+  "/about/security",
+  "/legal/privacy",
+  "/legal/terms",
+  "/legal/cookies",
+  "/legal/dpa",
+  "/legal/accessibility",
 ] as const;
 
 for (const route of layoutRoutes) {
@@ -71,3 +83,24 @@ for (const route of layoutRoutes) {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+// The accessibility statement promises pages work at 320px and at 200% zoom
+// (a 1280px window at 200% is a 640px viewport). Hold it to that.
+test.describe("narrow viewports", () => {
+  test.skip(({ isMobile }) => isMobile, "sets its own viewport");
+  for (const width of [320, 640]) {
+    test(`no horizontal overflow at ${width}px on any page`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      const failures: string[] = [];
+      for (const route of layoutRoutes) {
+        await page.goto(route);
+        await page.waitForTimeout(150);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
+        if (overflow > 0) failures.push(`${route}: ${overflow}px`);
+      }
+      expect(failures).toEqual([]);
+    });
+  }
+});

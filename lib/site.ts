@@ -35,6 +35,12 @@ export const liveRoutes = [
   "/work",
   "/careers",
   "/resources/back-office-calculator",
+  "/about/security",
+  "/legal/privacy",
+  "/legal/terms",
+  "/legal/cookies",
+  "/legal/dpa",
+  "/legal/accessibility",
 ] as const;
 
 const liveRouteSet: ReadonlySet<string> = new Set(liveRoutes);

@@ -36,7 +36,12 @@ export default function ServicesPage() {
             add the others when you&apos;re ready.
           </p>
           <div className="mt-4">
-            <Button asChild size="lg" iconRight="arrow">
+            <Button
+              asChild
+              size="lg"
+              iconRight="arrow"
+              className="max-sm:h-auto max-sm:min-h-14 max-sm:w-full max-sm:py-3 max-sm:text-center max-sm:whitespace-normal"
+            >
               <Link href={ctas.primary.href} prefetch={prefetchFor(ctas.primary.href)}>
                 Not sure where to start? Book a call
               </Link>
