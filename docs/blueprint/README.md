@@ -34,7 +34,7 @@ The visual language (black canvas, a single electric-lime accent, dense typograp
 | H | Responsive & Accessibility | [`08-responsive-accessibility.md`](./08-responsive-accessibility.md) |
 | I | Tech Stack Recommendation | [`09-tech-stack.md`](./09-tech-stack.md) |
 | J | Starter Code (Hero) | [`10-starter-code.md`](./10-starter-code.md) · live file: [`/starter/hero.html`](../../starter/hero.html) |
-| — | Design tokens (CSS) | [`tokens.css`](./tokens.css) |
+| — | Design tokens (CSS) | [`styles/tokens.css`](../../styles/tokens.css) |
 
 ---
 

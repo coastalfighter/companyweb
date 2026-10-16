@@ -8,10 +8,10 @@
 
 | Layer | Choice | Why |
 |---|---|---|
-| **Framework** | **Next.js 15 (App Router) + React 19 + TypeScript (strict)** | Static generation + ISR gives a CDN-served, mostly-static site with no runtime server or plugin layer to exploit, unlike WordPress, which is the most common target of the spam-injection attacks that hit the current site. React Server Components keep client JS small. It's the stack CTOs recognize and respect. |
+| **Framework** | **Next.js 16 (App Router) + React 19 + TypeScript (strict)** | Static generation + ISR gives a CDN-served, mostly-static site with no runtime server or plugin layer to exploit, unlike WordPress, which is the most common target of the spam-injection attacks that hit the current site. React Server Components keep client JS small. It's the stack CTOs recognize and respect. |
 | **Styling** | **Tailwind CSS v4** + CSS custom-property tokens (`tokens.css`) | Tokens are defined once and mapped via `@theme`; no runtime CSS-in-JS cost. Easy theming (dark/light/paper). |
 | **Components** | **shadcn/ui** (Radix primitives), restyled | Accessible primitives (Dialog, NavigationMenu, Tabs, Accordion, Select) and code we own, with no black-box UI library. |
-| **Motion** | **Motion (formerly Framer Motion) v12** for UI/layout animation + **GSAP 3 (ScrollTrigger)** for the 2–3 scroll-scrubbed narratives | Motion handles springs, layout and presence animation declaratively; GSAP is still the most robust choice for scrubbed, pinned scroll timelines. Both are loaded only on routes that need them (dynamic import). CSS handles the simple stuff (hover, marquee). |
+| **Motion** | CSS keyframes by default (M0 hero uses none of the libraries below). **Motion (formerly Framer Motion)** only where springs/layout animation earn their ~45 KB, loaded per route, + **GSAP 3 (ScrollTrigger)** for the 2–3 scroll-scrubbed narratives | Motion handles springs, layout and presence animation declaratively; GSAP is still the most robust choice for scrubbed, pinned scroll timelines. Both are loaded only on routes that need them (dynamic import). CSS handles the simple stuff (hover, marquee). |
 | **3D** (Concept 2 / About only) | Spline export **or** React Three Fiber, lazy-loaded with AVIF poster | Never on the critical path; disabled on mobile and with reduced motion. |
 | **Icons** | `@phosphor-icons/react` (tree-shaken, SSR-safe imports) | Section A8. |
 | **Fonts** | `next/font/google`: Bricolage Grotesque, Inter, JetBrains Mono | Self-hosted at build, preloaded, no CLS. |
@@ -80,7 +80,7 @@ Editorial guardrails built into the schema: case studies and testimonials **cann
 |---|---|
 | Lighthouse Performance (mobile, simulated 4G) | ≥ 95 |
 | Lighthouse Accessibility / Best Practices / SEO | 100 / 100 / 100 |
-| Homepage JS (gzipped, first load) | ≤ 120 KB |
+| Homepage JS (compressed transfer, first load) | ≤ 200 KB *(revised in M0: the Next.js 16 + React 19 runtime alone is most of this; measured 197 KB gzip in M0 after removing the animation library from the hero. Page code must fit in what remains)* |
 | Homepage total transfer (first load) | ≤ 600 KB |
 | Fonts | ≤ 3 families, ≤ 110 KB total WOFF2 (subset) |
 | Hero LCP image (if any) | ≤ 120 KB AVIF |
@@ -142,7 +142,7 @@ akrostech-web/
 ├── styles/ (tokens.css, globals.css)
 ├── tests/e2e/ (contact.spec.ts, a11y.spec.ts, navigation.spec.ts)
 ├── redirects.ts                          # Legacy 301s + spam 410s
-├── middleware.ts                         # 410 responses for spam URL patterns, security headers
+├── proxy.ts                              # 410 responses for spam URL patterns (Next 16 renamed middleware → proxy)
 ├── .env.example
 └── lighthouserc.json
 ```

@@ -1,0 +1,12 @@
+.next
+out
+build
+coverage
+node_modules
+package-lock.json
+playwright-report
+test-results
+.lighthouseci
+.claude
+docs
+starter

@@ -105,7 +105,7 @@ Semantic backgrounds (dark): same hue at 12% opacity on `--ink-850`, with a 1px 
 ### A1.7 Theme strategy
 
 - **Default theme: dark.** Matches the logo, makes lime luminous, and puts us visually next to Linear/Vercel and away from the white-and-blue outsourcing category.
-- **Light mode:** supported (respects `prefers-color-scheme`, with a toggle in the footer, not the header, since 90%+ of users will never touch it). Light mode swaps lime-as-text for `--volt-700`/`--volt-800`, and primary buttons stay **Ink fill + Paper text** with a lime 2px left-edge indicator on hover.
+- **Light mode:** opt-in only, via a toggle in the footer (not the header, since 90%+ of users will never touch it). The site does **not** auto-switch on the OS `prefers-color-scheme` setting: the dark canvas is the brand's first impression, and every component is designed and contrast-checked dark-first. *(Decision made in M0; revisit once every component has a reviewed light variant.)* Light mode swaps lime-as-text for `--volt-700`/`--volt-800`, and primary buttons stay **Ink fill + Paper text** with a lime 2px left-edge indicator on hover.
 - **"Paper" sections inside dark mode:** case study reading pages and legal/policy pages use the light palette even in dark mode for long-form readability (CFOs read on laptops in bright offices). This is an intentional editorial shift, like turning to the printed appendix.
 
 ---
@@ -359,4 +359,4 @@ Real Akrostech people at work: hands on keyboards, whiteboards with real process
 
 ## A11. Tokens
 
-The complete token set is implemented in [`tokens.css`](./tokens.css) as CSS custom properties, with a Tailwind v4 `@theme` mapping. See Section I for integration.
+The complete token set is implemented in [`styles/tokens.css`](../../styles/tokens.css) as CSS custom properties, with a Tailwind v4 `@theme` mapping. See Section I for integration.

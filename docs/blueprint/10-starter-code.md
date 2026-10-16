@@ -3,7 +3,7 @@
 Two versions:
 
 1. **[`/starter/hero.html`](../../starter/hero.html):** a self-contained HTML + Tailwind file you can open in any browser right now. It includes the sticky header, hero copy, CTAs and a working live Ops Feed with filter tabs, a pause control, pointer tilt, reduced-motion support and keyboard-accessible tabs. It was checked in headless Chromium at 1440×900 and 390×844, with no console errors and no horizontal overflow.
-2. **Next.js / React components (below):** the same hero split into production components for the stack in Section I (Next.js 15 + Tailwind v4 + `tokens.css`).
+2. **Next.js / React components (below):** the same hero split into production components for the stack in Section I (Next.js 16 + Tailwind v4 + `tokens.css`).
 
 ---
 
@@ -40,6 +40,8 @@ Notes:
 ---
 
 ## J2. Next.js components (production version)
+
+> **Built in M0.** The shipped versions live in `components/marketing/hero/`. They differ from the sketch below in two deliberate ways: rows animate with CSS keyframes instead of Motion (about 44 KB less homepage JS), and the feed's tick logic is a pure, unit-tested `nextFeedState()` function. Treat the code below as the original sketch.
 
 ### File tree
 
@@ -447,7 +449,7 @@ describe("<OpsFeed />", () => {
 
 The blueprint is complete. To build it sequentially, request these milestones in order:
 
-1. **M0 · Foundation repo:** "Scaffold the Next.js 15 project with Tailwind v4, `tokens.css`, fonts, shadcn primitives restyled to tokens, ESLint/Prettier/Vitest/Playwright, and `.env.example`."
+1. ✅ **M0 · Foundation repo (done):** "Scaffold the Next.js 16 project with Tailwind v4, `tokens.css`, fonts, shadcn primitives restyled to tokens, ESLint/Prettier/Vitest/Playwright, and `.env.example`."
 2. **M1a · Global layout:** "Build SiteHeader (with mega-menu), MobileNav, SiteFooter, VoltSlab, and the Button/Badge/Card primitives from Section G, with tests."
 3. **M1b · Homepage:** "Build the homepage sections 1.1–1.13 using the hero above."
 4. **M1c · Service template + 5 service pages** (Sanity schema + page template).

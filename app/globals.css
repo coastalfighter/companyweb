@@ -1,0 +1,205 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* Class-based dark variant is not used: dark is the default, light is opt-in via data-theme. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *, .theme-paper, .theme-paper *));
+
+@layer base {
+  html {
+    background-color: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Keeps focused elements clear of the sticky header (WCAG 2.4.11) */
+    scroll-padding-top: 88px;
+  }
+
+  body {
+    min-height: 100svh;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    /* Inter: open digits, single-storey variants off by default */
+    font-feature-settings: "cv11", "ss01", "ss03";
+  }
+
+  @media (min-width: 1280px) {
+    body {
+      font-size: 1.0625rem;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--volt-500);
+    color: var(--ink-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}
+
+@layer utilities {
+  .text-volt-gradient {
+    background-image: var(--text-volt);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Decorative 12-column structural grid (hero, process page) */
+  .grid-overlay {
+    background-image: repeating-linear-gradient(
+      to right,
+      rgb(46 46 51 / 0.4) 0 1px,
+      transparent 1px calc(100% / 12)
+    );
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 75%);
+  }
+
+  /* Film grain: kills banding on dark gradients */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("/textures/grain.svg");
+  }
+}
+
+/* ---------- Motion primitives ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Transform-only entrance for LCP text: never starts invisible, so the browser
+   counts it as painted on the first frame. */
+@keyframes rise-in-place {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(163 230 53 / 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(163 230 53 / 0);
+  }
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Ops Feed rows: enter on mount (new rows are keyed, so each one animates once). */
+.feed-row {
+  animation: row-in 420ms var(--ease-out-expo) both;
+}
+
+@utility animate-rise {
+  opacity: 0;
+  animation: rise var(--dur-reveal) var(--ease-out-expo) forwards;
+}
+
+@utility animate-rise-lcp {
+  animation: rise-in-place 700ms var(--ease-out-expo) both;
+}
+
+@utility animate-fade-in {
+  opacity: 0;
+  animation: fade-in var(--dur-reveal) var(--ease-out-expo) forwards;
+}
+
+@utility animate-panel-in {
+  opacity: 0;
+  animation: panel-in 700ms var(--ease-out-expo) 350ms forwards;
+}
+
+@utility animate-live-pulse {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-lcp {
+    animation: none !important;
+  }
+  .animate-rise,
+  .animate-fade-in,
+  .animate-panel-in,
+  .feed-row {
+    animation: fade-in 150ms linear forwards !important;
+    transform: none !important;
+  }
+  .animate-live-pulse {
+    animation: none;
+  }
+}

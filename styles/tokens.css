@@ -1,0 +1,273 @@
+/* ==========================================================================
+   Akrostech Design Tokens v1.1
+   Source of truth for color, type, spacing, radius, elevation and motion.
+   Spec: docs/blueprint/01-brand-design-system.md
+
+   Layering:
+   1. :root          raw palette + semantic aliases (theme-switchable)
+   2. @theme         static scales that generate Tailwind utilities
+   3. @theme inline  Tailwind utilities that point at the semantic aliases
+
+   Theme: dark is the default regardless of OS preference (brand decision).
+   Light is opt-in via [data-theme="light"] on <html>, or .theme-paper on a
+   section (case-study bodies, legal pages).
+   ========================================================================== */
+
+:root {
+  /* ---------- Volt (brand lime) ---------- */
+  --volt-50: #f7fee7;
+  --volt-100: #ecfccb;
+  --volt-200: #d9f99d;
+  --volt-300: #c6f56b; /* Volt Glow: primary hover on dark */
+  --volt-400: #b5ee4e;
+  --volt-500: #a3e635; /* BRAND */
+  --volt-600: #84cc16; /* pressed */
+  --volt-700: #4d7c0f; /* lime-family text on light, 4.78:1 */
+  --volt-800: #3f6212; /* small text / focus on light, 6.78:1 */
+  --volt-900: #365314;
+  --volt-950: #1a2e05;
+
+  /* ---------- Ink (cool neutrals) ---------- */
+  --ink-950: #0a0a0a; /* BRAND black / canvas */
+  --ink-900: #111113;
+  --ink-850: #141416;
+  --ink-800: #1c1c1f;
+  --ink-700: #26262a;
+  --ink-600: #2e2e33; /* hairline border */
+  --ink-500: #3f3f46;
+  --ink-400: #5c5c66; /* disabled only, never body text */
+  --ink-300: #8a8a94; /* tertiary text, 5.79:1 on ink-950 */
+  --ink-200: #a3a3ad; /* secondary text, 7.92:1 */
+  --ink-100: #d4d4da;
+  --ink-50: #f5f5f4; /* primary text on dark, 18.15:1 */
+  --paper: #fafaf9;
+  --white: #ffffff;
+
+  /* ---------- Secondary / accent (sparingly) ---------- */
+  --ion-400: #5eead4;
+  --ultra-400: #a78bfa;
+  --ultra-700: #6d28d9;
+  --steel-900: #0f1720;
+
+  /* ---------- Semantic aliases: DARK (default) ---------- */
+  --bg: var(--ink-950);
+  --bg-alt: var(--ink-900);
+  --surface-1: var(--ink-850);
+  --surface-2: var(--ink-800);
+  --surface-3: var(--ink-700);
+  --line: var(--ink-600);
+  --line-strong: var(--ink-500);
+  --fg: var(--ink-50);
+  --fg-muted: var(--ink-200);
+  --fg-subtle: var(--ink-300);
+  --fg-disabled: var(--ink-400);
+  --accent: var(--volt-500);
+  --accent-hover: var(--volt-300);
+  --accent-active: var(--volt-600);
+  --accent-text: var(--volt-500);
+  --on-accent: var(--ink-950);
+  --focus: var(--volt-500);
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #60a5fa;
+
+  /* ---------- Elevation (dark) ---------- */
+  --elev-1: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 1px 2px rgb(0 0 0 / 0.4);
+  --elev-2: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  --elev-3: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 16px 48px -12px rgb(0 0 0 / 0.7);
+  --elev-4: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 32px 80px -16px rgb(0 0 0 / 0.8);
+
+  /* ---------- Gradients ---------- */
+  --glow-volt: radial-gradient(closest-side, rgb(163 230 53 / 0.16), rgb(163 230 53 / 0) 70%);
+  --edge-light: linear-gradient(90deg, transparent, rgb(163 230 53 / 0.6), transparent);
+  --text-volt: linear-gradient(180deg, #d9f99d 0%, #a3e635 55%, #84cc16 100%);
+
+  /* ---------- Spacing (raw CSS use; Tailwind's --spacing is 4px too) ---------- */
+  --section-y: clamp(4rem, 2.6rem + 6vw, 8rem);
+  --gutter: 1.25rem;
+
+  /* ---------- Motion durations ---------- */
+  --dur-instant: 80ms;
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+  --dur-slow: 360ms;
+  --dur-reveal: 600ms;
+
+  color-scheme: dark;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 2.5rem;
+  }
+}
+
+/* ---------- LIGHT / PAPER (opt-in) ---------- */
+:root[data-theme="light"],
+.theme-paper {
+  --bg: var(--paper);
+  --bg-alt: var(--ink-50);
+  --surface-1: var(--white);
+  --surface-2: var(--ink-50);
+  --surface-3: var(--white);
+  --line: #e4e4e7;
+  --line-strong: #d4d4da;
+  --fg: var(--ink-950);
+  --fg-muted: #525252; /* 7.48:1 on paper */
+  --fg-subtle: #6b6b6b; /* 5.10:1 on paper */
+  --fg-disabled: #a3a3ad;
+  --accent: var(--ink-950); /* primary buttons are Ink on light */
+  --accent-hover: #26262a;
+  --accent-active: #000000;
+  --accent-text: var(--volt-700); /* 4.78:1 */
+  --on-accent: var(--paper);
+  --focus: var(--volt-800);
+  --success: #047857;
+  --warning: #b45309;
+  --error: #b91c1c;
+  --info: #1d4ed8;
+  --elev-1: 0 1px 2px rgb(10 10 10 / 0.06);
+  --elev-2: 0 8px 24px -8px rgb(10 10 10 / 0.12);
+  --elev-3: 0 16px 48px -12px rgb(10 10 10 / 0.16);
+  --elev-4: 0 32px 80px -16px rgb(10 10 10 / 0.24);
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-base: 0ms;
+    --dur-slow: 150ms;
+    --dur-reveal: 150ms;
+  }
+}
+
+/* ---------- Static scales → Tailwind utilities ---------- */
+@theme {
+  /* Fonts: next/font injects --font-bricolage / --font-inter / --font-jetbrains */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale (fluid 375px → 1440px). Usage: text-display-xl, text-h2, text-body-lg… */
+  --text-display-xl: clamp(3rem, 1.94rem + 4.51vw, 6rem);
+  --text-display-xl--line-height: 0.95;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-lg: clamp(2.5rem, 1.8rem + 2.99vw, 4.5rem);
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.03em;
+  --text-h1: clamp(2.5rem, 2.06rem + 1.88vw, 4rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: clamp(2rem, 1.65rem + 1.5vw, 3rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h3: clamp(1.5rem, 1.32rem + 0.75vw, 2rem);
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.02em;
+  --text-h4: clamp(1.25rem, 1.16rem + 0.38vw, 1.5rem);
+  --text-h4--line-height: 1.25;
+  --text-h4--letter-spacing: -0.015em;
+  --text-h5: 1.125rem;
+  --text-h5--line-height: 1.35;
+  --text-h5--letter-spacing: -0.01em;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.4;
+  --text-overline--letter-spacing: 0.12em;
+  --text-body-lg: clamp(1.125rem, 1.08rem + 0.19vw, 1.25rem);
+  --text-body-lg--line-height: 1.55;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.55;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.3;
+  --text-stat: clamp(3rem, 2.47rem + 2.25vw, 5rem);
+  --text-stat--line-height: 1;
+  --text-stat--letter-spacing: -0.04em;
+
+  /* Radius: tight = precise tooling */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+
+  /* Layout */
+  --container-content: 1280px;
+  --container-wide: 1440px;
+  --container-prose: 720px;
+
+  --shadow-glow: 0 0 0 1px rgb(163 230 53 / 0.25), 0 8px 32px -8px rgb(163 230 53 / 0.45);
+}
+
+/* ---------- Semantic utilities (follow the active theme) ---------- */
+@theme inline {
+  --color-volt-50: var(--volt-50);
+  --color-volt-100: var(--volt-100);
+  --color-volt-200: var(--volt-200);
+  --color-volt-300: var(--volt-300);
+  --color-volt-400: var(--volt-400);
+  --color-volt-500: var(--volt-500);
+  --color-volt-600: var(--volt-600);
+  --color-volt-700: var(--volt-700);
+  --color-volt-800: var(--volt-800);
+  --color-volt-900: var(--volt-900);
+  --color-volt-950: var(--volt-950);
+  --color-ink-50: var(--ink-50);
+  --color-ink-100: var(--ink-100);
+  --color-ink-200: var(--ink-200);
+  --color-ink-300: var(--ink-300);
+  --color-ink-400: var(--ink-400);
+  --color-ink-500: var(--ink-500);
+  --color-ink-600: var(--ink-600);
+  --color-ink-700: var(--ink-700);
+  --color-ink-800: var(--ink-800);
+  --color-ink-850: var(--ink-850);
+  --color-ink-900: var(--ink-900);
+  --color-ink-950: var(--ink-950);
+  --color-paper: var(--paper);
+  --color-ion-400: var(--ion-400);
+  --color-ultra-400: var(--ultra-400);
+  --color-steel-900: var(--steel-900);
+
+  --color-bg: var(--bg);
+  --color-bg-alt: var(--bg-alt);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-disabled: var(--fg-disabled);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-active: var(--accent-active);
+  --color-accent-text: var(--accent-text);
+  --color-on-accent: var(--on-accent);
+  --color-focus: var(--focus);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  --shadow-e1: var(--elev-1);
+  --shadow-e2: var(--elev-2);
+  --shadow-e3: var(--elev-3);
+  --shadow-e4: var(--elev-4);
+}
