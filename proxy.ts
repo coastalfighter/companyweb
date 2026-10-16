@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { caseStudies } from "@/content/case-studies";
+import { comparisons } from "@/content/compare";
 import { serviceContent } from "@/content/services";
 import { goneHtml, isSpamUrl, isUnknownSlug } from "@/lib/edge/rules";
 import { siteConfig } from "@/lib/site";
@@ -8,6 +9,7 @@ import { siteConfig } from "@/lib/site";
 const KNOWN_SLUGS: Readonly<Record<string, ReadonlySet<string>>> = {
   services: new Set(Object.keys(serviceContent)),
   work: new Set(caseStudies.map((s) => s.slug)),
+  compare: new Set(comparisons.map((c) => c.slug)),
 };
 
 /** A path that matches no route, so the app renders its 404 once, from one cache entry. */

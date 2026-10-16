@@ -4,6 +4,7 @@ import { proof } from "@/content/proof";
 import { services } from "@/lib/services";
 import { careersFacts, cultureItems, hiringSteps } from "@/content/careers";
 import { caseStudies } from "@/content/case-studies";
+import { comparisonRows, comparisons } from "@/content/compare";
 import { company, operatingRules, principles } from "@/content/company";
 import { guarantees, pendingGuarantees, phases, processFaqs } from "@/content/process";
 import { getServiceContent, serviceContent } from "./index";
@@ -100,6 +101,8 @@ describe("copy rules (all shipped content)", () => {
     ...strings(careersFacts),
     ...strings(cultureItems()),
     ...strings(hiringSteps),
+    ...strings(comparisons),
+    ...strings(comparisonRows(false)),
   ];
 
   it.each(BANNED.map((re) => [re.source, re] as const))("never uses %s", (_name, re) => {

@@ -77,6 +77,8 @@ akrosstech.com
 System:  /404 · /500 · /sitemap.xml · /robots.txt · /llms.txt · /rss.xml (P2)
 ```
 
+> **As built (Phase 2a):** `/pricing`, `/compare` and both comparison pages are live. Industries, Resources (Field Notes, guides), the Ops Readiness Scorecard and `/client-login` wait for content or data from Akrostech.
+
 ### Slug rules
 
 - Lowercase, hyphenated, no trailing slash, no dates in blog slugs.

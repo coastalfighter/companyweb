@@ -102,6 +102,12 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in Phase 2a (compare, pricing)
+
+- **`/compare/in-house-vs-akrostech` and `/compare/freelancers-vs-akrostech`** expand the homepage table (1.9) from one shared data module (`content/compare.ts`), so the three can't disagree (tested). Each page states the case for the alternative first ("Hire in-house when…"), in the same spirit as the calculator's candid verdicts. `/compare` lists both above the full table.
+- **`/pricing`** is the engagement models, pricing FAQ and quote CTA, with no list prices (sitemap B1). Old `/prices` and `/rates` URLs 301 there.
+- **Held back for content only Akrostech has:** industry pages (claims of sector experience need real clients behind them), the Field Notes blog and guides (articles to write), the Ops Readiness Scorecard (its benchmark needs real data), and the client-login redirect (needs the portal URL).
+
 ## Decisions made in M4c (analytics, error reporting)
 
 - **No analytics until "Allow".** With `NEXT_PUBLIC_POSTHOG_KEY` set, a small non-blocking banner asks once; Global Privacy Control counts as "No thanks" and is never asked. PostHog (~100 KB) is a dynamic import that loads only after consent, so it never touches anyone else's JS budget. "Analytics settings" in the footer changes the choice, and withdrawing stops sending immediately.

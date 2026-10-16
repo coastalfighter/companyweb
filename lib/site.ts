@@ -41,6 +41,10 @@ export const liveRoutes = [
   "/legal/cookies",
   "/legal/dpa",
   "/legal/accessibility",
+  "/pricing",
+  "/compare",
+  "/compare/in-house-vs-akrostech",
+  "/compare/freelancers-vs-akrostech",
 ] as const;
 
 const liveRouteSet: ReadonlySet<string> = new Set(liveRoutes);
@@ -101,6 +105,7 @@ export const footerNav: readonly NavGroup[] = [
     items: [
       { label: "About", href: "/about" },
       { label: "How it works", href: "/how-it-works" },
+      { label: "Pricing", href: "/pricing" },
       { label: "Careers", href: "/careers" },
       { label: "Contact", href: "/contact" },
     ],
@@ -114,7 +119,10 @@ export const footerNav: readonly NavGroup[] = [
   },
   {
     title: "Resources",
-    items: [{ label: "Cost calculator", href: "/resources/back-office-calculator" }],
+    items: [
+      { label: "Cost calculator", href: "/resources/back-office-calculator" },
+      { label: "Compare your options", href: "/compare" },
+    ],
   },
 ];
 

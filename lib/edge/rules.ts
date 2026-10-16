@@ -34,6 +34,8 @@ export const legacyRedirects: Readonly<Record<string, string>> = {
   "/terms-and-conditions": "/legal/terms",
   "/cookie-policy": "/legal/cookies",
   "/security": "/about/security",
+  "/prices": "/pricing",
+  "/rates": "/pricing",
 };
 
 /** Path patterns that never exist on this site and are typical of WordPress spam injection. */
@@ -64,6 +66,8 @@ export const SITE_SECTIONS: readonly string[] = [
   "/legal",
   "/design-system",
   "/api",
+  "/pricing",
+  "/compare",
 ];
 
 /** Query parameters WordPress (and its spam) use; nothing on this site reads them. */

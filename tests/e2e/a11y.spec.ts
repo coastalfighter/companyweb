@@ -20,6 +20,10 @@ const routes = [
   "/legal/cookies",
   "/legal/dpa",
   "/legal/accessibility",
+  "/pricing",
+  "/compare",
+  "/compare/in-house-vs-akrostech",
+  "/compare/freelancers-vs-akrostech",
   "/this-route-does-not-exist",
 ] as const;
 
@@ -71,6 +75,10 @@ const layoutRoutes = [
   "/legal/cookies",
   "/legal/dpa",
   "/legal/accessibility",
+  "/pricing",
+  "/compare",
+  "/compare/in-house-vs-akrostech",
+  "/compare/freelancers-vs-akrostech",
 ] as const;
 
 for (const route of layoutRoutes) {

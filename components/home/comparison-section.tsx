@@ -1,43 +1,19 @@
 import Link from "next/link";
 import { SectionHeader } from "@/components/marketing/section-header";
 import { Button } from "@/components/ui/button";
+import { comparisonRows, COMPETITOR_LABELS, COMPETITORS } from "@/content/compare";
 import { proof } from "@/content/proof";
 import { ctas, prefetchFor } from "@/lib/site";
 
-const columns = ["Freelancers", "Typical offshore BPO", "In-house hire", "Akrostech"] as const;
+const columns = [...COMPETITORS.map((c) => COMPETITOR_LABELS[c]), "Akrostech"] as const;
 
-type Row = { label: string; values: readonly [string, string, string, string] };
+type Row = { label: string; values: readonly string[] };
 
 function rows(soc2: boolean): readonly Row[] {
-  return [
-    { label: "Time to start", values: ["1–3 weeks", "4–8 weeks", "6–12 weeks", "10 business days"] },
-    {
-      label: "Who manages the work",
-      values: ["You", "An account manager", "You", "A dedicated Akrostech lead"],
-    },
-    {
-      label: "Coverage when someone's out",
-      values: ["None", "Varies", "None", "Built-in backup on every role"],
-    },
-    {
-      label: "Visibility",
-      values: ["Whatever they tell you", "Monthly report", "Daily standup", "Live task log + Friday report"],
-    },
-    {
-      label: "Security controls",
-      values: [
-        "Unknown",
-        "Varies",
-        "Yours",
-        soc2 ? "SOC 2 controls, NDA, access logs" : "NDA, least-privilege access, access logs",
-      ],
-    },
-    {
-      label: "Commitment",
-      values: ["Per project", "12–36 months", "Permanent", "Month-to-month after 90 days"],
-    },
-    { label: "Fully loaded cost", values: ["$$", "$", "$$$$", "$$"] },
-  ];
+  return comparisonRows(soc2).map((row) => ({
+    label: row.label,
+    values: [...COMPETITORS.map((c) => row.values[c]), row.akrostech],
+  }));
 }
 
 /** Homepage 1.9: "You have options. Here's how we stack up." */
@@ -114,7 +90,7 @@ export function ComparisonSection() {
           </p>
         </div>
 
-        <div data-reveal>
+        <div data-reveal className="flex flex-col items-start">
           <Button
             asChild
             variant="secondary"
@@ -126,6 +102,16 @@ export function ComparisonSection() {
               Run the numbers for your team
             </Link>
           </Button>
+          <p className="mt-5 text-body-sm text-fg-muted">
+            In detail:{" "}
+            <Link href="/compare/in-house-vs-akrostech" className="text-fg underline underline-offset-4">
+              in-house vs Akrostech
+            </Link>{" "}
+            ·{" "}
+            <Link href="/compare/freelancers-vs-akrostech" className="text-fg underline underline-offset-4">
+              freelancers vs Akrostech
+            </Link>
+          </p>
         </div>
       </div>
     </section>

@@ -12,7 +12,9 @@
         "http://localhost:3200/how-it-works",
         "http://localhost:3200/work",
         "http://localhost:3200/careers",
-        "http://localhost:3200/resources/back-office-calculator"
+        "http://localhost:3200/resources/back-office-calculator",
+        "http://localhost:3200/pricing",
+        "http://localhost:3200/compare/in-house-vs-akrostech"
       ],
       "numberOfRuns": 3,
       "settings": {
