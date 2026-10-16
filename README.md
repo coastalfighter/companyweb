@@ -102,6 +102,18 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Careers (ATS)
+
+Set `ATS_PROVIDER` (`ashby`, `greenhouse` or `lever`) and `ATS_BOARD` (the board name or token) to list open roles on `/careers`, each with its own page at `/careers/<title>-<id>` and `JobPosting` structured data. These are the providers' public, read-only job-board APIs, so no API key is needed. Roles are cached and refresh hourly; call `revalidateTag("jobs")` from an ATS webhook to refresh sooner. Applications happen on the ATS's own form. `NEXT_PUBLIC_TALENT_POOL_URL` points "Join the talent pool" at the ATS general application; without it, the link is an email.
+
+## Decisions made in M2c (Careers)
+
+- **ATS text, never ATS HTML.** Job descriptions are converted to headings, paragraphs and lists and rendered as text, so markup from a third party never reaches the page and no HTML sanitizer is needed.
+- **Fail honest.** No ATS configured shows the talent-pool empty state; an ATS outage shows "Our roles list didn't load just now" with a link to the job board, never a false "No open roles". One malformed or non-https posting is skipped without hiding the rest.
+- **HR facts are gated.** Benefits (12.3), the learning-budget figure, the countries people can work from and the employee quote (12.6) live in `content/careers.ts` and ship empty; the culture copy reads without the specifics until they're confirmed. Review the full design at `/design-system/careers-preview`.
+- **Buyer CTAs stay off careers pages:** no lime slab (blueprint 12.7) and no mobile "Book a call" bar.
+- **Bugs caught by tests:** inline-formatted paragraphs (`<p><strong>…`) were dropped by the HTML-to-text converter; salaries rendered as "$60.0K".
+
 ## Decisions made in M2b (Work, case-study template)
 
 - **Publishing a case study is one entry.** Add it to `content/case-studies/index.ts` (typed like the planned Sanity `caseStudy` document) with the client's written permission recorded in `permission`. It then gets a page at `/work/<slug>`, an index card, a sitemap entry, related-study links and a link on the contact thank-you page for visitors who chose that service.

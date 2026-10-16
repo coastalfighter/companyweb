@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
 const SHOW_AFTER_VIEWPORTS = 0.8;
 /** The visual viewport shrinking this much means the on-screen keyboard is open. */
 const KEYBOARD_RATIO = 0.75;
-const HIDDEN_ON: readonly string[] = ["/contact"];
+/** Not on the form itself, and not for job seekers (buyer CTAs, like the lime slab). */
+const HIDDEN_ON: readonly string[] = ["/contact", "/careers", "/design-system/careers-preview"];
 
 /**
  * Slim mobile bottom CTA bar (docs/blueprint/06-cta-conversion.md, F2.7).

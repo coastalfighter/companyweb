@@ -3,7 +3,9 @@
  * Rendered exclusively on /design-system/home-preview, under a "Sample data"
  * banner. Never import this from a public page.
  */
+import { type Job } from "@/lib/careers/types";
 import { type CaseStudy } from "./case-studies";
+import { type CareersFacts } from "./careers";
 import { type CompanyFacts } from "./company";
 import { type Proof } from "./proof";
 
@@ -243,5 +245,107 @@ export const sampleCaseStudies: readonly CaseStudy[] = [
     whatsNext: "Larkspur's general counsel now gets a monthly renewal calendar from us.",
     publishedAt: "2026-05-20",
     permission: "sample",
+  },
+];
+
+/** Careers facts for design review (blueprint 12.2, 12.3, 12.6, all [VERIFY]). */
+export const sampleCareersFacts: CareersFacts = {
+  benefits: [
+    { title: "Competitive USD-indexed pay" },
+    { title: "HMO / health coverage", detail: "Including one dependant" },
+    { title: "Paid time off + local holidays" },
+    { title: "Equipment provided", detail: "Laptop, headset and a second screen" },
+    { title: "Learning budget", detail: "$1,500 a year" },
+    { title: "Internal promotion first" },
+  ],
+  learningBudget: "$1,500 a year",
+  workCountries: ["the Philippines", "Colombia", "Poland"],
+  quote: {
+    text: "I own the month-end close for two clients. Nobody hands me tickets; they hand me outcomes, and then they actually let me run it.",
+    name: "Sample Employee",
+    role: "Senior Bookkeeper, Finance",
+    permission: "sample",
+  },
+};
+
+const sampleDescription = (role: string) =>
+  [
+    {
+      kind: "paragraph",
+      text: `You'll be the ${role} on a dedicated client team, working inside the client's own tools and reporting to an Akrostech lead.`,
+    },
+    { kind: "heading", text: "What you'll do" },
+    {
+      kind: "list",
+      items: [
+        "Own a defined slice of a client's operations, end to end",
+        "Write and maintain the SOPs for the work you run",
+        "Contribute to the Friday report your client reads",
+      ],
+    },
+    { kind: "heading", text: "What you'll bring" },
+    {
+      kind: "list",
+      items: [
+        "4+ years in a similar role",
+        "Clear written English",
+        "At least 4 hours' overlap with US Eastern time",
+      ],
+    },
+    { kind: "heading", text: "Nice to have" },
+    { kind: "list", items: ["Experience at an outsourcing or shared-services company"] },
+  ] as const satisfies Job["description"];
+
+/** Open roles for design review. Fictional. */
+export const sampleJobs: readonly Job[] = [
+  {
+    id: "sample-1",
+    slug: "senior-bookkeeper-sample1",
+    title: "Senior Bookkeeper",
+    team: "Finance",
+    location: "Remote (Philippines)",
+    remote: true,
+    employmentType: "FULL_TIME",
+    salary: { text: "$1.8K – $2.4K per month", min: 1800, max: 2400, currency: "USD", unit: "MONTH" },
+    publishedAt: "2026-10-01T00:00:00.000Z",
+    applyUrl: "https://jobs.example.com/akrostech/senior-bookkeeper",
+    description: [...sampleDescription("senior bookkeeper")],
+  },
+  {
+    id: "sample-2",
+    slug: "full-stack-engineer-nextjs-sample2",
+    title: "Full-Stack Engineer (Next.js)",
+    team: "Engineering",
+    location: "Remote (Colombia)",
+    remote: true,
+    employmentType: "FULL_TIME",
+    salary: { text: "$3.5K – $5K per month", min: 3500, max: 5000, currency: "USD", unit: "MONTH" },
+    publishedAt: "2026-09-24T00:00:00.000Z",
+    applyUrl: "https://jobs.example.com/akrostech/full-stack-engineer",
+    description: [...sampleDescription("full-stack engineer")],
+  },
+  {
+    id: "sample-3",
+    slug: "technical-recruiter-sample3",
+    title: "Technical Recruiter",
+    team: "Recruiting",
+    location: "Remote (Poland)",
+    remote: true,
+    employmentType: "FULL_TIME",
+    publishedAt: "2026-09-18T00:00:00.000Z",
+    applyUrl: "https://jobs.example.com/akrostech/technical-recruiter",
+    description: [...sampleDescription("technical recruiter")],
+  },
+  {
+    id: "sample-4",
+    slug: "executive-assistant-sample4",
+    title: "Executive Assistant",
+    team: "Assistance",
+    location: "Remote (Philippines)",
+    remote: true,
+    employmentType: "PART_TIME",
+    publishedAt: "2026-09-10T00:00:00.000Z",
+    applyUrl: "https://jobs.example.com/akrostech/executive-assistant",
+    description: [...sampleDescription("executive assistant")],
   },
 ];

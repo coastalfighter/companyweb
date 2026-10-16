@@ -775,6 +775,8 @@ Fields, validation and micro-copy are in Section F3. Submit button: **`Send — 
 
 ## 12. Careers `/careers`
 
+> **As built (M2c):** roles come from the Ashby, Greenhouse or Lever public job-board API (`ATS_PROVIDER` / `ATS_BOARD`), cached for an hour. The 12.1 photo collage, 12.3 benefits and 12.6 quote wait for real photos and HR-confirmed facts (`content/careers.ts`); 12.2 reads without the [VERIFY] specifics until then. Team filters show only teams with open roles. The job detail renders the ATS description as text, with the standard "How we hire" steps and `JobPosting` JSON-LD.
+
 Phase 1 is a lean structure; roles are managed in the ATS (Ashby/Greenhouse/Lever) and embedded.
 
 ### 12.1 Hero

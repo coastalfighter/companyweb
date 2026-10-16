@@ -57,6 +57,15 @@ describe("<MobileCtaBar />", () => {
     render(<MobileCtaBar />);
     expect(screen.queryByRole("link", { name: "Book a call" })).not.toBeInTheDocument();
   });
+
+  it("is not rendered for job seekers", () => {
+    for (const path of ["/careers", "/careers/senior-bookkeeper-a1b2c3d4"]) {
+      navigation.pathname = path;
+      const { unmount } = render(<MobileCtaBar />);
+      expect(screen.queryByRole("link", { name: "Book a call" })).not.toBeInTheDocument();
+      unmount();
+    }
+  });
 });
 
 function intersect(cb: IntersectionObserverCallback | undefined, target: Element, isIntersecting: boolean) {

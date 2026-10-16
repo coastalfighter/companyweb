@@ -9,6 +9,9 @@ const routes = [
   "/work",
   "/design-system/work-preview",
   "/design-system/work-preview/tidemark-health",
+  "/careers",
+  "/design-system/careers-preview",
+  "/design-system/careers-preview/senior-bookkeeper-sample1",
   "/this-route-does-not-exist",
 ] as const;
 
@@ -49,6 +52,9 @@ const layoutRoutes = [
   "/work",
   "/design-system/work-preview",
   "/design-system/work-preview/tidemark-health",
+  "/careers",
+  "/design-system/careers-preview",
+  "/design-system/careers-preview/senior-bookkeeper-sample1",
 ] as const;
 
 for (const route of layoutRoutes) {

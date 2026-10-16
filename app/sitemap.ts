@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { caseStudies } from "@/content/case-studies";
+import { getJobs } from "@/lib/careers/jobs";
 import { liveRoutes, siteConfig } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages: MetadataRoute.Sitemap = liveRoutes.map((path) => ({
     url: `${siteConfig.url}${path}`,
     changeFrequency: "weekly",
@@ -14,5 +15,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
     priority: 0.6,
   }));
-  return [...pages, ...studies];
+  const { jobs } = await getJobs();
+  const roles: MetadataRoute.Sitemap = jobs.map((job) => ({
+    url: `${siteConfig.url}/careers/${job.slug}`,
+    lastModified: job.publishedAt,
+    changeFrequency: "weekly",
+    priority: 0.5,
+  }));
+  return [...pages, ...studies, ...roles];
 }

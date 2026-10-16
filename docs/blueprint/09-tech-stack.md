@@ -169,7 +169,9 @@ LEADS_FROM_EMAIL="Akrostech <hello@akrosstech.com>"
 SLACK_LEADS_WEBHOOK_URL=
 CAL_API_KEY=
 NEXT_PUBLIC_CAL_LINK=akrostech/scoping-call
-ATS_JOB_BOARD_URL=
+ATS_PROVIDER=ashby            # ashby | greenhouse | lever (as built, M2c)
+ATS_BOARD=akrostech
+NEXT_PUBLIC_TALENT_POOL_URL=
 
 # Analytics & monitoring
 NEXT_PUBLIC_POSTHOG_KEY=

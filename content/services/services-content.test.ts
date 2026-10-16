@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { homeFaqs } from "@/components/home/faq-section";
 import { proof } from "@/content/proof";
 import { services } from "@/lib/services";
+import { careersFacts, cultureItems, hiringSteps } from "@/content/careers";
 import { caseStudies } from "@/content/case-studies";
 import { company, operatingRules, principles } from "@/content/company";
 import { guarantees, pendingGuarantees, phases, processFaqs } from "@/content/process";
@@ -96,6 +97,9 @@ describe("copy rules (all shipped content)", () => {
     ...strings(pendingGuarantees),
     ...strings(processFaqs),
     ...strings(caseStudies),
+    ...strings(careersFacts),
+    ...strings(cultureItems()),
+    ...strings(hiringSteps),
   ];
 
   it.each(BANNED.map((re) => [re.source, re] as const))("never uses %s", (_name, re) => {
