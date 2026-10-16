@@ -59,6 +59,7 @@ All ratios computed with the WCAG 2.x relative-luminance formula.
 | Ink-200 `#A3A3AD` | Ink | 7.92:1 | AAA | Secondary/body text |
 | Ink-300 `#8A8A94` | Ink | 5.79:1 | AA | Tertiary text, placeholders |
 | Ink-300 `#8A8A94` | Ink-800 `#1C1C1F` | 4.97:1 | AA | Placeholder inside inputs (just passes, so don't go darker) |
+| ⚠️ Ink-300 `#8A8A94` | Ink-700 `#26262A` (menus, `surface-3`) | **4.41:1** | ❌ **FAIL** | Never on elevation-3 surfaces: use Ink-200 (secondary) there. *(Found by axe in M1a.)* |
 | Ink-400 `#5C5C66` | Ink | 3.0:1 | ❌ text / ✅ non-text (3:1) | Disabled states only (exempt), icon borders |
 | ⚠️ Volt `#A3E635` | Paper `#FAFAF9` | **1.44:1** | ❌ **FAIL** | **Never** as text or meaningful icon on light. Decorative fills only, with Ink content on top. |
 | Volt-700 `#4D7C0F` | Paper | 4.78:1 | AA | Links / lime-family text on light |

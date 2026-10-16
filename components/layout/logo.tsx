@@ -2,9 +2,14 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /** Placeholder mark until the official SVG is supplied (see README "Brand assets"). */
-export function Logo({ className }: { className?: string }) {
+export function Logo({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
   return (
-    <Link href="/" aria-label="Akrostech home" className={cn("inline-flex items-center gap-2.5", className)}>
+    <Link
+      href="/"
+      aria-label="Akrostech home"
+      onClick={onNavigate}
+      className={cn("inline-flex items-center gap-2.5", className)}
+    >
       <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden>
         <rect width="28" height="28" rx="6" fill="var(--volt-500)" />
         <path

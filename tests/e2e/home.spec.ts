@@ -3,14 +3,15 @@ import { expect, test } from "@playwright/test";
 test.describe("homepage hero", () => {
   test("renders the headline, sub and both CTAs", async ({ page }) => {
     await page.goto("/");
+    const hero = page.locator('section[aria-labelledby="hero-title"]');
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       /We run the parts\s*of your business\s*nobody sees\./,
     );
-    await expect(page.getByRole("link", { name: "Book a 20-minute call" })).toHaveAttribute(
+    await expect(hero.getByRole("link", { name: "Book a 20-minute call" })).toHaveAttribute(
       "href",
       "/contact",
     );
-    await expect(page.getByRole("link", { name: "See what it would cost" })).toHaveAttribute(
+    await expect(hero.getByRole("link", { name: "See what it would cost" })).toHaveAttribute(
       "href",
       "/resources/back-office-calculator",
     );
@@ -18,7 +19,9 @@ test.describe("homepage hero", () => {
 
   test("keeps the primary CTA above the fold", async ({ page }) => {
     await page.goto("/");
-    const cta = page.getByRole("link", { name: "Book a 20-minute call" });
+    const cta = page.locator('section[aria-labelledby="hero-title"]').getByRole("link", {
+      name: "Book a 20-minute call",
+    });
     await expect(cta).toBeVisible();
     const box = await cta.boundingBox();
     const viewport = page.viewportSize();

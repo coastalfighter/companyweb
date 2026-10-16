@@ -96,6 +96,76 @@
   }
 }
 
+/* ---------- Mobile menu sheet (native <dialog>) ---------- */
+html:has(dialog[open]:modal) {
+  overflow: hidden;
+}
+
+.mobile-sheet {
+  opacity: 0;
+  transform: translateY(-16px);
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo),
+    overlay var(--dur-slow) allow-discrete,
+    display var(--dur-slow) allow-discrete;
+}
+.mobile-sheet[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .mobile-sheet[open] {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+.mobile-sheet::backdrop {
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    overlay var(--dur-slow) allow-discrete,
+    display var(--dur-slow) allow-discrete;
+  opacity: 0;
+}
+.mobile-sheet[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .mobile-sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+/* Items stagger in (30ms each, 12px rise) every time the sheet opens. */
+.mobile-sheet[open] .mobile-sheet-item {
+  animation: rise 420ms var(--ease-out-expo) both;
+  animation-delay: calc(80ms + var(--i, 0) * 30ms);
+}
+
+/* ---------- Volt slab (closing CTA) ---------- */
+.volt-slab-grid {
+  background-image:
+    repeating-linear-gradient(to right, rgb(10 10 10 / 0.06) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(to bottom, rgb(10 10 10 / 0.06) 0 1px, transparent 1px 64px);
+}
+.volt-slab-sweep {
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.28) 50%, transparent 65%);
+  transform: translateX(-100%);
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .volt-slab-sweep {
+      animation: slab-sweep linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 55%;
+    }
+  }
+}
+@keyframes slab-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 /* ---------- Motion primitives ---------- */
 @keyframes rise {
   from {
@@ -191,6 +261,14 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-rise-lcp {
     animation: none !important;
+  }
+  .mobile-sheet,
+  .mobile-sheet::backdrop {
+    transform: none;
+    transition-duration: 150ms;
+  }
+  .mobile-sheet[open] .mobile-sheet-item {
+    animation: none;
   }
   .animate-rise,
   .animate-fade-in,

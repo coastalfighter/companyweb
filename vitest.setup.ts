@@ -22,3 +22,19 @@ if (!window.matchMedia) {
     }),
   });
 }
+
+// jsdom doesn't implement <dialog>. Minimal stand-in for open/close state and the
+// close event; real modal behavior (focus trap, Esc, inertness) is covered by Playwright.
+if (typeof HTMLDialogElement !== "undefined" && !HTMLDialogElement.prototype.showModal) {
+  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+    this.setAttribute("open", "");
+  };
+  HTMLDialogElement.prototype.show = function show(this: HTMLDialogElement) {
+    this.setAttribute("open", "");
+  };
+  HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement) {
+    if (!this.hasAttribute("open")) return;
+    this.removeAttribute("open");
+    this.dispatchEvent(new Event("close"));
+  };
+}

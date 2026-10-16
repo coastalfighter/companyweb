@@ -123,6 +123,8 @@ Five text links max. Every extra link dilutes the CTA.
 | Cols 9–12: Proof slot | Latest case study card: thumbnail, "Case study" eyebrow, headline "How Northwind cut month-end close from 15 days to 5", link "Read the story →" |
 | Footer strip | `Not sure where to start? Take the 2-minute calculator →` · `Avg. response time: 3h 12m [VERIFY]` with a live lime dot |
 
+> **As built (M1a):** the proof slot shows a "How it works" card until a case study is published with permission, and the footer strip shows the contact email instead of the response-time stat until that number is verified. Both swap in via `components/layout/mega-menu.tsx`. Implemented as a disclosure (button + panel of links), not an ARIA menu.
+
 ### B2.2 Utility nav
 
 No top utility bar at launch (it adds visual noise and pushes the hero down). Utility items live in:
@@ -196,5 +198,7 @@ Ink-950 background, top border `--ink-600`. Five columns at ≥1024, two at md, 
 │ Privacy · Terms · Cookies · DPA · Accessibility        [◐ Theme] [in] [GitHub]│
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
+
+> **As built (M1a):** Phase 2 links (Field notes, Guides, Status page, Client login) are left out until those pages exist; the certification row and social icons render only once real entries are added to `trustBadges` / `socialLinks` in `lib/site.ts`; the theme toggle waits for reviewed light-mode variants (A1.7). Below 640px the columns are native `<details>` accordions.
 
 The disclaimer line ("not a law firm or CPA firm") is intentional. It protects us legally, and to a CFO it reads as *honest*, which is a trust signal in itself.

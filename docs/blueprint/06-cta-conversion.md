@@ -37,7 +37,7 @@
    - **Return-visitor header swap:** on the 2nd+ session, the header ghost button changes from `Estimate savings` to `Pick up where you left off` if calculator data exists in localStorage.
    - **Exit intent:** ❌ **not used.** Exit-intent modals read desperate to enterprise buyers.
    - **Chat:** no auto-open chat. Optional P2: a "Talk to a human" link opening an Intercom/Crisp panel during staffed hours only, showing real response time.
-7. **Mobile:** after the hero scrolls out of view, a slim **bottom bar** appears (56px, `e3`, safe-area aware): `[Estimate] [Book a call →]`. It hides while the virtual keyboard is open and on the contact page.
+7. **Mobile:** after the hero scrolls out of view, a slim **bottom bar** appears (56px, `e3`, safe-area aware): `[Estimate] [Book a call →]`. It hides while the virtual keyboard is open, on the contact page, and while the closing Volt slab or the footer is on screen (each has its own primary CTA, so this keeps rule 1).
 
 ---
 

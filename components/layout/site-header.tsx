@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { servicesHubHref } from "@/lib/services";
 import { ctas, prefetchFor, primaryNav } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
+import { ServicesMegaMenu } from "./mega-menu";
+import { MobileNav } from "./mobile-nav";
 
 const SCROLLED_AT = 24;
 const HIDE_AFTER = 400;
 
 /**
- * Sticky header (docs/blueprint/02-sitemap.md, B2.3).
+ * Sticky header (docs/blueprint/02-sitemap.md, B2.1 + B2.3).
  * Transparent at top → blurred Ink after 24px; hides on scroll-down past 400px and
- * returns on any scroll-up. It never hides while focus is inside it.
- * M1 adds the Services mega-menu and the full-screen mobile menu.
+ * returns on any scroll-up. It never hides while focus is inside it or while the
+ * Services mega-menu is open.
  */
 export function SiteHeader() {
   const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
+  const menuOpenRef = useRef(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -30,9 +35,9 @@ export function SiteHeader() {
     const update = () => {
       frame = 0;
       const y = window.scrollY;
-      const focusInside = headerRef.current?.contains(document.activeElement) ?? false;
+      const pinned = menuOpenRef.current || (headerRef.current?.contains(document.activeElement) ?? false);
       setScrolled(y > SCROLLED_AT);
-      setHidden(!focusInside && y > HIDE_AFTER && y > lastY);
+      setHidden(!pinned && y > HIDE_AFTER && y > lastY);
       lastY = y;
     };
     const onScroll = () => {
@@ -47,6 +52,14 @@ export function SiteHeader() {
     };
   }, []);
 
+  const onMenuOpenChange = useCallback((open: boolean) => {
+    menuOpenRef.current = open;
+    setMenuOpen(open);
+    if (open) setHidden(false);
+  }, []);
+
+  const links = primaryNav.filter((item) => item.href !== servicesHubHref);
+
   return (
     <header
       ref={headerRef}
@@ -55,15 +68,17 @@ export function SiteHeader() {
       onFocusCapture={() => setHidden(false)}
       className={cn(
         "fixed inset-x-0 top-0 z-40 border-b transition-[transform,background-color,border-color] duration-200 ease-out-expo",
-        scrolled
-          ? "border-line bg-ink-950/72 backdrop-blur-md backdrop-saturate-[1.4]"
-          : "border-transparent bg-transparent",
+        menuOpen
+          ? "border-line bg-ink-950"
+          : scrolled
+            ? "border-line bg-ink-950/72 backdrop-blur-md backdrop-saturate-[1.4]"
+            : "border-transparent bg-transparent",
         hidden && "-translate-y-full",
       )}
     >
       <div
         className={cn(
-          "mx-auto flex max-w-(--container-content) items-center justify-between px-(--gutter) transition-[height] duration-200 ease-out-expo",
+          "relative mx-auto flex max-w-(--container-content) items-center justify-between px-(--gutter) transition-[height] duration-200 ease-out-expo",
           scrolled ? "h-16" : "h-20",
         )}
       >
@@ -71,7 +86,10 @@ export function SiteHeader() {
 
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-8 text-body-sm">
-            {primaryNav.map((item) => {
+            <li>
+              <ServicesMegaMenu onOpenChange={onMenuOpenChange} />
+            </li>
+            {links.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <li key={item.href}>
@@ -98,7 +116,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 lg:gap-3">
           <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
             <Link href={ctas.secondary.href} prefetch={prefetchFor(ctas.secondary.href)}>
               {ctas.secondary.short}
@@ -109,6 +127,7 @@ export function SiteHeader() {
               {ctas.primary.short}
             </Link>
           </Button>
+          <MobileNav />
         </div>
       </div>
     </header>
