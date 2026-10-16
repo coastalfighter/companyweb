@@ -7,7 +7,18 @@ export const siteConfig = {
   tagline: "The operations team behind growing companies.",
   description:
     "Akrostech is the operations team behind growing companies: engineering, hiring, admin, finance and legal work, delivered by dedicated specialists on timelines you can audit.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /**
+   * Canonical origin. Set NEXT_PUBLIC_SITE_URL in production; on Vercel without it,
+   * the project's production URL (or this deployment's URL) is used, so canonicals
+   * and the sitemap never point at localhost. Server-side only (not in client code).
+   */
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"),
   email: "hello@akrosstech.com",
   /** VERIFY: replace once the response-time SLA is confirmed. */
   replySla: "4 business hours",
