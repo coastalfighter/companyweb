@@ -8,7 +8,14 @@ import { expect, test } from "@playwright/test";
  * gets a looser cap; this test holds the line on what blocks the first render.
  */
 const BUDGET_BYTES = 200_000;
-const PAGES = ["/", "/services", "/services/accounting", "/contact"] as const;
+const PAGES = [
+  "/",
+  "/services",
+  "/services/accounting",
+  "/contact",
+  "/careers",
+  "/resources/back-office-calculator",
+] as const;
 
 test.describe("render-critical JS budget", () => {
   test.skip(({ isMobile }) => isMobile, "byte budgets don't depend on the viewport");

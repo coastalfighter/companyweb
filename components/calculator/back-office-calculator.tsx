@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, CaretUpIcon } from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,6 +34,7 @@ import {
 import { clearCalculatorInput, saveCalculatorInput } from "@/lib/calculator/storage";
 import { FUNCTION_PRESETS } from "@/lib/calculator/teaser";
 import { cn } from "@/lib/utils";
+import { ReportForm } from "./report-form";
 import { ResultsPanel } from "./results-panel";
 
 export interface BackOfficeCalculatorProps {
@@ -42,8 +43,8 @@ export interface BackOfficeCalculatorProps {
   contactHref: string;
   /** False during SSR / before hydration: every step is shown, nothing is saved. */
   interactive: boolean;
-  /** Rendered under the primary CTA in the results (the PDF report, M3b). */
-  reportAction?: (input: CalculatorInput) => ReactNode;
+  /** Cloudflare Turnstile site key for the report form (optional). */
+  turnstileSiteKey?: string;
 }
 
 const STEPS = ["Your team", "The work", "Results"] as const;
@@ -184,7 +185,7 @@ export function BackOfficeCalculator({
   rateCard,
   contactHref,
   interactive,
-  reportAction,
+  turnstileSiteKey,
 }: BackOfficeCalculatorProps) {
   const [input, setInput] = useState(initialInput);
   const [step, setStep] = useState(0);
@@ -366,7 +367,11 @@ export function BackOfficeCalculator({
               contactHref={contactHref}
               actions={
                 <>
-                  {reportAction?.(input)}
+                  <ReportForm
+                    input={input}
+                    available={interactive && result.verdict !== "empty"}
+                    turnstileSiteKey={turnstileSiteKey}
+                  />
                   {touched || result.verdict !== "empty" ? (
                     <button
                       type="button"

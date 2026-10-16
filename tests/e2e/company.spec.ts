@@ -105,10 +105,14 @@ test.describe("/how-it-works", () => {
   test("the tracker stays pinned while reading", async ({ page }) => {
     await page.goto("/how-it-works#phase-team-match");
     const tracker = page.locator(".phase-stepper");
-    const box = await tracker.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.y).toBeGreaterThanOrEqual(0);
-    expect(box!.y).toBeLessThan(160);
+    // The deep link is re-applied once fonts settle; wait for that end state.
+    await expect
+      .poll(async () => (await tracker.boundingBox())?.y ?? -1, { timeout: 3000 })
+      .toBeGreaterThanOrEqual(0);
+    await expect
+      .poll(async () => (await tracker.boundingBox())?.y ?? 999, { timeout: 3000 })
+      .toBeLessThan(160);
+    await expect(page.locator("#phase-team-match")).toBeInViewport();
   });
 
   test("artifact previews open labelled as examples and close with Escape", async ({ page }) => {

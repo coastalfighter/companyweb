@@ -9,6 +9,7 @@ import { BackOfficeCalculator } from "./back-office-calculator";
 export interface CalculatorIslandProps {
   rateCard: RateCard | null;
   contactHref: string;
+  turnstileSiteKey?: string;
 }
 
 const noopSubscribe = () => () => {};

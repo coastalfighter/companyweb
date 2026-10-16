@@ -16,7 +16,11 @@ export default function CalculatorPreviewPage() {
         Fictional rate card for design review. Not Akrostech&apos;s prices. Not for publication.
       </SampleBanner>
       <div className="mx-auto max-w-(--container-content) px-(--gutter) py-16">
-        <CalculatorIsland rateCard={sampleRateCard} contactHref="/contact" />
+        <CalculatorIsland
+          rateCard={sampleRateCard}
+          contactHref="/contact"
+          turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() || undefined}
+        />
       </div>
     </div>
   );

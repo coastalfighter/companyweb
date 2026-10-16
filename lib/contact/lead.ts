@@ -6,6 +6,8 @@ export interface Lead extends ContactData {
   submittedAt: Date;
   ip?: string;
   userAgent?: string;
+  /** One-line calculator summary, when the visitor ran the cost calculator first. */
+  calculator?: string;
 }
 
 export function serviceLabels(lead: Pick<Lead, "services">): string[] {
@@ -37,6 +39,7 @@ export function leadSummary(lead: Lead): string {
   ];
   if (lead.phone) lines.push(`Phone: ${phoneE164(lead)}`);
   lines.push("", lead.details ? `Details:\n${lead.details}` : "Details: (none)");
+  if (lead.calculator) lines.push("", `Calculator: ${lead.calculator}`);
   const a = lead.attribution;
   const source = [a.utmSource, a.utmMedium, a.utmCampaign].filter(Boolean).join(" / ");
   lines.push("", `Source: ${source || "direct"}`, `Landing page: ${a.landingPage ?? "unknown"}`);

@@ -455,5 +455,5 @@ The blueprint is complete. To build it sequentially, request these milestones in
 4. ✅ **M1c · Service template + 5 service pages (done)** (Sanity schema + page template).
 5. ✅ **M1d · Contact flow (done):** "Form, server action, Turnstile, HubSpot, Resend, Slack, thank-you page, with tests."
 6. ✅ **M2 · Proof pages (done, as M2a–M2c):** About, How It Works, Work index + case-study template, Careers (ATS).
-7. **M3 · Calculator:** "Build the Back-Office Cost Calculator with a unit-tested cost model and PDF export."
+7. ✅ **M3 · Calculator (done, as M3a–M3b):** "Build the Back-Office Cost Calculator with a unit-tested cost model and PDF export."
 8. **M4 · Launch hardening:** redirects/410s, security headers + CSP, Lighthouse CI budgets, axe tests, sitemap, JSON-LD.

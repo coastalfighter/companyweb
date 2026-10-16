@@ -30,6 +30,7 @@ export function hubspotPayload(lead: Lead) {
     contact("akros_utm_campaign", lead.attribution.utmCampaign ?? ""),
   ];
   if (lead.phone) fields.push(contact("phone", phoneE164(lead)));
+  if (lead.calculator) fields.push(contact("akros_calculator", lead.calculator));
 
   return {
     submittedAt: String(lead.submittedAt.getTime()),

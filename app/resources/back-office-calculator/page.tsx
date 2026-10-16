@@ -38,7 +38,11 @@ export default function CalculatorPage() {
               hours you&apos;d get back, and the math behind every number. No email needed.
             </p>
           </div>
-          <CalculatorIsland rateCard={rateCard} contactHref="/contact" />
+          <CalculatorIsland
+            rateCard={rateCard}
+            contactHref="/contact"
+            turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() || undefined}
+          />
         </div>
       </section>
     </>

@@ -1,4 +1,6 @@
 import "server-only";
+import { rateCard } from "@/content/rate-card";
+import { calculatorLeadSummary } from "@/lib/calculator/lead-summary";
 import { siteConfig } from "@/lib/site";
 import { readContactConfig, type ContactConfig } from "./config";
 import { deliverLead } from "./deliver";
@@ -80,6 +82,7 @@ export async function handleContactSubmission(
       submittedAt: ctx.now ?? new Date(),
       ip: ctx.ip,
       userAgent: ctx.userAgent,
+      calculator: calculatorLeadSummary(form.get("calculator"), rateCard),
     },
     config,
     { fetch: fetchImpl },

@@ -22,3 +22,13 @@ export function hasSavedCalculatorInput(): boolean {
     return false;
   }
 }
+
+/** The stored calculator JSON, as-is, for the contact form's hidden field (the server re-validates it). */
+export function readSavedCalculatorRaw(): string | null {
+  try {
+    const raw = localStorage.getItem(CALCULATOR_STORAGE_KEY);
+    return raw && raw.length <= 4096 ? raw : null;
+  } catch {
+    return null;
+  }
+}

@@ -47,6 +47,27 @@ describe("handleContactSubmission", () => {
     expect(fetchImpl).not.toHaveBeenCalled();
   });
 
+  it("adds the visitor's saved calculator numbers to the lead", async () => {
+    const calls: { body: string }[] = [];
+    const fetchImpl = vi.fn(async (_url: string, init?: RequestInit) => {
+      calls.push({ body: String(init?.body) });
+      return new Response("ok", { status: 200 });
+    });
+    const calculator = JSON.stringify({
+      v: 1,
+      input: { region: "us-ca", functions: { finance: { enabled: true, hoursPerWeek: 40, salary: 145000 } } },
+    });
+    const state = await handleContactSubmission(form({ calculator }), {
+      config: { production: true, logOnly: false, slackWebhookUrl: "https://hooks.slack.com/x" },
+      fetch: fetchImpl as unknown as typeof fetch,
+      limiter: memoryRateLimiter(5, 1000),
+    });
+    expect(state.status).toBe("success");
+    expect(calls[0]!.body).toContain(
+      "*Calculator:* Today $174,000/yr · 1,920 h/yr (0.9 FTE) · Finance &amp; payroll 40h/wk",
+    );
+  });
+
   it("silently swallows honeypot submissions", async () => {
     const log = quiet();
     const state = await handleContactSubmission(form({ website: "http://spam.example" }), {

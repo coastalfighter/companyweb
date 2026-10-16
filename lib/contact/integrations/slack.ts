@@ -16,6 +16,7 @@ export function slackPayload(lead: Lead) {
     `*Timeline:* ${e(timelineLabel(lead) ?? "Not given")}`,
     `*Email:* ${e(lead.email)}`,
     lead.nda ? "*NDA:* requested before the call" : null,
+    lead.calculator ? `*Calculator:* ${e(lead.calculator)}` : null,
     `*Source:* ${e([lead.attribution.utmSource, lead.attribution.utmCampaign].filter(Boolean).join(" / ") || "direct")}`,
   ].filter(Boolean);
 

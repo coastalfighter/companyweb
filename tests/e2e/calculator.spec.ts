@@ -150,6 +150,66 @@ test.describe("mobile flow", () => {
   });
 });
 
+test.describe("PDF report", () => {
+  test("downloads after name + email, and says no copy was emailed when email isn't set up", async ({
+    page,
+  }) => {
+    await page.goto(`${LIVE}?fn=finance&hours=40`);
+    await ready(page);
+    if (test.info().project.name === "mobile") {
+      await page
+        .getByRole("button", { name: /See results/ })
+        .last()
+        .click();
+    }
+    await results(page)
+      .getByRole("button", { name: /Email me the PDF/ })
+      .click();
+    const form = page.getByRole("form", { name: "Get the PDF report" });
+    await form.getByRole("textbox", { name: /^Name/ }).fill("Dana Whitfield");
+    await form.getByRole("textbox", { name: /Work email/ }).fill("dana@tidemark.example");
+    await form.getByRole("textbox", { name: /Company/ }).fill("Tidemark Health");
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      form.getByRole("button", { name: "Get the PDF" }).click(),
+    ]);
+    expect(download.suggestedFilename()).toBe("akrostech-back-office-cost-report.pdf");
+    const stream = await download.createReadStream();
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream) chunks.push(chunk as Buffer);
+    const pdf = Buffer.concat(chunks);
+    expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
+    expect(pdf.length).toBeGreaterThan(2000);
+    await expect(form.getByRole("status")).toHaveText("Downloaded. Check your downloads folder.");
+  });
+
+  test("the endpoint refuses cross-site, non-JSON and oversized requests", async ({ request, baseURL }) => {
+    const url = "/api/calculator/report";
+    const body = { name: "D", email: "d@x.test", input: {} };
+    expect((await request.post(url, { data: body })).status()).toBe(403);
+    expect(
+      (await request.post(url, { data: body, headers: { Origin: "https://evil.example" } })).status(),
+    ).toBe(403);
+    const origin = new URL(baseURL!).origin;
+    expect(
+      (
+        await request.post(url, { data: "name=D", headers: { Origin: origin, "Content-Type": "text/plain" } })
+      ).status(),
+    ).toBe(415);
+    expect(
+      (
+        await request.post(url, { data: { ...body, pad: "x".repeat(20_000) }, headers: { Origin: origin } })
+      ).status(),
+    ).toBe(413);
+    const invalid = await request.post(url, {
+      data: { ...body, email: "nope" },
+      headers: { Origin: origin },
+    });
+    expect(invalid.status()).toBe(422);
+    expect(await invalid.json()).toEqual({ errors: { email: "That doesn't look like an email address." } });
+  });
+});
+
 test("sitemap lists the calculator", async ({ request }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
   expect(xml).toContain(`${LIVE}</loc>`);

@@ -6,8 +6,8 @@ afterEach(() => {
   cleanup();
 });
 
-// jsdom has no matchMedia; Motion's useReducedMotion and our components rely on it.
-if (!window.matchMedia) {
+// jsdom has no matchMedia; our components rely on it. (Skipped in node-environment tests.)
+if (typeof window !== "undefined" && !window.matchMedia) {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: (query: string): MediaQueryList => ({

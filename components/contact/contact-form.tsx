@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { PlusIcon, WarningCircleIcon } from "@phosphor-icons/react/ssr";
 import { submitContact } from "@/app/contact/actions";
 import { readStoredAttribution } from "@/components/layout/attribution-tracker";
+import { readSavedCalculatorRaw } from "@/lib/calculator/saved";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
@@ -230,6 +231,9 @@ export function ContactForm({
     const hutk = document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]+)/)?.[1];
     if (hutk) data.set("hutk", hutk);
     if (prefill.services[0]) data.set("service_param", prefill.services.join(","));
+    // Calculator inputs, if they ran it (blueprint F4); the server re-validates them.
+    const calculator = readSavedCalculatorRaw();
+    if (calculator) data.set("calculator", calculator);
     // Not a native form action, so React doesn't reset the (controlled) fields.
     startTransition(() => action(data));
   };

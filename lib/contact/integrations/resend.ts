@@ -11,10 +11,16 @@ export interface ResendConfig {
   notifyTo?: string;
 }
 
-async function sendEmail(
+export interface EmailAttachment {
+  filename: string;
+  /** Base64-encoded file content. */
+  content: string;
+}
+
+export async function sendEmail(
   config: ResendConfig,
   fetchImpl: Fetch,
-  email: { to: string; subject: string; text: string; replyTo?: string },
+  email: { to: string; subject: string; text: string; replyTo?: string; attachments?: EmailAttachment[] },
 ): Promise<void> {
   await post("resend", fetchImpl, "https://api.resend.com/emails", {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${config.apiKey}` },
@@ -24,6 +30,7 @@ async function sendEmail(
       subject: headerSafe(email.subject),
       text: email.text,
       ...(email.replyTo ? { reply_to: email.replyTo } : {}),
+      ...(email.attachments?.length ? { attachments: email.attachments } : {}),
     }),
   });
 }
