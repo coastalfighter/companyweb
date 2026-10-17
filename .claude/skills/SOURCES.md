@@ -11,3 +11,4 @@ Installed from upstream repos (pinned commit). Update by re-copying from the rep
 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | `063bee9` | `composition-patterns` `deploy-to-vercel` `react-best-practices` `react-native-skills` `react-view-transitions` `vercel-cli-with-tokens` `vercel-optimize` `web-design-guidelines` `writing-guidelines` |
 | [greensock/gsap-skills](https://github.com/greensock/gsap-skills) | `aed9cfd` | `gsap-core` `gsap-frameworks` `gsap-performance` `gsap-plugins` `gsap-react` `gsap-scrolltrigger` `gsap-timeline` `gsap-utils` |
 | [voltagent/awesome-design-md](https://github.com/voltagent/awesome-design-md) | `3b60532` | `design-md-library` (84 DESIGN.md references, wrapped as one skill) |
+| UX Guidelines PDF (Oct 2026 edition, supplied by the project owner) | — | `ux-guidelines` (authored from the PDF's skill conversion brief) |
