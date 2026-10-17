@@ -12,3 +12,4 @@ Installed from upstream repos (pinned commit). Update by re-copying from the rep
 | [greensock/gsap-skills](https://github.com/greensock/gsap-skills) | `aed9cfd` | `gsap-core` `gsap-frameworks` `gsap-performance` `gsap-plugins` `gsap-react` `gsap-scrolltrigger` `gsap-timeline` `gsap-utils` |
 | [voltagent/awesome-design-md](https://github.com/voltagent/awesome-design-md) | `3b60532` | `design-md-library` (84 DESIGN.md references, wrapped as one skill) |
 | UX Guidelines PDF (Oct 2026 edition, supplied by the project owner) | — | `ux-guidelines` (authored from the PDF's skill conversion brief) |
+| Color & Branding Guidelines PDF (supplied by the project owner; sections 05–12) | — | `color-and-branding-guidelines` (authored from the PDF's skill conversion brief; adds a WCAG contrast calculator) |
