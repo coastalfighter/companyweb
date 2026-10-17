@@ -43,10 +43,9 @@
   --paper: #fafaf9;
   --white: #ffffff;
 
-  /* ---------- Secondary / accent (sparingly) ---------- */
-  --ion-400: #5eead4;
-  --ultra-400: #a78bfa;
-  --ultra-700: #6d28d9;
+  /* ---------- Secondary surface ---------- */
+  /* The teal (ion) and violet (ultra) accents were removed in the color review: one
+     brand accent (lime) plus semantic status colors only (A1.4). */
   --steel-900: #0f1720;
 
   /* ---------- Semantic aliases: DARK (default) ---------- */
@@ -57,6 +56,8 @@
   --surface-3: var(--ink-700);
   --line: var(--ink-600);
   --line-strong: var(--ink-500);
+  /* Form field boundaries: 3.76:1 on the page, 3.23:1 on the field fill (WCAG 1.4.11). */
+  --line-field: #6b6b75;
   --fg: var(--ink-50);
   --fg-muted: var(--ink-200);
   --fg-subtle: var(--ink-300);
@@ -118,6 +119,7 @@
   --surface-3: var(--white);
   --line: #e4e4e7;
   --line-strong: #d4d4da;
+  --line-field: #8a8a94; /* 3.3:1 on paper */
   --fg: var(--ink-950);
   --fg-muted: #525252; /* 7.48:1 on paper */
   --fg-subtle: #6b6b6b; /* 5.10:1 on paper */
@@ -241,8 +243,6 @@
   --color-ink-900: var(--ink-900);
   --color-ink-950: var(--ink-950);
   --color-paper: var(--paper);
-  --color-ion-400: var(--ion-400);
-  --color-ultra-400: var(--ultra-400);
   --color-steel-900: var(--steel-900);
 
   --color-bg: var(--bg);
@@ -251,6 +251,7 @@
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-line: var(--line);
+  --color-line-field: var(--line-field);
   --color-line-strong: var(--line-strong);
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);

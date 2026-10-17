@@ -418,15 +418,25 @@ html:has(dialog[open]:modal) {
   }
 }
 
-/* ---------- Volt slab (closing CTA) ---------- */
+/* ---------- Closing CTA slab (components/marketing/volt-slab.tsx) ----------
+   Ink, lit from the top edge: lime stays an accent (edge, faint grid, one glow). */
 .volt-slab-grid {
   background-image:
-    repeating-linear-gradient(to right, rgb(10 10 10 / 0.06) 0 1px, transparent 1px 64px),
-    repeating-linear-gradient(to bottom, rgb(10 10 10 / 0.06) 0 1px, transparent 1px 64px);
+    repeating-linear-gradient(to right, rgb(163 230 53 / 0.08) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(to bottom, rgb(163 230 53 / 0.08) 0 1px, transparent 1px 64px);
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 20%, transparent 75%);
 }
+.volt-slab-glow {
+  background: radial-gradient(ellipse 55% 60% at 50% 0%, rgb(163 230 53 / 0.2), transparent 70%);
+}
+.volt-slab-edge {
+  background: linear-gradient(90deg, transparent, rgb(163 230 53 / 0.8) 50%, transparent);
+}
+/* A brighter spark runs along the edge once, as the slab scrolls into view. */
 .volt-slab-sweep {
-  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.28) 50%, transparent 65%);
-  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--volt-300) 50%, transparent);
+  width: 30%;
+  opacity: 0;
 }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
@@ -438,8 +448,17 @@ html:has(dialog[open]:modal) {
   }
 }
 @keyframes slab-sweep {
-  to {
-    transform: translateX(100%);
+  0% {
+    opacity: 0;
+    translate: -100% 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 333% 0;
   }
 }
 

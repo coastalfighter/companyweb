@@ -102,6 +102,20 @@ Always on: a honeypot field (bots get a fake success and nothing is delivered), 
 
 **Not yet automated** (blueprint F3.4): the DocuSign NDA is flagged in HubSpot/Slack/email for the team to send manually; the follow-up sequence lives in HubSpot.
 
+## Decisions made in the color & UX review
+
+Reviewed against the installed **ui-ux-pro-max** and **brand** skills; "ux-guidelines" and "color-and-branding-guidelines" aren't installed, so these are the closest matches. Full table: [`docs/blueprint/11-motion-system.md`](docs/blueprint/11-motion-system.md) ("Revision"), and A1.4 in the brand doc.
+
+- **Lime is an accent again.** Sampling full-page screenshots of six pages found the closing CTA slab covering 32–47% of a screen and the marquee over 10%. The slab is now Ink lit by a lime edge (its button is the brightest thing on screen), the marquee words are muted with lime marks, and the route curtain is Ink with a lime edge.
+- **One accent, no stray hues.** The teal and violet palette tokens were removed (one use, the ops-feed "in review" state, now muted ink + icon).
+- **Form fields get a real boundary:** `--line-field` (#6B6B75) is 3.76:1 on the page and 3.23:1 on the field (WCAG 1.4.11); the old border was 1.47:1.
+- **"Reduce motion" switch** in the footer and mobile menu (localStorage `akros:motion`, disclosed on /legal/cookies): the WCAG 2.2.2 pause control for ambient loops and the marquee, honoured before first paint.
+- **Honest boot screen:** its meter reports fonts and page load, and it lifts as soon as they're done (0.85–2s from navigation start, or on any input).
+- **The system cursor is never hidden;** the pointer companion is a hollow ring that labels links and buttons.
+- **Route changes move focus to the new content** and the curtain is shorter (0.52s).
+- **Hero CTAs use the site's standard pair** ("Book a 20-minute call", "See what it would cost"), replacing "Start a Project" / "See Our Work". Change them back in `components/home/engine-hero.tsx` if you prefer the M5a copy; "See Our Work" lands on an empty state until a case study is permissioned.
+- **Pointer effects load after idle**, mouse/trackpad only, which keeps /contact under the 200 KB budget.
+
 ## Decisions made in M5a (motion system, homepage Engine Room)
 
 Spec: [`docs/blueprint/11-motion-system.md`](docs/blueprint/11-motion-system.md). It supersedes the Phase 2b CSS depth layer (the scroll rail stays).

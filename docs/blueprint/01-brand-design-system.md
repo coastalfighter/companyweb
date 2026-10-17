@@ -16,7 +16,7 @@
 **Why lime feels electric, not highlighter:** highlighter lime happens when lime sits on white, is used as a fill behind text, or is flat across large areas. We prevent all three:
 
 1. Lime lives on **near-black** (13.13:1 contrast, which is luminous and reads as emitted light, like a status LED).
-2. Lime is applied as **thin, precise elements** (1px borders, 6px status dots, a single button, numerals) and **glow** (a radial `#A3E635` at 8–14% opacity behind key objects), never as a large flat background block, except the one deliberate "Volt slab" section per page (the closing CTA).
+2. Lime is applied as **thin, precise elements** (1px borders, 6px status dots, a single button, numerals) and **glow** (a radial `#A3E635` at 8–14% opacity behind key objects), never as a large flat background block. (The closing CTA slab was a lime block until the M5b color review; see A1.4.)
 3. Lime is paired with **cool grays**, not warm ones, which keeps it crisp.
 
 ### A1.2 Volt scale (lime tints and shades)
@@ -60,18 +60,30 @@ All tested against Ink `#0A0A0A` and Paper `#FAFAF9`.
 
 On light surfaces, secondary text is `#525252` (7.48:1) and tertiary is `#6B6B6B` (5.10:1).
 
-### A1.4 Secondary & accent
+### A1.4 Secondary, accent and color ratios (revised M5b color review)
 
-Used **sparingly** and never on CTAs.
+**One brand accent (lime), one alternate canvas (Steel), semantic status colors. Nothing else.** The teal "Ion" and violet "Ultraviolet" accents were removed: they were used in one place (the ops-feed "in review" state, now muted ink + a half-filled icon), and every extra hue is a decision a skeptical buyer's eye has to process.
 
 | Token | Name | HEX | Role |
 |---|---|---|---|
-| `--ion-400` | **Ion** (cool cyan-teal) | `#5EEAD4` | Secondary data series in charts; "in progress" state in the ops-feed visual. |
-| `--ultra-400` | **Ultraviolet** | `#A78BFA` | Tertiary data series; illustration rim-light (complements lime). On ink: 7.27:1. |
-| `--ultra-700` | Ultraviolet Deep | `#6D28D9` | Light-mode equivalent (6.8:1 on paper). |
 | `--steel-900` | **Steel** | `#0F1720` | Alternate deep canvas with a blue cast, used in the "Security & Compliance" band to signal a shift to a serious register. |
+| `--line-field` | Field boundary | `#6B6B75` (light: `#8A8A94`) | Form field borders only: 3.76:1 on the page, 3.23:1 on the field fill (WCAG 1.4.11 non-text contrast). Card and divider lines stay `--line`, because they're decoration, not controls. |
 
-**Why so restrained?** Every extra hue is a decision a skeptical buyer's eye has to process. Linear and Stripe use one dominant accent; color equals meaning. When lime appears, it means "act here" or "this is live/true."
+**Color ratios** (brand skill: primary 60–70 / secondary 20–30 / accent 5–10):
+
+| Role | Share of any screen | Where |
+|---|---|---|
+| Ink canvas and surfaces (`--ink-950` … `--ink-800`) | ~85–90% | Everything |
+| Text and lines (`--ink-50` … `--ink-600`) | ~5–10% | Type, borders |
+| **Lime** (`--volt-500`) | **≤10% of any screen** | The primary button, the accent word in a headline, active and hover states, edge lights, small marks. It means "act here" or "this is live/true". |
+
+Lime is never a field. Three surfaces broke the ratio and were changed:
+
+- The **closing CTA slab** was a full lime block (32–47% of a screen on every page). It's now an Ink slab lit by a lime top edge, a faint lime grid and one glow, with a lime primary button. The CTA is the brightest thing on the screen, not the background.
+- The **route curtain** was a full-screen lime panel on every navigation. It's now Ink with a 2px lime leading edge.
+- The **homepage marquee** set display-size words in lime. They're now muted ink with lime marks between them.
+
+After the change, sampling full-page screenshots of six pages puts lime under 10% of every screen (README, "Decisions made in the color & UX review").
 
 ### A1.5 Semantic colors
 
@@ -370,7 +382,7 @@ Real Akrostech people at work: hands on keyboards, whiteboards with real process
 - Primary: lime mark + Ink wordmark on light; lime mark + Paper wordmark on dark.
 - Clear space = height of the "A" in the wordmark on all sides.
 - Minimum size: 24px mark height (digital).
-- On the Volt slab CTA: all-Ink logo.
+- On the closing CTA slab (now Ink): the standard logo.
 - Never place the logo on photography without a solid Ink plate.
 - Favicon: lime mark on Ink square, 32/180/512 PNG + SVG with `prefers-color-scheme` swap.
 

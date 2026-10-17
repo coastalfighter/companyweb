@@ -1,5 +1,6 @@
 import type { gsap as GsapInstance } from "gsap";
 import type { ScrollTrigger as ScrollTriggerInstance } from "gsap/ScrollTrigger";
+import { hasReducedMotionPref } from "./preference";
 import { duration, ease } from "./tokens";
 
 export type Gsap = typeof GsapInstance;
@@ -48,10 +49,13 @@ export function loadMotion(): Promise<MotionEngine> {
   return engine;
 }
 
-/** True when the visitor asked for less motion (or the browser can't tell us). */
+/**
+ * True when the visitor asked for less motion: the OS setting, or the site's own
+ * "Reduce motion" switch (lib/motion/preference.ts). Also true if the browser can't tell us.
+ */
 export function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") return true;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return hasReducedMotionPref() || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /** True for a mouse or trackpad: hover effects, cursor, tilt and magnets only run here. */

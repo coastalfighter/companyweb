@@ -68,12 +68,15 @@ export function RouteTransition() {
       .timeline()
       .set(main, { y: 32, opacity: 0 })
       .to(panel, { yPercent: -100, duration: duration.curtainHalf, ease: ease.curtain }, 0)
-      .to(main, { y: 0, opacity: 1, duration: 0.5, ease: ease.focal, clearProps: "transform,opacity" }, 0.12)
-      .set(panel, { visibility: "hidden" });
+      .to(main, { y: 0, opacity: 1, duration: 0.45, ease: ease.focal, clearProps: "transform,opacity" }, 0.1)
+      .set(panel, { visibility: "hidden" })
+      .call(() => document.documentElement.removeAttribute("data-routing"))
+      // WCAG / ui-ux-pro-max `focus-on-route-change`: the focused link is gone with the
+      // old page, so keyboard and screen-reader users start at the new content.
+      .add(() => main?.focus({ preventScroll: true }));
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
     let active = true;
     loadMotion()
       .then((engine) => {
@@ -84,7 +87,8 @@ export function RouteTransition() {
     const onClick = (event: MouseEvent) => {
       const engine = engineRef.current;
       const panel = panelRef.current;
-      if (!engine || !panel || pending.current) return;
+      // Checked per click: the visitor can switch motion off at any time.
+      if (!engine || !panel || pending.current || prefersReducedMotion()) return;
       const url = transitionTarget(event, window.location);
       if (!url) return;
       event.preventDefault();
@@ -102,9 +106,10 @@ export function RouteTransition() {
       gsap
         .timeline({ onComplete: () => router.push(href) })
         .set(panel, { visibility: "visible", yPercent: 100 })
+        .call(() => document.documentElement.setAttribute("data-routing", ""))
         // The page steps back as the panel arrives: exit faster than enter (emil-design-eng).
-        .to(main, { y: -24, opacity: 0.4, duration: duration.curtainHalf, ease: ease.exit }, 0)
-        .to(panel, { yPercent: 0, duration: duration.curtainHalf, ease: ease.curtain }, 0);
+        .to(main, { y: -16, opacity: 0.6, duration: duration.curtainCover, ease: ease.exit }, 0)
+        .to(panel, { yPercent: 0, duration: duration.curtainCover, ease: ease.curtain }, 0);
     };
 
     window.addEventListener("click", onClick, true);

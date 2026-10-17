@@ -24,7 +24,7 @@ test.describe("boot preloader", () => {
     await expect(page.locator(".preloader")).toBeHidden();
   });
 
-  test("a key press skips it", async ({ page }) => {
+  test("any key or wheel lifts it straight away", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-motion-ready", "");
     await page.keyboard.press("Shift");
@@ -43,6 +43,8 @@ test.describe("route curtain", () => {
     await expect(page.locator(".route-curtain")).toBeHidden({ timeout: 4000 });
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect.poll(() => page.locator("#main").evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
+    // Focus starts at the new content, not on a link that went away with the old page.
+    await expect(page.locator("#main")).toBeFocused();
   });
 
   test("leaves same-page anchors and new tabs to the browser", async ({ page }) => {
@@ -71,7 +73,8 @@ test.describe("scroll", () => {
   });
 
   test("the reading progress bar fills with the page", async ({ page }) => {
-    await page.goto("/");
+    // A page without the scroll rail (where the rail shows, it is the one progress cue).
+    await page.goto("/legal/privacy");
     await settled(page);
     const scale = () =>
       page.locator(".scroll-progress").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
@@ -145,27 +148,28 @@ test.describe("pointer", () => {
     await expect(card).not.toHaveAttribute("data-surface-active");
   });
 
-  test("the custom cursor follows the mouse and labels links", async ({ page }) => {
+  test("the pointer ring labels links and never hides the system cursor", async ({ page }) => {
     await page.goto("/");
     await settled(page);
-    const cta = page.getByRole("link", { name: "Start a Project" });
+    const cta = page
+      .locator('section[aria-labelledby="hero-title"]')
+      .getByRole("link", { name: "Book a 20-minute call" });
     const box = (await cta.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 6 });
-    await expect(page.locator("html")).toHaveAttribute("data-custom-cursor", "");
+    await expect(page.locator(".cursor")).toHaveAttribute("data-active", "");
     await expect(page.locator(".cursor-label")).toHaveText("View");
-    // Text fields keep the real caret.
-    await page.goto("/contact");
-    await settled(page);
-    const field = page.getByLabel("First name");
-    const fb = (await field.boundingBox())!;
-    await page.mouse.move(fb.x + 10, fb.y + fb.height / 2, { steps: 4 });
-    expect(await field.evaluate((el) => getComputedStyle(el).cursor)).toBe("auto");
+    // The system cursor stays (people who enlarge it for low vision keep it).
+    expect(await cta.evaluate((el) => getComputedStyle(el).cursor)).toBe("pointer");
+    await page.mouse.move(5, 400, { steps: 4 });
+    await expect(page.locator(".cursor")).not.toHaveAttribute("data-active");
   });
 
   test("magnetic CTAs lean toward the pointer and spring home", async ({ page }) => {
     await page.goto("/");
     await settled(page);
-    const cta = page.getByRole("link", { name: "Start a Project" });
+    const cta = page
+      .locator('section[aria-labelledby="hero-title"]')
+      .getByRole("link", { name: "Book a 20-minute call" });
     const box = (await cta.boundingBox())!;
     const offset = () => cta.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).e);
     await page.mouse.move(box.x + box.width + 40, box.y + box.height / 2, { steps: 6 });
@@ -202,4 +206,47 @@ test.describe("reduced motion", () => {
       await expect(page.locator(".route-curtain")).toBeHidden();
     }
   });
+});
+
+test.describe("Reduce motion switch", () => {
+  test("stops motion for this visitor, and remembers it", async ({ page, isMobile }) => {
+    test.skip(isMobile, "the switch is in the mobile menu on phones; covered on desktop");
+    await page.goto("/");
+    await settled(page);
+    const toggle = page.locator("footer").getByRole("switch", { name: "Reduce motion" });
+    await expect(toggle).toHaveAttribute("aria-checked", "false");
+    await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-checked", "true");
+    await expect(page.locator("html")).toHaveAttribute("data-motion-pref", "reduced");
+
+    // The marquee stands still.
+    const track = page.locator(".marquee-band-track").first();
+    await track.scrollIntoViewIfNeeded();
+    const x = () => track.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).e);
+    const a = await x();
+    await page.waitForTimeout(600);
+    expect(await x()).toBe(a);
+
+    // Navigation is instant: no curtain.
+    await page.locator("header").getByRole("link", { name: "About" }).click();
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(page.locator(".route-curtain")).toBeHidden();
+
+    // A new visit keeps the choice, before first paint (no boot screen).
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("data-motion-pref", "reduced");
+    await expect(page.locator("html")).not.toHaveAttribute("data-motion", "on");
+    await expect(page.locator(".preloader")).toBeHidden();
+
+    await page.locator("footer").getByRole("switch", { name: "Reduce motion" }).click();
+    await expect(page.locator("html")).not.toHaveAttribute("data-motion-pref", "reduced");
+  });
+});
+
+test("pages with the rail show one progress cue, not two", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop", "The rail shows from 1280px");
+  await page.goto("/");
+  await settled(page);
+  await expect(page.getByRole("navigation", { name: "On this page" })).toBeVisible();
+  await expect(page.locator(".scroll-progress")).toBeHidden();
 });

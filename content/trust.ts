@@ -9,6 +9,7 @@
  *   the sections built on them are not rendered until they're filled in.
  */
 import { STORAGE_KEY as BOOT_STORAGE_KEY } from "@/lib/motion/boot";
+import { STORAGE_KEY as MOTION_STORAGE_KEY } from "@/lib/motion/preference";
 import { CONSENT_STORAGE_KEY } from "@/lib/analytics/consent";
 import { CALCULATOR_STORAGE_KEY } from "@/lib/calculator/saved";
 
@@ -210,6 +211,12 @@ export const browserStorage: readonly StoredItem[] = [
     where: "sessionStorage",
     purpose: "That the opening animation has played, so it doesn't play again on every page",
     lasts: "Until you close the tab",
+  },
+  {
+    key: MOTION_STORAGE_KEY,
+    where: "localStorage",
+    purpose: "Your “Reduce motion” choice, only if you switch it on",
+    lasts: "Until you switch it off or clear site data",
   },
 ];
 

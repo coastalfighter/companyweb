@@ -12,9 +12,9 @@ import { useFieldControl } from "./field";
  */
 export const controlVariants = cva(
   [
-    "w-full rounded-sm border border-line bg-surface-2 text-fg placeholder:text-fg-subtle",
+    "w-full rounded-sm border border-line-field bg-surface-2 text-fg placeholder:text-fg-subtle",
     "transition-[border-color,box-shadow] duration-150 ease-out-expo",
-    "hover:border-line-strong",
+    "hover:border-fg-subtle",
     "focus-visible:border-volt-500 focus-visible:ring-3 focus-visible:ring-volt-500/20 focus-visible:outline-none",
     "light:focus-visible:border-volt-800 light:focus-visible:ring-volt-800/20",
     "aria-invalid:border-error aria-invalid:focus-visible:ring-error/20",

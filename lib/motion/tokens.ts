@@ -51,10 +51,16 @@ export const duration = {
   reveal: 0.8,
   /** Count-up stats. */
   count: 1.5,
-  /** Each half of the route curtain (cover + reveal = 0.6s). */
+  /** Route curtain: the cover is quick (the visitor is waiting), the reveal a touch longer. */
+  curtainCover: 0.22,
   curtainHalf: 0.3,
-  /** Boot preloader, from first frame to fully lifted. */
-  preloader: 1.45,
+  /**
+   * Boot preloader. It lifts as soon as the page is really ready (fonts + load), never
+   * before `preloaderMin` (the mark needs time to read) and never after `preloaderMax`
+   * (the page is already there underneath: it must not be held hostage).
+   */
+  preloaderMin: 0.85,
+  preloaderMax: 2,
   /** Pointer followers' catch-up. */
   follow: 0.1,
 } as const;

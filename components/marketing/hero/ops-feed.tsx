@@ -245,7 +245,7 @@ function FeedRow({ task, delayIndex }: FeedRowProps) {
       className="feed-row flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-150 hover:bg-white/[0.03]"
     >
       {review ? (
-        <span className="grid size-5 shrink-0 place-items-center rounded-full border border-ion-400/40 text-ion-400">
+        <span className="grid size-5 shrink-0 place-items-center rounded-full border border-fg-subtle/60 text-fg-muted">
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
             <path d="M5 0a5 5 0 0 1 0 10z" fill="currentColor" />
           </svg>
@@ -262,7 +262,7 @@ function FeedRow({ task, delayIndex }: FeedRowProps) {
       <span
         className={cn(
           "w-[68px] shrink-0 text-right font-mono text-[0.75rem]",
-          review ? "text-ion-400" : "text-fg-subtle",
+          review ? "text-fg-muted" : "text-fg-subtle",
         )}
       >
         {task.time}

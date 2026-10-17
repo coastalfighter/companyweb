@@ -6,15 +6,22 @@ test.describe("homepage hero", () => {
     const hero = page.locator('section[aria-labelledby="hero-title"]');
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Your\s+Back\s+Office\.\s+Rebuilt\./);
     await expect(hero.getByText("We handle the operations so your team handles the vision.")).toBeVisible();
-    await expect(hero.getByRole("link", { name: "Start a Project" })).toHaveAttribute("href", "/contact");
-    await expect(hero.getByRole("link", { name: "See Our Work" })).toHaveAttribute("href", "/work");
+    // The site's standard CTA pair (brand consistency: same action, same words everywhere).
+    await expect(hero.getByRole("link", { name: "Book a 20-minute call" })).toHaveAttribute(
+      "href",
+      "/contact",
+    );
+    await expect(hero.getByRole("link", { name: "See what it would cost" })).toHaveAttribute(
+      "href",
+      "/resources/back-office-calculator",
+    );
   });
 
   test("keeps the primary CTA above the fold", async ({ page }) => {
     await page.goto("/");
     const cta = page
       .locator('section[aria-labelledby="hero-title"]')
-      .getByRole("link", { name: "Start a Project" });
+      .getByRole("link", { name: "Book a 20-minute call" });
     await expect(cta).toBeVisible();
     const box = await cta.boundingBox();
     const viewport = page.viewportSize();
@@ -63,7 +70,11 @@ test.describe("reduced motion", () => {
       expect(filter).toBe("none");
       expect(transform).toBe("none");
     }
-    await expect(page.getByRole("link", { name: "Start a Project" })).toBeVisible();
+    await expect(
+      page
+        .locator('section[aria-labelledby="hero-title"]')
+        .getByRole("link", { name: "Book a 20-minute call" }),
+    ).toBeVisible();
   });
 });
 

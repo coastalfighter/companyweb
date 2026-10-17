@@ -205,7 +205,7 @@
 - **Interaction:** single-open accordion; first item open by default; `+` rotates to `×` (220ms). FAQ marked up with `FAQPage` JSON-LD.
 
 ### 1.13 Closing CTA ("Volt slab", global)
-- **Layout:** the one large lime block per page. Container-wide, radius-2xl, `--volt-500` background, Ink text, 96px padding, centered.
+- **Layout:** container-wide, radius-2xl, **Ink-900 slab lit by a lime top edge, a faint lime grid and one glow** (revised in the color review, A1.4: it was a lime block), light text, lime primary button, 96px padding, centered.
 - **Content:**
   - H2 (display-lg, Ink): **Give us the work nobody wants. Keep the hours.**
   - Sub (Ink at 80%): *20 minutes. No slides. You'll leave with a scoped plan, whether you hire us or not.*

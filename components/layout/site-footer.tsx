@@ -16,6 +16,7 @@ import { AnalyticsSettingsButton } from "@/components/analytics/analytics-settin
 import { readNewsletterConfig } from "@/lib/newsletter";
 import { BackToTop } from "./back-to-top";
 import { Logo } from "./logo";
+import { MotionToggle } from "./motion-toggle";
 import { NewsletterForm } from "./newsletter-form";
 
 /** Cached so the static shell can prerender; refreshes whenever the site is rebuilt. */
@@ -186,6 +187,7 @@ export function SiteFooter() {
                 })}
               </ul>
             ) : null}
+            <MotionToggle />
             <BackToTop />
           </div>
         </div>

@@ -72,7 +72,7 @@ function drawMesh(
  * - The headline assembles word by word: blurred and low → sharp, 0.06s apart, expo.out.
  *   It paints blurred at first paint (still an LCP candidate) and sharpens when GSAP is
  *   ready, after the boot screen if one is playing. "Rebuilt." glitches once on arrival.
- * - The grid behind pulses on a slow 3.2s loop, and drifts at 0.5× scroll.
+ * - The grid behind fades up with the entrance and drifts at 0.5× scroll (no loop).
  * - Both CTAs are magnetic (data-magnetic, components/motion/magnetic-field.tsx).
  */
 export function EngineHero() {
@@ -215,11 +215,9 @@ export function EngineHero() {
             clearProps: "transform",
           },
           0.4,
-        )
-        .add(() => {
-          // The grid breathes once the room is "on": a slow loop, power2.inOut.
-          gsap.to(".engine-grid", { opacity: 0.55, duration: 3.2, ease: ease.loop, repeat: -1, yoyo: true });
-        });
+        );
+      // (The grid no longer pulses on a loop: one moving focal element per view, the
+      // wireframe; ui-ux-pro-max `excessive-motion`.)
       void whenBooted().then(() => intro.play());
 
       // Scroll-away: copy lifts and dims at 1×, the shape recedes at 0.5× and spins up.
@@ -300,7 +298,7 @@ export function EngineHero() {
             <div className="hero-enter flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" iconRight="arrow" className="max-sm:h-14" data-magnetic="">
                 <Link href={ctas.primary.href} prefetch={prefetchFor(ctas.primary.href)}>
-                  Start a Project
+                  {ctas.primary.label}
                 </Link>
               </Button>
               <Button
@@ -311,8 +309,8 @@ export function EngineHero() {
                 className="max-sm:h-14"
                 data-magnetic=""
               >
-                <Link href="/work" prefetch={prefetchFor("/work")}>
-                  See Our Work
+                <Link href={ctas.secondary.href} prefetch={prefetchFor(ctas.secondary.href)}>
+                  {ctas.secondary.label}
                 </Link>
               </Button>
             </div>

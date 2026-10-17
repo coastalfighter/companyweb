@@ -7,7 +7,7 @@ import { duration, ease } from "@/lib/motion/tokens";
 
 /** What the cursor treats as interactive. */
 const INTERACTIVE = 'a[href], button:not(:disabled), [role="button"], summary, label[for], [data-cursor]';
-/** Where the native text caret must stay (the custom cursor would hide where you type). */
+/** Text fields: the ring stays out of the way of the caret. */
 const TEXT_ENTRY =
   'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select, [contenteditable="true"]';
 
@@ -21,15 +21,15 @@ export function cursorLabel(el: Element): string {
 }
 
 /**
- * Custom cursor (docs/blueprint/11-motion-system.md §5e): an 8px lime dot that tracks
- * the pointer with a 0.1s lag, and a 40px ring that grows in over links and buttons
- * with a one-word label. Both move through gsap.quickTo (gsap-performance: one reused
- * tween per axis instead of a new tween per mousemove).
+ * Pointer companion (docs/blueprint/11-motion-system.md §5e). Revised against the UX
+ * guidelines (ui-ux-pro-max `system-controls`, `focus-states`): the system cursor is
+ * never hidden. People who enlarge or recolor their cursor for low vision keep it,
+ * and nothing depends on our script to show where the pointer is.
  *
- * Only for a mouse or trackpad, and never with reduced motion. The native cursor is
- * hidden only after the custom one has drawn at the pointer, comes back the moment
- * the pointer leaves the window, and is never hidden over text fields (where the
- * caret matters) or in forced-colors mode.
+ * Over links and buttons a hollow 40px lime ring settles around the pointer
+ * (gsap.quickTo, 0.35s, power3.out), with a one-word label beside it ("View",
+ * "Click", or `data-cursor`). It's hollow, so it never covers the words you're about
+ * to click. It dips to 0.9 on press. Mouse or trackpad only; not with reduced motion.
  */
 export function CustomCursor() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -38,76 +38,87 @@ export function CustomCursor() {
     ({ gsap }) => {
       const root = rootRef.current;
       if (!root) return;
-      const dot = root.querySelector<HTMLElement>(".cursor-dot")!;
       const ring = root.querySelector<HTMLElement>(".cursor-ring")!;
       const label = root.querySelector<HTMLElement>(".cursor-label")!;
       const html = document.documentElement;
 
-      gsap.set([dot, ring], { xPercent: -50, yPercent: -50, x: -100, y: -100 });
-      gsap.set(ring, { scale: 0.2, opacity: 0 });
-      const dotX = gsap.quickTo(dot, "x", { duration: duration.follow, ease: ease.follow });
-      const dotY = gsap.quickTo(dot, "y", { duration: duration.follow, ease: ease.follow });
+      gsap.set(ring, { xPercent: -50, yPercent: -50, x: -100, y: -100, scale: 0.4, opacity: 0 });
       const ringX = gsap.quickTo(ring, "x", { duration: 0.35, ease: ease.follow });
       const ringY = gsap.quickTo(ring, "y", { duration: 0.35, ease: ease.follow });
 
       let hovering: Element | null = null;
-      let shown = false;
+      let placed = false;
 
       const setHover = (target: Element | null) => {
         if (target === hovering) return;
         hovering = target;
-        const text = target ? cursorLabel(target) : "";
-        label.textContent = text;
+        label.textContent = target ? cursorLabel(target) : "";
+        root.toggleAttribute("data-active", target !== null);
         gsap.to(ring, {
-          scale: target ? 1 : 0.2,
+          scale: target ? 1 : 0.4,
           opacity: target ? 1 : 0,
-          duration: duration.base,
-          ease: ease.focal,
+          duration: target ? duration.base : duration.fast,
+          ease: target ? ease.focal : ease.exit,
           overwrite: "auto",
         });
-        gsap.to(dot, { scale: target ? 0 : 1, duration: duration.fast, overwrite: "auto" });
       };
 
-      const onMove = (event: PointerEvent) => {
-        if (event.pointerType !== "mouse") return;
-        const target = event.target instanceof Element ? event.target : null;
+      let last: { x: number; y: number } | null = null;
+      const hoverAt = (target: Element | null) => {
         const inText = !!target?.closest(TEXT_ENTRY);
-        root.toggleAttribute("data-hidden", inText);
-        if (!shown) {
-          shown = true;
-          gsap.set([dot, ring], { x: event.clientX, y: event.clientY });
-          root.setAttribute("data-active", "");
-          html.setAttribute("data-custom-cursor", "");
-        }
-        dotX(event.clientX);
-        dotY(event.clientY);
-        ringX(event.clientX);
-        ringY(event.clientY);
         setHover(inText ? null : (target?.closest(INTERACTIVE) ?? null));
       };
+      const onMove = (event: PointerEvent) => {
+        if (event.pointerType !== "mouse") return;
+        last = { x: event.clientX, y: event.clientY };
+        if (!placed) {
+          placed = true;
+          gsap.set(ring, { x: event.clientX, y: event.clientY });
+        }
+        ringX(event.clientX);
+        ringY(event.clientY);
+        hoverAt(event.target instanceof Element ? event.target : null);
+      };
+      // The page can move under a still pointer (scrolling, a route change): re-check
+      // what is under it, so the ring never labels a link that has gone.
+      let frame = 0;
+      const recheck = () => {
+        frame = 0;
+        if (last) hoverAt(document.elementFromPoint(last.x, last.y));
+      };
+      const onScroll = () => {
+        if (!frame) frame = requestAnimationFrame(recheck);
+      };
+      let settle = 0;
+      const onClick = () => {
+        window.clearTimeout(settle);
+        settle = window.setTimeout(recheck, 700);
+      };
       const onLeave = () => {
-        shown = false;
-        root.removeAttribute("data-active");
-        html.removeAttribute("data-custom-cursor");
+        placed = false;
         setHover(null);
       };
-      // Press feedback: the ring dips to 0.9 (emil-design-eng: pressables must answer the press).
-      const onDown = () => gsap.to(ring, { scale: hovering ? 0.9 : 0.2, duration: duration.press });
-      const onUp = () =>
-        gsap.to(ring, { scale: hovering ? 1 : 0.2, duration: duration.base, ease: ease.focal });
+      // Press feedback: the ring dips to 0.9 (emil-design-eng: pressables answer the press).
+      const onDown = () => hovering && gsap.to(ring, { scale: 0.9, duration: duration.press });
+      const onUp = () => hovering && gsap.to(ring, { scale: 1, duration: duration.base, ease: ease.focal });
 
       window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("click", onClick);
       window.addEventListener("pointerdown", onDown);
       window.addEventListener("pointerup", onUp);
       html.addEventListener("pointerleave", onLeave);
       return () => {
         window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("click", onClick);
+        if (frame) cancelAnimationFrame(frame);
+        window.clearTimeout(settle);
         window.removeEventListener("pointerdown", onDown);
         window.removeEventListener("pointerup", onUp);
         html.removeEventListener("pointerleave", onLeave);
-        html.removeAttribute("data-custom-cursor");
         // Tweens started from these listeners live outside the context: stop them too.
-        gsap.killTweensOf([dot, ring]);
+        gsap.killTweensOf(ring);
       };
     },
     { enabled: typeof window !== "undefined" && hasFinePointer() },
@@ -118,7 +129,6 @@ export function CustomCursor() {
       <span className="cursor-ring">
         <span className="cursor-label" />
       </span>
-      <span className="cursor-dot" />
     </div>
   );
 }

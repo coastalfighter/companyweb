@@ -10,7 +10,8 @@
    - layout of the global layers.
 
    State hooks on <html>: data-motion="on" (motion allowed, set before paint),
-   data-boot="pending|done", data-motion-ready (GSAP loaded), data-custom-cursor.
+   data-boot="pending|done", data-motion-ready (GSAP loaded), data-motion-pref="reduced"
+   (the visitor switched motion off in the footer).
    Unlayered on purpose: these rules override Tailwind utilities on the same element.
    ========================================================================== */
 
@@ -176,7 +177,11 @@ html[data-boot="pending"]:not([data-motion-ready]) .preloader-letter {
   display: grid;
   align-items: end;
   padding: 1.5rem var(--gutter);
-  background: var(--volt-500);
+  /* Ink, not lime: a full-screen lime field on every click was the opposite of the
+     brand's "laser, not floodlight" rule. The lime is the leading edge. */
+  background: var(--ink-900);
+  border-top: 2px solid var(--volt-500);
+  box-shadow: 0 -24px 48px -12px rgb(163 230 53 / 0.25);
   /* Hidden until a navigation; GSAP owns its position (a CSS transform here would be
      folded into GSAP's y and leave the panel half-way). */
   visibility: hidden;
@@ -188,17 +193,19 @@ html[data-boot="pending"]:not([data-motion-ready]) .preloader-letter {
   gap: 0.5rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--ink-950);
+  color: var(--fg-muted);
 }
 .route-curtain-dot {
   width: 6px;
   height: 6px;
   border-radius: 9999px;
-  background: var(--ink-950);
+  background: var(--volt-500);
   animation: caret-blink 0.6s steps(1) infinite;
 }
 
-/* ---------- 5e Custom cursor (components/motion/custom-cursor.tsx) ---------- */
+/* ---------- 5e Pointer companion (components/motion/custom-cursor.tsx) ----------
+   The system cursor always stays. A hollow lime ring settles around it over links and
+   buttons, with its label beside it, so nothing under the pointer is covered. */
 .cursor {
   display: none;
 }
@@ -209,65 +216,46 @@ html[data-boot="pending"]:not([data-motion-ready]) .preloader-letter {
     inset: 0;
     z-index: 110;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 150ms ease;
-  }
-  .cursor[data-active] {
-    opacity: 1;
-  }
-  .cursor[data-hidden] {
-    opacity: 0;
-  }
-  html[data-custom-cursor],
-  html[data-custom-cursor] * {
-    cursor: none !important;
-  }
-  /* Where you type, the real caret stays. */
-  html[data-custom-cursor]
-    :is(
-      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-      textarea,
-      select,
-      [contenteditable="true"]
-    ) {
-    cursor: auto !important;
   }
 }
 @media (forced-colors: active) {
   .cursor {
     display: none !important;
   }
-  html[data-custom-cursor],
-  html[data-custom-cursor] * {
-    cursor: auto !important;
-  }
 }
-.cursor-dot,
 .cursor-ring {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 9999px;
-  will-change: transform;
-}
-.cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--volt-500);
-}
-.cursor-ring {
-  display: grid;
-  place-items: center;
   width: 40px;
   height: 40px;
-  background: var(--volt-500);
+  border: 1.5px solid var(--volt-500);
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgb(163 230 53 / 0.25);
+  will-change: transform;
 }
 .cursor-label {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  translate: -50% 0;
+  border-radius: 4px;
+  background: var(--ink-950);
+  padding: 2px 6px;
   font-family: var(--font-sans);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 600;
-  line-height: 1;
-  color: var(--ink-950);
+  line-height: 1.3;
+  color: var(--volt-500);
+  white-space: nowrap;
+}
+.cursor-label:empty {
+  display: none;
+}
+/* Nothing to point at while the route curtain is up. (Set by route-transition.tsx: a
+   :has() on inline styles would re-match on every GSAP frame and stall the page.) */
+html[data-routing] .cursor {
+  opacity: 0;
 }
 
 /* ---------- 6 Atmosphere (components/motion/atmosphere.tsx) ---------- */
@@ -592,42 +580,6 @@ html[data-boot="pending"]:not([data-motion-ready]) .preloader-letter {
   translate: 0 0;
 }
 
-/* ---------- 5f Headline flicker on hover (H2/H3) ----------
-   Two frames of lime/white channel split and a 1px jog, like a CRT catching a frame.
-   300ms, steps(1): discrete frames read as signal, an eased blur reads as a bug. */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  main :is(h2, h3):hover {
-    animation: heading-flicker 300ms steps(1) both;
-  }
-}
-@keyframes heading-flicker {
-  0%,
-  100% {
-    text-shadow: none;
-    translate: 0 0;
-  }
-  15% {
-    text-shadow:
-      -2px 0 rgb(163 230 53 / 0.85),
-      2px 0 rgb(255 255 255 / 0.35);
-    translate: 1px 0;
-  }
-  35% {
-    text-shadow: none;
-    translate: 0 0;
-  }
-  55% {
-    text-shadow:
-      2px 0 rgb(163 230 53 / 0.85),
-      -1px 0 rgb(255 255 255 / 0.3);
-    translate: -1px 0;
-  }
-  70% {
-    text-shadow: none;
-    translate: 0 0;
-  }
-}
-
 /* ---------- 7c Glitch text (components/motion/glitch-text.tsx) ----------
    RGB-split slices: two copies of the text (data-text) clipped to horizontal bands that
    jump for 3 frames. Triggered by a class, so it never runs on a loop by itself. */
@@ -860,5 +812,41 @@ html[data-motion="on"]:not([data-motion-ready]) .hero-enter {
   }
   .media-hover > .media-inner {
     scale: none !important;
+  }
+}
+
+/* ---------- The site's own "Reduce motion" switch (lib/motion/preference.ts) ----------
+   Same outcome as the OS setting for CSS-driven motion: every keyframe animation jumps
+   to its end state (so nothing is left hidden at frame 0), ambient layers disappear.
+   Hover color/border feedback stays: it explains state, it doesn't move the page. */
+html[data-motion-pref="reduced"] *,
+html[data-motion-pref="reduced"] *::before,
+html[data-motion-pref="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+html[data-motion-pref="reduced"] :is(.preloader, .route-curtain, .cursor, .scroll-progress, .atmo-points) {
+  display: none !important;
+}
+html[data-motion-pref="reduced"] .surface,
+html[data-motion-pref="reduced"] .surface > *,
+html[data-motion-pref="reduced"] .btn-primary {
+  translate: none !important;
+  scale: none !important;
+}
+html[data-motion-pref="reduced"] .btn-primary::after {
+  display: none;
+}
+
+/* ---------- One progress indicator at a time ----------
+   Where the scroll rail shows (≥1280px, scroll-timeline browsers), it already tracks
+   progress section by section; the top bar would say the same thing twice. */
+@supports (animation-timeline: view()) and (timeline-scope: --a) {
+  @media (min-width: 1280px) {
+    html:has(.scroll-rail) .scroll-progress {
+      display: none;
+    }
   }
 }

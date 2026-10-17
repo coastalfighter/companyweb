@@ -122,6 +122,10 @@ test.describe("homepage sections", () => {
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText("Sample · not real client data");
     await expect(dialog.getByRole("button", { name: "Close" })).toBeFocused();
+    // Measure the final colors, not a frame of the 360ms open transition (or a scroll
+    // reveal still settling behind it).
+    await expect(dialog).toHaveCSS("opacity", "1");
+    await page.waitForTimeout(900);
     expect(
       await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa"])

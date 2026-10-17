@@ -1,14 +1,21 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { countFrame } from "@/components/home/count-up";
+import { MotionToggle } from "@/components/layout/motion-toggle";
 import { bootScript, markBooted, STORAGE_KEY } from "@/lib/motion/boot";
+import { prefersReducedMotion } from "@/lib/motion/gsap";
+import {
+  hasReducedMotionPref,
+  setReducedMotionPref,
+  STORAGE_KEY as MOTION_KEY,
+} from "@/lib/motion/preference";
 import { duration, ease, motionTokens, tilt } from "@/lib/motion/tokens";
 import { cursorLabel } from "./custom-cursor";
 import { GlitchText } from "./glitch-text";
 import { magneticPull } from "./magnetic-field";
 import { Marquee } from "./marquee";
 import { surfacePoint } from "./pointer-surfaces";
-import { PRELOADER_TOTAL, scrambleGlyph, whenBooted } from "./preloader";
+import { READINESS, scrambleGlyph, trackReadiness, whenBooted } from "./preloader";
 import { REVEAL_FROM } from "./scroll-reveal";
 import { ScrollRail, railStyles, railTimeline } from "./scroll-rail";
 import { SectionDivider } from "./section-divider";
@@ -18,10 +25,10 @@ const html = document.documentElement;
 
 describe("motion tokens", () => {
   it("keep the brief's numbers", () => {
-    expect(PRELOADER_TOTAL).toBe(duration.preloader);
-    expect(duration.preloader).toBeGreaterThanOrEqual(1.2);
-    expect(duration.preloader).toBeLessThanOrEqual(1.8);
-    expect(duration.curtainHalf * 2).toBeLessThanOrEqual(0.6);
+    // The boot screen lifts on real readiness, within a floor and a ceiling.
+    expect(duration.preloaderMin).toBeLessThan(1);
+    expect(duration.preloaderMax).toBeLessThanOrEqual(2);
+    expect(duration.curtainCover + duration.curtainHalf).toBeLessThanOrEqual(0.6);
     expect(ease.curtain).toBe("power4.inOut");
     expect(ease.entrance).toBe("power3.out");
     expect(tilt.max).toBeLessThanOrEqual(10);
@@ -282,5 +289,69 @@ describe("<ScrollRail />", () => {
     const { container } = render(<ScrollRail sections={[]} />);
     expect(container).toBeEmptyDOMElement();
     expect(railStyles([])).toBe("");
+  });
+});
+
+describe("Reduce motion switch", () => {
+  const os = (reduce: boolean) =>
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) =>
+        ({
+          matches: query.includes("reduce") ? reduce : false,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }) as unknown as MediaQueryList,
+    );
+
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    html.removeAttribute("data-motion-pref");
+    html.removeAttribute("data-motion");
+    html.removeAttribute("data-boot");
+  });
+  afterEach(() => vi.restoreAllMocks());
+
+  it("is a labelled switch that saves the choice and counts as reduced motion", () => {
+    os(false);
+    render(<MotionToggle />);
+    const toggle = screen.getByRole("switch", { name: "Reduce motion" });
+    expect(toggle).toHaveAttribute("aria-checked", "false");
+    act(() => fireEvent.click(toggle));
+    expect(toggle).toHaveAttribute("aria-checked", "true");
+    expect(hasReducedMotionPref()).toBe(true);
+    expect(prefersReducedMotion()).toBe(true);
+    expect(localStorage.getItem(MOTION_KEY)).toBe("reduced");
+    act(() => fireEvent.click(toggle));
+    expect(hasReducedMotionPref()).toBe(false);
+    expect(localStorage.getItem(MOTION_KEY)).toBeNull();
+    expect(html.dataset.motion).toBe("on");
+  });
+
+  it("says so, instead of offering a choice, when the device already reduces motion", () => {
+    os(true);
+    render(<MotionToggle />);
+    const toggle = screen.getByRole("switch", { name: "Motion reduced (device setting)" });
+    expect(toggle).toBeDisabled();
+    expect(toggle).toHaveAttribute("aria-checked", "true");
+  });
+
+  it("is honoured by the boot script before first paint", () => {
+    os(false);
+    setReducedMotionPref(true);
+    html.removeAttribute("data-motion-pref");
+    new Function(bootScript)();
+    expect(html.dataset.motionPref).toBe("reduced");
+    expect(html.dataset.motion).toBeUndefined();
+    expect(html.dataset.boot).toBeUndefined();
+  });
+});
+
+describe("trackReadiness", () => {
+  it("reports fonts, then load, as real stages", async () => {
+    const stages: number[] = [];
+    await trackReadiness((p) => stages.push(p));
+    expect(stages).toEqual([READINESS.fonts, READINESS.load]);
+    expect(READINESS.ready).toBe(100);
   });
 });

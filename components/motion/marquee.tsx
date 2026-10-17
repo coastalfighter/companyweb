@@ -18,7 +18,8 @@ export interface MarqueeProps {
  * Marquee (§7b): an endless band of words at a constant speed, GSAP-driven so it can
  * ease to a stop on hover (timeScale 1 → 0 over 0.5s, not a jarring freeze), and lean
  * into the scroll: scrolling speeds it up in the scroll direction, then it settles
- * back (ScrollTrigger velocity, clamped). Words in lime, slightly transparent.
+ * back (ScrollTrigger velocity, clamped). Words in muted ink with lime marks between
+ * them: a display-size band of lime words read as a floodlight (brand accent ratio, A1.4).
  *
  * Decorative copy of words that are real content elsewhere on the page, so it's
  * hidden from assistive technology. With reduced motion it stands still.
@@ -50,6 +51,10 @@ export function Marquee({ items, speed = 60, reverse = false, className }: Marqu
         trigger: root,
         start: "top bottom",
         end: "bottom top",
+        // Off-screen, it doesn't run at all (ui-ux-pro-max: stop moving content offscreen).
+        onToggle: (self) => {
+          loop.paused(!self.isActive);
+        },
         onUpdate: (self) => {
           if (root.matches(":hover")) return;
           const boost = gsap.utils.clamp(0, 4, Math.abs(self.getVelocity()) / 300);
@@ -74,7 +79,7 @@ export function Marquee({ items, speed = 60, reverse = false, className }: Marqu
       {items.map((item, i) => (
         <Fragment key={`${item}-${i}`}>
           <span className="whitespace-nowrap">{item}</span>
-          <span className="size-2 shrink-0 rotate-45 bg-volt-500/70 md:size-2.5" />
+          <span className="size-2 shrink-0 rotate-45 bg-volt-500 md:size-2.5" />
         </Fragment>
       ))}
     </div>
@@ -85,7 +90,7 @@ export function Marquee({ items, speed = 60, reverse = false, className }: Marqu
       ref={rootRef}
       aria-hidden
       className={cn(
-        "marquee-band border-y border-line py-8 font-display text-[clamp(1.75rem,1.2rem+2.4vw,3.5rem)] leading-none font-semibold tracking-[-0.03em] text-volt-500/80 select-none md:py-12",
+        "marquee-band border-y border-line py-8 font-display text-[clamp(1.75rem,1.2rem+2.4vw,3.5rem)] leading-none font-semibold tracking-[-0.03em] text-fg-subtle select-none md:py-12",
         className,
       )}
     >

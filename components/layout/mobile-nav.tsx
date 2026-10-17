@@ -11,6 +11,7 @@ import { loadMotion, prefersReducedMotion } from "@/lib/motion/gsap";
 import { duration, ease, stagger as staggerToken } from "@/lib/motion/tokens";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
+import { MotionToggle } from "./motion-toggle";
 
 /**
  * Full-screen mobile menu (docs/blueprint/02-sitemap.md, B2.4), shown below 1024px.
@@ -204,6 +205,7 @@ export function MobileNav() {
                 {siteConfig.hours} · replies within {siteConfig.replySla}
               </span>
             </div>
+            <MotionToggle className="self-start" />
           </div>
         </div>
       </dialog>

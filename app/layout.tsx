@@ -7,9 +7,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SkipLink } from "@/components/layout/skip-link";
 import { Atmosphere } from "@/components/motion/atmosphere";
-import { CustomCursor } from "@/components/motion/custom-cursor";
-import { MagneticField } from "@/components/motion/magnetic-field";
-import { PointerSurfaces } from "@/components/motion/pointer-surfaces";
+import { DeferredEffects } from "@/components/motion/deferred-effects";
 import { Preloader } from "@/components/motion/preloader";
 import { RouteTransition } from "@/components/motion/route-transition";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
@@ -76,9 +74,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteFooter />
         <MobileCtaBar />
         <ScrollReveal />
-        <PointerSurfaces />
-        <MagneticField />
-        <CustomCursor />
+        <DeferredEffects />
         <RouteTransition />
         <AttributionTracker />
         <AnalyticsProvider />

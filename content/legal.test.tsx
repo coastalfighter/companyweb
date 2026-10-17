@@ -115,6 +115,7 @@ describe("browser storage disclosure", () => {
       "components/contact/contact-form.tsx",
       "components/layout/attribution-tracker.tsx",
       "lib/motion/boot.ts",
+      "lib/motion/preference.ts",
     ]
       .map((f) => readFileSync(f, "utf8"))
       .join("\n");

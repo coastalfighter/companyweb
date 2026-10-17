@@ -1,20 +1,26 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { hasReducedMotionPref, MOTION_PREF_EVENT } from "@/lib/motion/preference";
 
 const QUERY = "(prefers-reduced-motion: reduce)";
 
 function subscribe(onChange: () => void): () => void {
   const mql = window.matchMedia(QUERY);
   mql.addEventListener("change", onChange);
-  return () => mql.removeEventListener("change", onChange);
+  window.addEventListener(MOTION_PREF_EVENT, onChange);
+  return () => {
+    mql.removeEventListener("change", onChange);
+    window.removeEventListener(MOTION_PREF_EVENT, onChange);
+  };
 }
 
-const getSnapshot = () => window.matchMedia(QUERY).matches;
+/** The OS setting or the site's own "Reduce motion" switch. */
+const getSnapshot = () => hasReducedMotionPref() || window.matchMedia(QUERY).matches;
 // Server render assumes motion is allowed; the client corrects on hydration.
 const getServerSnapshot = () => false;
 
-/** Live `prefers-reduced-motion: reduce` state, SSR-safe. */
+/** Live reduced-motion state (OS `prefers-reduced-motion` or the site switch), SSR-safe. */
 export function usePrefersReducedMotion(): boolean {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

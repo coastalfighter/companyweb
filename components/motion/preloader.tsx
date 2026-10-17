@@ -3,10 +3,29 @@
 import { useEffect, useRef } from "react";
 import { loadMotion, prefersReducedMotion } from "@/lib/motion/gsap";
 import { markBooted } from "@/lib/motion/boot";
-import { ease } from "@/lib/motion/tokens";
+import { duration, ease } from "@/lib/motion/tokens";
 
-/** Authored length of the timeline below; asserted against the token in tests. */
-export const PRELOADER_TOTAL = 1.45;
+/** What the meter reports, in percent, as each real readiness stage resolves. */
+export const READINESS = { fonts: 55, load: 90, ready: 100 } as const;
+
+/** Resolves when web fonts are ready and the window has loaded, reporting each stage. */
+export function trackReadiness(onStage: (percent: number) => void): Promise<void> {
+  // Callbacks are wrapped so their return value is ignored: a GSAP tween is a thenable,
+  // and returning one here would make readiness wait on (possibly overwritten) animation.
+  const fonts = (document.fonts?.ready ?? Promise.resolve()).then(() => {
+    onStage(READINESS.fonts);
+  });
+  const load =
+    document.readyState === "complete"
+      ? Promise.resolve()
+      : new Promise<void>((resolve) => window.addEventListener("load", () => resolve(), { once: true }));
+  return Promise.all([
+    fonts,
+    load.then(() => {
+      onStage(READINESS.load);
+    }),
+  ]).then(() => undefined);
+}
 
 const WORD_A = "AKROS";
 const WORD_B = "TECH";
@@ -45,18 +64,18 @@ function Letters({ word, className }: { word: string; className: string }) {
 /**
  * Boot preloader (docs/blueprint/11-motion-system.md §2.1): "a system booting up".
  *
- * Sequence, 1.45s total (GSAP timeline, ease tokens from lib/motion/tokens):
- *   0.00  grid fades up; the boot log line appears
- *   0.05  AKROS·TECH letters scramble through glyphs and lock, 40ms apart
- *   0.10  meter fills 000 → 100 (power2.inOut: a load bar that eases at both ends reads as real work)
- *   0.30  the tagline types itself, one character per 24ms (steps(), no easing: typing is discrete)
- *   1.05  content dims and the two shutters split from a lime seam (power4.inOut, 0.4s)
+ * Revised in the color & UX review (ui-ux-pro-max `loading-states`: feedback must match
+ * the real wait). The meter is no longer a 1-second timer dressed up as progress: it
+ * reports the page actually getting ready (fonts 55%, window load 90%, then 100%),
+ * and the screen lifts as soon as that's true:
+ *   - never before 0.85s (the mark has to be readable: letters scramble and lock,
+ *     the tagline types itself),
+ *   - never after 2s (the page is already rendered underneath; it isn't held hostage),
+ *   - immediately on any key, click, wheel or touch.
+ * The exit is the shutters splitting from a lime seam (power4.inOut, 0.35s).
  *
- * Plays once per session (lib/motion/boot.ts) and never with reduced motion: the
- * inline head script decides before the first paint, so it is never drawn and then
- * removed. Any key or click skips it. If GSAP never loads, a CSS failsafe lifts it at
- * 2.6s, so the page can't be held hostage by a failed chunk. The page underneath is
- * fully rendered (and its H1 painted) the whole time.
+ * Plays once per session (lib/motion/boot.ts), never with reduced motion or the site's
+ * "Reduce motion" switch. If GSAP never loads, a CSS failsafe lifts it at 2.6s.
  */
 export function Preloader() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -79,20 +98,36 @@ export function Preloader() {
     loadMotion()
       .then(({ gsap }) => {
         if (cancelled) return;
-        ctx = gsap.context(() => {
+        ctx = gsap.context((self) => {
           // GSAP is driving now: cancel the CSS failsafe.
           gsap.set(root, { animation: "none" });
           const letters = gsap.utils.toArray<HTMLElement>(".preloader-letter", root);
-          const meter = root.querySelector<HTMLElement>(".preloader-bar");
+          const bar = root.querySelector<HTMLElement>(".preloader-bar");
           const pct = root.querySelector<HTMLElement>(".preloader-pct");
           const typed = root.querySelector<HTMLElement>(".preloader-typed");
-          const progress = { value: 0 };
+          const meter = { value: 0 };
           const typing = { chars: 0 };
+          let lifted = false;
 
-          const tl = gsap.timeline({ defaults: { ease: ease.entrance }, onComplete: finish });
-          tl.fromTo(".preloader-grid", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0)
+          const renderMeter = () => {
+            const v = Math.round(meter.value);
+            if (pct) pct.textContent = String(v).padStart(3, "0");
+            if (bar) gsap.set(bar, { scaleX: v / 100 });
+          };
+          const toMeter = (value: number, seconds = 0.3) =>
+            gsap.to(meter, {
+              value,
+              duration: seconds,
+              ease: ease.entrance,
+              overwrite: true,
+              onUpdate: renderMeter,
+            });
+
+          // The mark: grid, boot line, letters locking in, the tagline typing.
+          const intro = gsap.timeline({ defaults: { ease: ease.entrance } });
+          intro
+            .fromTo(".preloader-grid", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0)
             .fromTo(".preloader-log", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3 }, 0)
-            // Letters: each cycles glyphs for 0.32s, then locks to its real letter.
             .fromTo(
               letters,
               { opacity: 0, yPercent: 30 },
@@ -114,20 +149,6 @@ export function Preloader() {
               0.05,
             )
             .to(
-              progress,
-              {
-                value: 100,
-                duration: 0.95,
-                ease: ease.loop,
-                onUpdate: () => {
-                  const v = Math.round(progress.value);
-                  if (pct) pct.textContent = String(v).padStart(3, "0");
-                  if (meter) gsap.set(meter, { scaleX: v / 100 });
-                },
-              },
-              0.1,
-            )
-            .to(
               typing,
               {
                 chars: TAGLINE.length,
@@ -138,35 +159,49 @@ export function Preloader() {
                 },
               },
               0.3,
-            )
-            // Exit: content dims, the lime seam flashes, the shutters part.
-            .to(".preloader-stage", { opacity: 0, scale: 0.98, duration: 0.2, ease: ease.exit }, 1.05)
-            .fromTo(
-              ".preloader-seam",
-              { scaleX: 0, opacity: 1 },
-              { scaleX: 1, duration: 0.22, ease: ease.focal },
-              1.02,
-            )
-            .to(".preloader-seam", { opacity: 0, duration: 0.15 }, 1.24)
-            .to(
-              ".preloader-shutter-top",
-              { yPercent: -100, duration: PRELOADER_TOTAL - 1.05, ease: ease.curtain },
-              1.05,
-            )
-            .to(
-              ".preloader-shutter-bottom",
-              { yPercent: 100, duration: PRELOADER_TOTAL - 1.05, ease: ease.curtain },
-              1.05,
             );
 
-          // Any key or click skips ahead (a returning buyer shouldn't have to wait).
-          const skip = () => tl.timeScale(4);
-          window.addEventListener("keydown", skip, { once: true });
-          window.addEventListener("pointerdown", skip, { once: true });
-          return () => {
-            window.removeEventListener("keydown", skip);
-            window.removeEventListener("pointerdown", skip);
+          const lift = () => {
+            if (lifted || cancelled) return;
+            lifted = true;
+            // Created after setup, so added to the context explicitly (reverted on unmount).
+            self.add(() => {
+              toMeter(READINESS.ready, 0.15);
+              gsap
+                .timeline({ onComplete: finish, delay: 0.12 })
+                .to(".preloader-stage", { opacity: 0, scale: 0.98, duration: 0.18, ease: ease.exit }, 0)
+                .fromTo(
+                  ".preloader-seam",
+                  { scaleX: 0, opacity: 1 },
+                  { scaleX: 1, duration: 0.2, ease: ease.focal },
+                  0,
+                )
+                .to(".preloader-seam", { opacity: 0, duration: 0.12 }, 0.2)
+                .to(".preloader-shutter-top", { yPercent: -100, duration: 0.35, ease: ease.curtain }, 0.04)
+                .to(".preloader-shutter-bottom", { yPercent: 100, duration: 0.35, ease: ease.curtain }, 0.04);
+            });
           };
+
+          // Lift when the page is really ready and the mark has had its moment; cap the wait.
+          // Both limits count from navigation start, not from when GSAP arrived, so a slow
+          // chunk can't stretch the boot screen.
+          const sinceNav = performance.now() / 1000;
+          const floor = Math.max(duration.preloaderMin - sinceNav, 0.55);
+          const ceiling = Math.max(duration.preloaderMax - sinceNav, floor);
+          const minimum = new Promise<void>((resolve) => gsap.delayedCall(floor, resolve));
+          void Promise.all([
+            trackReadiness((p) => {
+              if (!lifted) toMeter(p);
+            }),
+            minimum,
+          ]).then(lift);
+          gsap.delayedCall(ceiling, lift);
+
+          // Any key, click, wheel or touch: the visitor wants in, so lift now.
+          const skip = () => lift();
+          const events = ["keydown", "pointerdown", "wheel", "touchstart"] as const;
+          events.forEach((type) => window.addEventListener(type, skip, { once: true, passive: true }));
+          return () => events.forEach((type) => window.removeEventListener(type, skip));
         }, root);
       })
       .catch(() => {

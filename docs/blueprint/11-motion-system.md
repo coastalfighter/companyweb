@@ -20,6 +20,24 @@ Design references used while building, and what each one decided:
 
 ---
 
+## Revision: color & UX review (M5b)
+
+Reviewed against **ui-ux-pro-max** (its 119 UX guidelines and color rules) and the **brand** skill (color ratios, consistency checklist). The two skills named in the request, "ux-guidelines" and "color-and-branding-guidelines", aren't installed here or in the org catalog; these are the closest matches. Where this list and the sections below disagree, this list wins.
+
+| Was | Now | Rule |
+|---|---|---|
+| Full-screen **lime** route curtain, 0.3s + 0.3s, focus left on a vanished link | **Ink** panel with a 2px lime leading edge, 0.22s cover + 0.3s reveal; focus moves to `#main` after the reveal | Brand accent ratio (lime ≤10% of a screen); `focus-on-route-change` |
+| Boot meter was a 1s timer dressed up as progress; the screen held for 1.45s whatever the page did | Meter reports real readiness (fonts 55%, load 90%); lifts as soon as the page is ready, no earlier than 0.85s and no later than 2s from navigation start, and on any key, click, wheel or touch | `loading-states`: feedback matches the real wait |
+| Custom cursor hid the system cursor and drew a solid lime disc over link text | System cursor always visible; a **hollow** lime ring with a label beside it, over links and buttons only | `system-controls`: low-vision users keep their enlarged cursor; nothing under the pointer is covered |
+| Ambient loops, the marquee and the grid pulse moved forever; only the OS setting could stop them | A visible **"Reduce motion" switch** (footer, mobile menu), remembered in localStorage `akros:motion`, read before first paint. It works like the OS setting everywhere. The marquee also pauses off-screen; the hero grid no longer pulses. | WCAG 2.2.2 pause mechanism; `auto-rotation-controls`; `excessive-motion` (1–2 moving elements per view) |
+| H2/H3 flickered on hover | Removed (the hero accent word still glitches once on arrival) | `motion-meaning`: motion on non-interactive text expresses no cause and effect |
+| Rail and top progress bar both on wide screens | Where the rail shows, the top bar hides | One indicator per meaning |
+| Hero CTAs "Start a Project" / "See Our Work" | The site's standard pair, "Book a 20-minute call" / "See what it would cost" | Brand consistency: one action, one name everywhere; /work is an empty state until a case study is permissioned |
+| Lime marquee words; lime closing-CTA slab (32–47% of a screen) | Muted words with lime marks; Ink slab lit by a lime edge (A1.4) | Accent ratio 5–10% |
+| Pointer effects hydrated on every page | Card tilt, magnets and cursor ring load as one deferred chunk after idle, mouse/trackpad only (`components/motion/deferred-effects.tsx`) | `lazy-loading`, `bundle-splitting`; keeps /contact under the 200 KB render-critical budget |
+
+---
+
 ## §1 Design-system tokens
 
 Source: [`lib/motion/tokens.ts`](../../lib/motion/tokens.ts) (GSAP) mirrored by [`styles/tokens.css`](../../styles/tokens.css) (`--ease-*`, `--dur-*`).
