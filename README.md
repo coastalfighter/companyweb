@@ -116,6 +116,16 @@ Reviewed against the installed **ui-ux-pro-max** and **brand** skills; "ux-guide
 - **Hero CTAs use the site's standard pair** ("Book a 20-minute call", "See what it would cost"), replacing "Start a Project" / "See Our Work". Change them back in `components/home/engine-hero.tsx` if you prefer the M5a copy; "See Our Work" lands on an empty state until a case study is permissioned.
 - **Pointer effects load after idle**, mouse/trackpad only, which keeps /contact under the 200 KB budget.
 
+## Decisions made in M5b (service heroes)
+
+- **Five heroes, one frame.** `components/services/heroes/hero-frame.tsx` carries the copy, entrance and LCP rule; each service adds its own visual (Build, Pipeline, Swarm, Ledger, Seal). Spec: blueprint 11 §3b–3f.
+- **Hero copy follows your brief** (blueprint 03 updated first). The fuller original subs live on in the SEO descriptions and the sections below.
+- **Primary CTAs stay the scoping call** ("Book a web scoping call", …), matching each page's closing slab, rather than "Get a Quote" / "Open a Requisition" / "Schedule a Review". Secondary CTAs go to real places: the page's timeline or tools section, or `/pricing`. "View Case Studies" and "See Sample Reports" were not used: there are no permissioned case studies yet, and the sample report lives on the homepage.
+- **Every number in a hero visual is labelled "Example" or "Illustrative".** No client data.
+- **The legal seal says "Playbook checked · Routed to counsel"**, never "approved"; the not-a-law-firm note sits right under the CTAs.
+- **Dropped from the brief, on purpose:** hover tooltips/pulses inside the visuals (they're `aria-hidden`, so that detail would be pointer-only), the seal tilt, and pinning the accounting hero (pinning a hero delays the content). The scan line sweeps twice and on hover; it never loops.
+- **Fraunces** is loaded with `next/font` (`preload: false`) for the Legal page's serif voice only.
+
 ## Decisions made in M5a (motion system, homepage Engine Room)
 
 Spec: [`docs/blueprint/11-motion-system.md`](docs/blueprint/11-motion-system.md). It supersedes the Phase 2b CSS depth layer (the scroll rail stays).
@@ -233,28 +243,28 @@ Set `ATS_PROVIDER` (`ashby`, `greenhouse` or `lever`) and `ATS_BOARD` (the board
 
 These are business commitments in the live copy. They aren't gated (they're offers Akrostech defines), but each must be true on day one. Change the copy wherever one isn't.
 
-| Claim                                                                             | Where                                |
-| --------------------------------------------------------------------------------- | ------------------------------------ |
-| Live / first delivery in 10 business days                                         | Hero, How it works, comparison table |
-| No long-term lock-in; 90-day term, then month-to-month with 30 days' notice       | Hero, comparison, FAQ                |
-| NDA before the first call                                                         | Hero, security band                  |
-| Requests acknowledged within 1 business hour, resolved within 1 business day      | Visibility section                   |
-| Replacement within 5 business days at no cost                                     | FAQ                                  |
-| Written quote within 48 hours; no setup fees                                      | FAQ                                  |
-| Access revoked within an hour of any change / of offboarding                      | FAQ, security band                   |
-| Background checks, SSO + hardware-key MFA, AES-256 / TLS 1.3, GDPR/CCPA DPAs      | Security band                        |
-| Tools the team already works in (Slack … DocuSign)                                | FAQ                                  |
-| Replies within 4 business hours; Mon–Fri hours                                    | Mobile menu (`lib/site.ts`)          |
-| Salary presets for the calculator teaser (cite a current source)                  | `lib/calculator/teaser.ts`           |
-| Phase timings: Operating Brief in 24h, team match days 3–6, running by day 10     | How it works (`content/process.ts`)  |
-| NDA and DPA signed before any data is shared; SSO provisioning                    | How it works                         |
-| Onboarding takes about three hours of the client's time                           | How it works FAQ                     |
-| Core overlap hours written into every proposal                                    | How it works FAQ                     |
-| Offboarding: 30 days' notice, handover pack, access revoked within 1 business day | How it works ("Leaving well"), FAQ   |
-| SOPs belong to the client                                                         | How it works, guarantees             |
-| Senior hiring; month-to-month after 90 days                                       | About (operating rules)              |
-| Newsletter: one email a month (only shown once the newsletter is configured)      | Footer                               |
-| "From zero to production in weeks" and the other M5b hero subs, when built        | Service heroes (blueprint 11 §3)     |
+| Claim                                                                                   | Where                                         |
+| --------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Live / first delivery in 10 business days                                               | Hero, How it works, comparison table          |
+| No long-term lock-in; 90-day term, then month-to-month with 30 days' notice             | Hero, comparison, FAQ                         |
+| NDA before the first call                                                               | Hero, security band                           |
+| Requests acknowledged within 1 business hour, resolved within 1 business day            | Visibility section                            |
+| Replacement within 5 business days at no cost                                           | FAQ                                           |
+| Written quote within 48 hours; no setup fees                                            | FAQ                                           |
+| Access revoked within an hour of any change / of offboarding                            | FAQ, security band                            |
+| Background checks, SSO + hardware-key MFA, AES-256 / TLS 1.3, GDPR/CCPA DPAs            | Security band                                 |
+| Tools the team already works in (Slack … DocuSign)                                      | FAQ                                           |
+| Replies within 4 business hours; Mon–Fri hours                                          | Mobile menu (`lib/site.ts`)                   |
+| Salary presets for the calculator teaser (cite a current source)                        | `lib/calculator/teaser.ts`                    |
+| Phase timings: Operating Brief in 24h, team match days 3–6, running by day 10           | How it works (`content/process.ts`)           |
+| NDA and DPA signed before any data is shared; SSO provisioning                          | How it works                                  |
+| Onboarding takes about three hours of the client's time                                 | How it works FAQ                              |
+| Core overlap hours written into every proposal                                          | How it works FAQ                              |
+| Offboarding: 30 days' notice, handover pack, access revoked within 1 business day       | How it works ("Leaving well"), FAQ            |
+| SOPs belong to the client                                                               | How it works, guarantees                      |
+| Senior hiring; month-to-month after 90 days                                             | About (operating rules)                       |
+| Newsletter: one email a month (only shown once the newsletter is configured)            | Footer                                        |
+| "From zero to production in weeks, not months"; "talent your in-house team can't reach" | Web, Recruitment heroes (blueprint 11 §3b–3c) |
 
 ## Launch checklist
 

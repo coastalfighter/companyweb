@@ -9,10 +9,10 @@ export const recruitment: ServiceContent = {
   },
   hero: {
     eyebrow: "02 · Recruitment",
-    title: "Hire faster without hiring a recruiting team.",
-    subtitle:
-      "We source, screen and schedule. You interview people already worth your time. Your ATS, your employer brand, your final call.",
+    title: "The Right People. Faster.",
+    subtitle: "We source, screen, and deliver talent your in-house team can't reach.",
     cta: "Book a hiring scoping call",
+    secondary: { label: "See our process", href: "#timeline-title" },
   },
   metrics: [],
   scope: [

@@ -850,3 +850,132 @@ html[data-motion-pref="reduced"] .btn-primary::after {
     }
   }
 }
+
+/* ---------- 3b–3f Service heroes (components/services/heroes/*) ----------
+   Every visual's markup is its finished state: that is what reduced motion, no-JS and
+   the first paint before GSAP show. GSAP sets the start states, then plays. */
+.hero-scan {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(163 230 53 / 0) 40%,
+    rgb(163 230 53 / 0.22) 49%,
+    var(--volt-500) 50%,
+    rgb(163 230 53 / 0.22) 51%,
+    rgb(163 230 53 / 0) 60%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.font-serif-legal {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+/* 3b The Build */
+.wire-shape {
+  stroke: rgb(163 230 53 / 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* 3c The Pipeline */
+.pipe-link {
+  stroke: rgb(163 230 53 / 0.45);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.pipe-particles {
+  opacity: 0;
+}
+
+/* 3d The Swarm. Resting layout in container units; JS takes over the transform. */
+.swarm-stage {
+  container-type: size;
+}
+.swarm-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border: 1px solid var(--line);
+  border-radius: 0.625rem;
+  background: var(--ink-900);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--fg);
+  box-shadow: var(--elev-4);
+  transform: translate(-50%, -50%) translate(calc(var(--ox) * 38cqw), calc(var(--oy) * 30cqh))
+    scale(calc(var(--os) * var(--fit, 1)));
+  will-change: transform;
+}
+/* Three depth steps; only change when a card crosses one (never per frame). */
+.swarm-card[data-depth="0"] {
+  z-index: 3;
+}
+.swarm-card[data-depth="1"] {
+  z-index: 2;
+  filter: brightness(0.7) blur(0.6px);
+}
+.swarm-card[data-depth="2"] {
+  z-index: 1;
+  filter: brightness(0.5) blur(1.4px);
+}
+.swarm-core {
+  z-index: 2;
+}
+/* Mirrors cardFit() in swarm-visual.tsx for the resting (CSS-only) layout. */
+@container (max-width: 639px) {
+  .swarm-card {
+    --fit: 0.8;
+  }
+}
+@container (max-width: 400px) {
+  .swarm-card {
+    --fit: 0.72;
+  }
+}
+
+/* 3e The Ledger: one rule under each line box of the headline (leading 0.95). */
+.ledger-rule {
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 1px),
+    rgb(163 230 53 / 0.28) calc(100% - 1px)
+  );
+  background-size: 100% 0.95em;
+}
+.ledger-line {
+  stroke: var(--volt-500);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.ledger-tick {
+  color: transparent;
+  transition:
+    background-color 200ms var(--ease-out-expo),
+    border-color 200ms var(--ease-out-expo),
+    color 200ms var(--ease-out-expo);
+}
+.ledger-tick path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 260ms var(--ease-out-expo) 60ms;
+}
+.ledger-step[data-done] .ledger-tick {
+  border-color: var(--volt-500);
+  background-color: var(--volt-500);
+  color: var(--on-accent);
+}
+.ledger-step[data-done] .ledger-tick path {
+  stroke-dashoffset: 0;
+}
+.ledger-step[data-done] {
+  color: var(--fg);
+}

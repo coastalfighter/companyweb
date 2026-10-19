@@ -9,10 +9,10 @@ export const virtualAssistance: ServiceContent = {
   },
   hero: {
     eyebrow: "03 · Virtual Assistance",
-    title: "A trained operator who clears the queue every day.",
-    subtitle:
-      "Inbox, calendar, CRM, vendor follow-ups, travel: the hundred small tasks that eat your team's week. Handled by someone who's done it for executives before.",
+    title: "Your To-Do List. Handled.",
+    subtitle: "Delegate the busywork. Keep the bandwidth.",
     cta: "Book a VA scoping call",
+    secondary: { label: "View packages", href: "/pricing" },
   },
   metrics: [],
   scope: [

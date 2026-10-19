@@ -9,10 +9,10 @@ export const accounting: ServiceContent = {
   },
   hero: {
     eyebrow: "04 · Accounting",
-    title: "Books closed by business day 5. Every month.",
-    subtitle:
-      "Bookkeeping, payroll, payables and receivables, run by finance professionals inside your accounting system. Your CFO gets clean numbers early enough to actually use them.",
+    title: "Numbers That Make Sense.",
+    subtitle: "Bookkeeping, payroll, and reporting, without the spreadsheet chaos.",
     cta: "Book a finance scoping call",
+    secondary: { label: "See the month-end close", href: "#timeline-title" },
   },
   metrics: [],
   scope: [

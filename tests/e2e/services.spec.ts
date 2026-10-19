@@ -2,19 +2,31 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 const SERVICES = [
-  { slug: "web-development", name: "Web Development", h1: "Websites built like products, not brochures." },
+  {
+    slug: "web-development",
+    name: "Web Development",
+    h1: "We Ship. Fast. Clean. Scalable.",
+    visual: ".build-preview",
+  },
   {
     slug: "recruitment",
     name: "Recruitment Assistance",
-    h1: "Hire faster without hiring a recruiting team.",
+    h1: "The Right People. Faster.",
+    visual: ".pipe-stage",
   },
   {
     slug: "virtual-assistance",
     name: "Virtual Assistance",
-    h1: "A trained operator who clears the queue every day.",
+    h1: "Your To-Do List. Handled.",
+    visual: ".swarm-stage",
   },
-  { slug: "accounting", name: "Accounting Assistance", h1: "Books closed by business day 5. Every month." },
-  { slug: "legal", name: "Legal Assistance", h1: "Your lawyers, minus the paperwork." },
+  {
+    slug: "accounting",
+    name: "Accounting Assistance",
+    h1: "Numbers That Make Sense.",
+    visual: ".ledger-card",
+  },
+  { slug: "legal", name: "Legal Assistance", h1: "Compliant. Protected. Moving.", visual: ".seal" },
 ] as const;
 
 async function readThrough(page: Page) {
@@ -99,14 +111,121 @@ test("unknown service slugs 404", async ({ page }) => {
   expect(res?.status()).toBe(404);
 });
 
-test("service hero vignette plays on load", async ({ page }) => {
-  await page.goto("/services/accounting");
-  const vig = page.locator(".vig-autoplay .vig");
-  await expect
-    .poll(() => vig.evaluate((el) => Number(getComputedStyle(el).getPropertyValue("--vig-p"))), {
-      timeout: 4000,
-    })
-    .toBe(1);
+/** GSAP loaded and any boot screen gone. */
+async function settled(page: Page) {
+  await expect(page.locator("html")).toHaveAttribute("data-motion-ready", "");
+  await expect(page.locator(".preloader")).toBeHidden({ timeout: 5000 });
+}
+
+test.describe("service heroes (docs/blueprint/11-motion-system.md §3b–3f)", () => {
+  for (const service of SERVICES) {
+    test(`${service.slug}: the headline sharpens and the visual arrives`, async ({ page }) => {
+      await page.goto(`/services/${service.slug}`);
+      await settled(page);
+      const hero = page.locator('section[aria-labelledby="service-title"]');
+      await expect(hero).toHaveAttribute("data-entered", "", { timeout: 4000 });
+      await expect(hero.locator(service.visual)).toBeVisible();
+      await expect
+        .poll(() =>
+          hero
+            .locator(".hero-enter")
+            .last()
+            .evaluate((el) => getComputedStyle(el).opacity),
+        )
+        .toBe("1");
+      // Nothing in the hero pushes the page sideways.
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
+      ).toBeLessThanOrEqual(0);
+    });
+  }
+
+  test("The Build types the code, then compiles it on scroll", async ({ page }) => {
+    await page.goto("/services/web-development");
+    await settled(page);
+    const lastLine = page.locator(".code-line").last();
+    await expect
+      .poll(() => lastLine.evaluate((el) => getComputedStyle(el).clipPath), { timeout: 5000 })
+      .toMatch(/inset\(0(%|px)?( 0(%|px)?){0,3}\)|none/);
+    await expect(page.locator(".build-status")).toHaveCSS("opacity", "1");
+    const offset = () =>
+      page
+        .locator(".wire-shape")
+        .first()
+        .evaluate((el) => Number.parseFloat(getComputedStyle(el).strokeDashoffset));
+    expect(await offset()).toBeGreaterThan(0.9);
+    await page.evaluate(() => window.scrollTo(0, innerHeight * 0.8));
+    await expect.poll(offset).toBeLessThan(0.6);
+  });
+
+  test("The Pipeline sends candidates down the connectors", async ({ page }) => {
+    await page.goto("/services/recruitment");
+    await settled(page);
+    const dot = page.locator(".pipe-particles circle").first();
+    await expect(page.locator(".pipe-particles").first()).toHaveCSS("opacity", "1", { timeout: 4000 });
+    const at = () => dot.getAttribute("transform");
+    const a = await at();
+    await page.waitForTimeout(300);
+    expect(await at()).not.toBe(a);
+  });
+
+  test("The Swarm orbits, in three depth steps", async ({ page }) => {
+    await page.goto("/services/virtual-assistance");
+    await settled(page);
+    const card = page.locator(".swarm-card").first();
+    const transform = () => card.evaluate((el) => el.style.transform);
+    await expect.poll(transform).not.toBe("");
+    const a = await transform();
+    await page.waitForTimeout(400);
+    expect(await transform()).not.toBe(a);
+    const depths = await page
+      .locator(".swarm-card")
+      .evaluateAll((els) => [...new Set(els.map((el) => el.dataset.depth))]);
+    expect(depths.every((d) => ["0", "1", "2"].includes(d!))).toBe(true);
+  });
+
+  test("The Ledger counts up and ticks the close as you scroll away", async ({ page }) => {
+    await page.goto("/services/accounting");
+    await settled(page);
+    await expect(page.locator(".ledger-figure").first()).toHaveText("128,400", { timeout: 5000 });
+    await expect(page.locator(".ledger-step[data-done]")).toHaveCount(0);
+    await page.evaluate(() => {
+      const hero = document.querySelector('section[aria-labelledby="service-title"]')!;
+      window.scrollTo(0, hero.getBoundingClientRect().height * 0.8);
+    });
+    await expect(page.locator(".ledger-step[data-done]")).toHaveCount(4);
+  });
+
+  test("The Seal stamps down once, in the serif voice", async ({ page }) => {
+    await page.goto("/services/legal");
+    await settled(page);
+    const scale = () =>
+      page.locator(".seal").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
+    // Landed: GSAP's scale and spin are back to 1 and 0 (the resting -8° tilt is CSS `rotate`).
+    await expect.poll(scale, { timeout: 5000 }).toBeCloseTo(1, 3);
+    await expect(page.locator(".seal")).toHaveCSS("opacity", "1");
+    const family = await page
+      .getByRole("heading", { level: 1 })
+      .evaluate((el) => getComputedStyle(el).fontFamily);
+    expect(family.toLowerCase()).toMatch(/fraunces|serif/);
+    await expect(page.locator(".seal-page")).toHaveCSS("transform", "none");
+  });
+
+  test("reduced motion shows every visual finished and still", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/services/accounting");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("filter", "none");
+    await expect(page.locator(".ledger-step[data-done]")).toHaveCount(4);
+    await expect(page.locator(".ledger-figure").first()).toHaveText("128,400");
+    await page.goto("/services/recruitment");
+    await expect(page.locator(".pipe-particles").first()).toHaveCSS("opacity", "0");
+    await expect(page.locator(".pipe-link").first()).toHaveCSS("stroke-dashoffset", "0px");
+    await page.goto("/services/virtual-assistance");
+    const card = page.locator(".swarm-card").first();
+    const a = await card.evaluate((el) => getComputedStyle(el).transform);
+    await page.waitForTimeout(500);
+    expect(await card.evaluate((el) => getComputedStyle(el).transform)).toBe(a);
+  });
 });
 
 test.describe("/services hub", () => {
@@ -148,11 +267,11 @@ test.describe("/services hub", () => {
       .toBeGreaterThan(40);
   });
 
-  test("'See pricing models' on a service page jumps to the hub section", async ({ page }) => {
+  test("a service hero's secondary CTA jumps to its section", async ({ page }) => {
     await page.goto("/services/recruitment");
-    await page.getByRole("link", { name: "See pricing models" }).click();
-    await expect(page).toHaveURL(/\/services#engagement-models$/);
-    await expect(page.getByRole("heading", { name: "Three ways to work with us." })).toBeInViewport();
+    await page.getByRole("link", { name: "See our process" }).click();
+    await expect(page).toHaveURL(/\/services\/recruitment#timeline-title$/);
+    await expect(page.locator("#timeline-title")).toBeInViewport();
   });
 
   test("has no accessibility violations", async ({ page }) => {
@@ -174,7 +293,7 @@ test("mega-menu and footer service links now resolve", async ({ page, isMobile }
     .getByRole("link", { name: /Legal Assistance/ })
     .click();
   await expect(page).toHaveURL(/\/services\/legal$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your lawyers, minus the paperwork.");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Compliant. Protected. Moving.");
   await expect(page.getByRole("button", { name: "Services" })).toHaveAttribute("aria-expanded", "false");
 });
 

@@ -15,10 +15,11 @@ export const legal: ServiceContent = {
   },
   hero: {
     eyebrow: "05 · Legal Assistance",
-    title: "Your lawyers, minus the paperwork.",
-    subtitle:
-      "Contract intake, redline preparation, CLM administration, NDAs and compliance calendars, run by experienced legal operations professionals under the direction of your counsel. Akrostech is not a law firm and does not provide legal advice.",
+    title: "Compliant. Protected. Moving.",
+    subtitle: "Contracts, compliance, and legal ops, handled in the background.",
     cta: "Book a legal ops scoping call",
+    secondary: { label: "Our legal stack", href: "#tools-title" },
+    note: "Run under the direction of your counsel. Akrostech is not a law firm and does not provide legal advice.",
   },
   metrics: [],
   scope: [

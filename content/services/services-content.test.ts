@@ -72,7 +72,7 @@ describe("service content", () => {
   });
 
   it("keeps the regulatory notes on legal and accounting", () => {
-    expect(serviceContent.legal.hero.subtitle).toContain("not a law firm");
+    expect(serviceContent.legal.hero.note).toContain("not a law firm");
     expect(serviceContent.legal.limitsNote).toContain("not a law firm");
     expect(serviceContent.accounting.limitsNote).toContain("not a licensed CPA firm");
   });

@@ -15,8 +15,12 @@ export interface ServiceContent {
     eyebrow: string;
     title: string;
     subtitle: string;
-    /** Primary CTA label, e.g. "Book a web scoping call". */
+    /** Primary CTA label, e.g. "Book a web scoping call". Also the closing slab's CTA. */
     cta: string;
+    /** Secondary CTA: somewhere real on this page or site (never an empty state). */
+    secondary: { label: string; href: string };
+    /** Shown under the CTAs, e.g. the legal "not a law firm" disclaimer. */
+    note?: string;
   };
   /**
    * S2 outcome metrics. VERIFIED ONLY: the section is not rendered while empty.

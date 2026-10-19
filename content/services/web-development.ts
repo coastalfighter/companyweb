@@ -9,10 +9,10 @@ export const webDevelopment: ServiceContent = {
   },
   hero: {
     eyebrow: "01 · Web Development",
-    title: "Websites built like products, not brochures.",
-    subtitle:
-      "We design, build and maintain fast, accessible sites on Next.js, Webflow or WordPress. You get a senior team that ships weekly and never holds your code hostage.",
+    title: "We Ship. Fast. Clean. Scalable.",
+    subtitle: "From zero to production in weeks, not months.",
     cta: "Book a web scoping call",
+    secondary: { label: "See how we build", href: "#timeline-title" },
   },
   metrics: [],
   scope: [

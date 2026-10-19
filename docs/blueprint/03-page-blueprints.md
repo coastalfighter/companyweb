@@ -315,9 +315,10 @@ All five service pages share this structure, so buyers comparing services know w
 
 **S1 Hero**
 - Eyebrow: `01 · WEB DEVELOPMENT`
-- H1: **Websites built like products, not brochures.**
-- Sub: *We design, build and maintain fast, accessible sites on Next.js, Webflow or WordPress. You get a senior team that ships weekly and never holds your code hostage.*
-- CTAs: `Book a web scoping call →` · `See pricing models`
+- H1: **We Ship. Fast. Clean. Scalable.**
+- Sub: *From zero to production in weeks, not months.*
+- CTAs: `Book a web scoping call →` · `See how we build` (→ S4 timeline)
+- Hero visual (M5b): "The Build", [11-motion-system.md §3b](11-motion-system.md). It replaces the vignette below on this page; the vignette stays on the homepage card.
 - Vignette: a browser frame whose layout assembles itself from wireframe boxes into a finished page (1.4s), followed by a Lighthouse panel animating rings to `Performance 98 · Accessibility 100 · Best Practices 100 · SEO 100`.
 
 **S2 Metrics [VERIFY]:** **1.2s** *median LCP on sites we've shipped* · **6 weeks** *typical marketing-site rebuild* · **100%** *of code and accounts owned by you from day one*
@@ -364,9 +365,10 @@ All five service pages share this structure, so buyers comparing services know w
 
 **S1 Hero**
 - Eyebrow: `02 · RECRUITMENT`
-- H1: **Hire faster without hiring a recruiting team.**
-- Sub: *We source, screen and schedule. You interview people already worth your time. Your ATS, your employer brand, your final call.*
-- CTAs: `Book a hiring scoping call →` · `See pricing models`
+- H1: **The Right People. Faster.**
+- Sub: *We source, screen, and deliver talent your in-house team can't reach.*
+- CTAs: `Book a hiring scoping call →` · `See our process` (→ S4 timeline)
+- Hero visual (M5b): "The Pipeline", [11-motion-system.md §3c](11-motion-system.md). It replaces the vignette below on this page.
 - Vignette: a 5-column pipeline board (`Sourced 214 → Screened 38 → Assessed 11 → Shortlist 5 → Offer 1`), with candidate cards (anonymized initials) sliding stage to stage; the final card glows lime.
 
 **S2 Metrics [VERIFY]:** **10 days** *to a vetted shortlist* · **4.2** *candidates interviewed per hire (industry avg. ~10)* · **91%** *of placed hires still in seat after 12 months*
@@ -413,9 +415,10 @@ All five service pages share this structure, so buyers comparing services know w
 
 **S1 Hero**
 - Eyebrow: `03 · VIRTUAL ASSISTANCE`
-- H1: **A trained operator who clears the queue every day.**
-- Sub: *Inbox, calendar, CRM, vendor follow-ups, travel, the hundred small tasks that eat your team's week. Handled by someone who's done it for executives before.*
-- CTAs: `Book a VA scoping call →` · `See pricing models`
+- H1: **Your To-Do List. Handled.**
+- Sub: *Delegate the busywork. Keep the bandwidth.*
+- CTAs: `Book a VA scoping call →` · `View packages` (→ `/pricing`)
+- Hero visual (M5b): "The Swarm", [11-motion-system.md §3d](11-motion-system.md). It replaces the vignette below on this page.
 - Vignette: a task inbox counter `47` that ticks down to `0` as rows slide into a "Done" column; a calendar beside it de-conflicts itself (overlapping blocks animate into a clean schedule).
 
 **S2 Metrics [VERIFY]:** **11 hrs** *saved per executive per week, on average* · **< 1 hr** *acknowledgment on every request* · **5 days** *to a fully onboarded assistant*
@@ -462,9 +465,10 @@ All five service pages share this structure, so buyers comparing services know w
 
 **S1 Hero**
 - Eyebrow: `04 · ACCOUNTING`
-- H1: **Books closed by business day 5. Every month.**
-- Sub: *Bookkeeping, payroll, payables and receivables, run by finance professionals inside your accounting system. Your CFO gets clean numbers early enough to actually use them.*
-- CTAs: `Book a finance scoping call →` · `See pricing models`
+- H1: **Numbers That Make Sense.**
+- Sub: *Bookkeeping, payroll, and reporting, without the spreadsheet chaos.*
+- CTAs: `Book a finance scoping call →` · `See the month-end close` (→ S4 timeline)
+- Hero visual (M5b): "The Ledger", [11-motion-system.md §3e](11-motion-system.md). It replaces the vignette below on this page.
 - Vignette: a month-end close checklist (`Bank recs ✓ · Credit cards ✓ · Accruals ✓ · Prepaids ✓ · Revenue ✓ … 24/24`) with a progress ring filling to "Closed · BD5"; next to it a balance tile where "Variance $0.00" settles in.
 
 **S2 Metrics [VERIFY]:** **BD 5** *median month-end close* · **99.7%** *transaction coding accuracy (QA-sampled)* · **$0** *in payroll penalties across all clients in 2025*
@@ -514,9 +518,11 @@ All five service pages share this structure, so buyers comparing services know w
 
 **S1 Hero**
 - Eyebrow: `05 · LEGAL ASSISTANCE`
-- H1: **Your lawyers, minus the paperwork.**
-- Sub: *Contract intake, redline preparation, CLM administration, NDAs and compliance calendars, run by experienced legal operations professionals under the direction of your counsel. Akrostech is not a law firm and does not provide legal advice.*
-- CTAs: `Book a legal ops scoping call →` · `See pricing models`
+- H1: **Compliant. Protected. Moving.**
+- Sub: *Contracts, compliance, and legal ops, handled in the background.*
+- CTAs: `Book a legal ops scoping call →` · `Our legal stack` (→ S5 tools)
+- Note under the CTAs (required, B2.5): *Run under the direction of your counsel. Akrostech is not a law firm and does not provide legal advice.*
+- Hero visual (M5b): "The Seal", [11-motion-system.md §3f](11-motion-system.md). It replaces the vignette below on this page.
 - Vignette: a contract timeline: 6 agreements on a horizontal timeline, each with a status chip (`Executed`, `In redline`, `Renewal in 30d` in amber). An "auto-renewal caught" event pulses lime: *"Notice sent 60 days before auto-renewal. $48K saved."*
 
 **S2 Metrics [VERIFY]:** **24 hrs** *NDA turnaround on your templates* · **100%** *of renewals flagged ≥ 60 days out* · **40%** *less outside-counsel spend reported by clients in year one*
